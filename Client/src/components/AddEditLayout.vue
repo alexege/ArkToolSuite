@@ -4,14 +4,18 @@
         <img :src="'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'" alt="" v-else>
         <label for="">{{ props.layout.title }}</label>
         <!-- <input type="text" v-model="title"> -->
+        <div class="container-actions">
+            <button>Edit</button>
+            <button>Delete</button>
+        </div>
     </div>
 </template>
-<script setup>
+<script setup>    
     const props = defineProps(['layout'])
-
 </script>
 
 <style scoped>
+
 .layout-container {
     width: 100%;
     padding: 15px 5px;
@@ -29,5 +33,20 @@
 
 .layout-container label {
     margin: 1em;
+}
+
+.container-actions{
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.container-actions button {
+    width: 50%;
+    height: 100%;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    margin: .25em;
 }
 </style>

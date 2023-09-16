@@ -10,17 +10,23 @@
                     +
                 </button>
             </div>
-            <AddEditLayout v-for="layout in allLayouts" :key="layout.id" v-bind:layout="layout" />
+            <AddEditLayout v-for="layout in allLayouts" :key="layout._id" v-bind:layout="layout" @click="activateLayout(layout._id)" :class="activeLayoutId === layout._id ? 'active' : ''"/>
         </div>
     </div>
 </template>
 <script setup>
+import { ref } from "vue"
 import { storeToRefs } from 'pinia';
 import { useLayoutStore } from '../stores/layout';
 import AddEditLayout from '../components/AddEditLayout.vue'
 
 const { allLayouts } = storeToRefs(useLayoutStore())
 const { fetchLayouts, addLayout } = useLayoutStore()
+const activeLayoutId = ref(null)
+
+async function activateLayout(id) {
+    activeLayoutId.value = id;
+}
 
 async function add() {
     await addLayout()
@@ -88,5 +94,9 @@ export default {
         width: 25%;
         padding: 1em;
         margin: 0.25em;
+    }
+
+    .active {
+        outline: 2px solid yellow;
     }
 </style>
