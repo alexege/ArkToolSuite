@@ -12,8 +12,7 @@
             <div class="search-items">
                 <div class="block" v-for="item in filteredList()" :key="item">
                     <div style="color: black;" draggable @dragstart="onDrag($event, item)">
-                        <!-- <img :src="item.url" alt="" style="width: 100%; height: 100%;"> -->
-                        {{ item.unique }}
+                        <img :src="item.url" alt="" style="width: 100%; height: 100%;">
                     </div>
                 </div>
                 <div v-if="input&&!filteredList().length">
@@ -33,10 +32,10 @@ const input = ref("");
 const { fetchItems } = useItemStore()
 fetchItems()
 
-const { allItems } = storeToRefs(useItemStore())
+const { uniqueItems } = storeToRefs(useItemStore())
 
 function filteredList() {
-    return allItems.value.filter((item) => {
+    return uniqueItems.value.filter((item) => {
         if(typeof(item) == 'object'){
             for(const [key, value] of Object.entries(item)) {
                 if (value.toString().toLowerCase().includes(input.value.toLowerCase())) {

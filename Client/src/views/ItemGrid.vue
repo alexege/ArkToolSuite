@@ -1,36 +1,31 @@
 <template>
     <div>
-        <div class="items" v-if="layoutStore.layout && layoutStore.layout.items">
-            <div v-for="item in layoutStore.layout.items" :key="item._id">
+        <div class="items" v-if="activeLayout && activeLayout.items">
+            <div v-for="item in activeLayout.items" :key="item._id">
                 <div class="block-cell" @drop="onDrop($event, item)" @dragover.prevent @dragenter.prevent @contextmenu="rightClickClear($event, item)">
                     <div class="block" draggable @dragstart="onDrag($event, item)">
-                        <!-- {{ item.slice(-3) }} -->
-                        <!-- {{  item  }} -->
                         <img :src="item.url ? item.url : 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'" :alt="item.title">
                     </div>
                 </div>
             </div>
-            <!-- <div v-for="(item, idx) in allItems" :key="item.id">
-                <div class="block-cell" @drop="onDrop($event, item)" @dragover.prevent @dragenter.prevent @contextmenu="rightClickClear($event, item)">
-                    <div class="block" draggable @dragstart="onDrag($event, item)">
-                        <img :src="item.url ? item.url : 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'" :alt="item.title">
-                    </div>
-                </div>
-            </div> -->
         </div>
     </div>
 </template>
 <script setup>
 
+import { storeToRefs } from "pinia";
 import { ref } from "vue";
 // import { storeToRefs } from 'pinia';
 import { useItemStore } from '../stores/item';
 import { useLayoutStore } from "../stores/layout";
 
-const layoutStore = useLayoutStore()
+// const layoutStore = useLayoutStore()
+const { activeLayout } = storeToRefs(useLayoutStore())
 const itemStore = useItemStore()
 const { fetchItems, updateItem } = useItemStore()
 // const { allItems } = storeToRefs(useItemStore())
+
+const { selectLayout } = useLayoutStore()
 
 const drag_source = ref(null)
 const drag_target = ref(null)
@@ -92,6 +87,9 @@ async function onDrop(evt, item) {
             console.log("error:", error)
         }
     }
+
+    //This doesn't feel like the best way of doing things, but it seems to force the items to refresh upon changes.
+    selectLayout(useLayoutStore().layout._id)
 }
 
 async function rightClickClear(evt, item) {

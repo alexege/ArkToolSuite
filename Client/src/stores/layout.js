@@ -14,6 +14,17 @@ export const useLayoutStore = defineStore({
   getters: {
     allLayouts: (state) => {
         return state.layouts;
+    },
+
+    activeLayout: (state) => {
+        if(state.layout){
+            console.log(state.layout)
+            return state.layout;
+        }
+    },
+
+    getLayoutById: (state) => {
+        return (layoutId) => state.layouts.find((layout) => layout._id === layoutId)
     }
   },
   actions: {
