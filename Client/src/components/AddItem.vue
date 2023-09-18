@@ -28,7 +28,8 @@ async function add() {
         title: item.value.title,
         url: item.value.url,
         description: item.value.description,
-        gridPosition: item.value.gridPosition
+        gridPosition: item.value.gridPosition,
+        unique: true
     }
 
     await addItem(data)

@@ -37,7 +37,7 @@ const { uniqueItems } = storeToRefs(useItemStore())
 function filteredList() {
     return uniqueItems.value.filter((item) => {
         if(typeof(item) == 'object'){
-            for(const [key, value] of Object.entries(item)) {
+            for(const value of Object.values(item)) {
                 if (value.toString().toLowerCase().includes(input.value.toLowerCase())) {
                     return item;
                 }
@@ -112,5 +112,9 @@ async function onDrag(evt, item) {
         color: #FFF;
         background-color: rgb(255, 255, 255);
         font-size: 8pt;
+    }
+
+    .block:hover {
+        cursor: pointer;
     }
 </style>

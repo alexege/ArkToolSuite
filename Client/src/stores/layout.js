@@ -22,10 +22,6 @@ export const useLayoutStore = defineStore({
             return state.layout;
         }
     },
-
-    getLayoutById: (state) => {
-        return (layoutId) => state.layouts.find((layout) => layout._id === layoutId)
-    }
   },
   actions: {
 
@@ -39,12 +35,6 @@ export const useLayoutStore = defineStore({
         this.layouts = []
         const response = await axios.get(`${API_URL}/layouts/all`)
         this.layouts = response.data;
-        // try {
-        //     let layouts = axios.get(`${API_URL}/layouts/all`)
-        //     this.layouts = (await layouts).data
-        // } catch (error) {
-        //     console.log('error:', error)
-        // }
     },
 
     async addLayout(layout){

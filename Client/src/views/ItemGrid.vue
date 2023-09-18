@@ -4,7 +4,9 @@
             <div v-for="item in activeLayout.items" :key="item._id">
                 <div class="block-cell" @drop="onDrop($event, item)" @dragover.prevent @dragenter.prevent @contextmenu="rightClickClear($event, item)">
                     <div class="block" draggable @dragstart="onDrag($event, item)">
-                        <img :src="item.url ? item.url : 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'" :alt="item.title">
+                        <!-- <img :src="item.url ? item.url : 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'" :alt="item.title"> -->
+                        <img :src="item.url" :alt="item.title">
+                        {{ item.gridPosition }}
                     </div>
                 </div>
             </div>
@@ -15,16 +17,12 @@
 
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
-// import { storeToRefs } from 'pinia';
 import { useItemStore } from '../stores/item';
 import { useLayoutStore } from "../stores/layout";
 
-// const layoutStore = useLayoutStore()
-const { activeLayout } = storeToRefs(useLayoutStore())
 const itemStore = useItemStore()
+const { activeLayout } = storeToRefs(useLayoutStore())
 const { fetchItems, updateItem } = useItemStore()
-// const { allItems } = storeToRefs(useItemStore())
-
 const { selectLayout } = useLayoutStore()
 
 const drag_source = ref(null)
@@ -35,12 +33,14 @@ fetchItems()
 
 async function onDrag(evt, item) {
     drag_source.value = item;
+    console.log("onDrag: source:", item.url);
     evt.dataTransfer.dropEffect = 'move';
     evt.dataTransfer.effectAllowed = 'move';
     evt.dataTransfer.setData('itemID', item._id);
 }
 
 async function onDrop(evt, item) {
+    console.log("onDrop: target:", item.url);
     drag_target.value = item;
     drag_target_holder.value = this.drag_target;
 
@@ -48,11 +48,13 @@ async function onDrop(evt, item) {
 
         let data_target = {
             _id: this.drag_target._id,
+            url: this.drag_source.url,
             gridPosition: this.drag_source.gridPosition
         }
         
         let data_source = {
             _id: this.drag_source._id,
+            url: this.drag_target_holder.url,
             gridPosition: this.drag_target_holder.gridPosition
         }
 
@@ -67,14 +69,11 @@ async function onDrop(evt, item) {
         let data_source = null;
 
         if (this.drag_target) {
-
             data_source = {
                 _id: this.drag_target._id,
-                // url: useItemStore.currentItem.url
                 url: itemStore.item_drag_source.url
             }
         } else {
-            console.log("else:");
             data_source = {
                 _id: itemStore.item_drag_source._id,
                 url: itemStore.item_drag_source.url
@@ -101,6 +100,7 @@ async function rightClickClear(evt, item) {
         description: null,
     };
     await updateItem(clear_item);
+    selectLayout(useLayoutStore().layout._id)
 }
 
 </script>
@@ -157,10 +157,10 @@ async function rightClickClear(evt, item) {
   align-content: center;
   color: #FFF;
   /* background-color: rgb(63, 63, 63); */
-  outline: 1px solid white;
+  /* outline: 1px solid white; */
   font-size: 8pt;
   display: flex;
-  margin: 2px
+  /* margin: 2px */
 }
 
 .block:hover {
@@ -173,6 +173,7 @@ async function rightClickClear(evt, item) {
     box-shadow: 1px 1px 20px 5px rgba(255, 255, 255, 0.205);
     /* border-top: 1px solid white;
     border-left: 1px solid white; */
+    cursor: pointer;
 }
 
 .block img {

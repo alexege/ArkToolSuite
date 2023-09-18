@@ -39,7 +39,8 @@ exports.addLayout = (req, res) => {
       if(layout.items){
           for(let i = 0; i < 130; i++){
             let emptyItem = new Item({ 
-                url: 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png',
+                // url: 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png',
+                url: '',
                 gridPosition: i,
                 unique: false
             })
