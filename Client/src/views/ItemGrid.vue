@@ -5,11 +5,15 @@
                 <div class="block-cell" @drop="onDrop($event, item)" @dragover.prevent @dragenter.prevent @contextmenu="rightClickClear($event, item)">
                     <div class="block" draggable @dragstart="onDrag($event, item)">
                         <!-- <img :src="item.url ? item.url : 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'" :alt="item.title"> -->
+                        {{ item.title }}
                         <img :src="item.url" :alt="item.title">
-                        {{ item.gridPosition }}
                     </div>
                 </div>
             </div>
+        </div>
+        <div v-else style="text-align: center;">
+            <p>Add a new Layout in the side panel to get started!</p>
+            <h2>-></h2>
         </div>
     </div>
 </template>
@@ -33,14 +37,12 @@ fetchItems()
 
 async function onDrag(evt, item) {
     drag_source.value = item;
-    console.log("onDrag: source:", item.url);
     evt.dataTransfer.dropEffect = 'move';
     evt.dataTransfer.effectAllowed = 'move';
     evt.dataTransfer.setData('itemID', item._id);
 }
 
 async function onDrop(evt, item) {
-    console.log("onDrop: target:", item.url);
     drag_target.value = item;
     drag_target_holder.value = this.drag_target;
 
@@ -48,12 +50,14 @@ async function onDrop(evt, item) {
 
         let data_target = {
             _id: this.drag_target._id,
+            title: this.drag_source.title,
             url: this.drag_source.url,
             gridPosition: this.drag_source.gridPosition
         }
         
         let data_source = {
             _id: this.drag_source._id,
+            title: this.drag_source.title,
             url: this.drag_target_holder.url,
             gridPosition: this.drag_target_holder.gridPosition
         }

@@ -110,11 +110,18 @@ async function onDrag(evt, item) {
         justify-content: stretch;
         align-content: center;
         color: #FFF;
-        background-color: rgb(255, 255, 255);
+        /* background-color: rgb(255, 255, 255); */
+        background-color: black;
         font-size: 8pt;
     }
 
     .block:hover {
         cursor: pointer;
+    }
+
+    .block img {
+        aspect-ratio: 1;
+        max-width: 100%;
+        max-height: 100%;
     }
 </style>

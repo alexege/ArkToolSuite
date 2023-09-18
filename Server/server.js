@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = require("./models");
 const dbConfig = require("./config/db.config");
 const Item = require("./models/item.model");
+const Layout = require("./models/layout.model");
 db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -53,7 +54,6 @@ app.listen(PORT, () => {
 function initial() {
   Item.estimatedDocumentCount()
   .then((count) => {
-    console.log("itemCount: ", count);
 
     if(count == 0){
 
@@ -135,7 +135,6 @@ function initial() {
         "glowtail",
         "griffin",
         "hatiskoll",
-        "Health",
         "hesperornis",
         "hyaenodon",
         "icetitan",
@@ -257,9 +256,8 @@ function initial() {
         });
      
         item.save(item)
-        .then(data => {
-          console.log("saveItem:", data)
-          // count.send(data)
+        .then(() => {
+          //Do nothing
         })
         .catch(err => {
           console.log("err:", err);
@@ -268,50 +266,24 @@ function initial() {
 
     }
   })
+
+  Layout.estimatedDocumentCount()
+  .then((count) => {
+    if(count == 0){
+      const layout = new Layout({
+        title: 'New Layout',
+        url: 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png',
+        items: [],
+      })
+
+      layout.save(layout)
+      .then((res) => {
+        console.log("res:", res);
+        //Do nothing
+      })
+      .catch(err => {
+        console.log("err:", err);
+      })
+    }
+  })
 }
-
-// function initial() {
-//   console.log("Seeding database!");
-//   Item.estimatedDocumentCount()
-//   .then(res => {
-//     if (res)
-//     console.log("result:", res);
-//     // if (count === 0) {
-//       new Item({
-//         title: 'This is a title',
-//         url: 'src/assets/dinos/maewing.png',
-//         unique: true
-//       })
-//       .save()
-//       .then((res) => {
-//         console.log("res:", res);
-//       })
-//       .catch(err => {
-//         console.log('error:', err);
-//       })
-
-//       let item = new Item({
-//         title: 'test',
-//         url: 'src/assets/dinos/maewing.png',
-//         unique: true
-//       })
-
-//       item.save(item)
-//       .then(data => {
-//         console.log("save: ", data)
-
-//       })
-//       .catch(err => {
-//         console.log("err:", err)
-//       })
-
-//     // }
-//   })
-//   .catch(err => {
-//     if (err) {
-//       console.log("error:", err);
-//     }
-//   });
-
-
-// }

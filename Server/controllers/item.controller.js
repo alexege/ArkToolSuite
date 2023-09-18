@@ -104,7 +104,6 @@ exports.addItem = (req, res) => {
     "glowtail",
     "griffin",
     "hatiskoll",
-    "Health",
     "hesperornis",
     "hyaenodon",
     "icetitan",

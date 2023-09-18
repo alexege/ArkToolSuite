@@ -76,7 +76,6 @@
     "glowtail",
     "griffin",
     "hatiskoll",
-    "Health",
     "hesperornis",
     "hyaenodon",
     "icetitan",
