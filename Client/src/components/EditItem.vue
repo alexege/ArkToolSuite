@@ -1,7 +1,6 @@
 <template>
     <div>
         <div class="edit-container">
-
             <!-- Edit Mode Active -->
             <template v-if="editing">
                 <input type="text" v-model="updatedItem.title">

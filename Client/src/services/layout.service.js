@@ -4,6 +4,11 @@ import api from './api';
 // const API_URL = "http://localhost:8080/api/layout/";
 
 class LayoutService {
+
+    findOne(id) {
+        return api.get(`/layouts/findOne/${id}`);
+    }
+
     findAll() {
         return api.get("/layouts/all");
     }

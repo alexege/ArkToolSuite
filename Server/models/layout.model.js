@@ -5,7 +5,10 @@ const Layout = mongoose.model(
     new mongoose.Schema({
         title: String,
         url: String,
-        items: []
+        items: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Item'
+        }]
     },
     { timestamps: true})
 )

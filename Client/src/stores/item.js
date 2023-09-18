@@ -8,6 +8,7 @@ export const useItemStore = defineStore({
   state: () => ({
     items: [],
     item: null,
+    item_drag_source: null,
     currentItem: null,
     loading: false,
     error: null
@@ -15,6 +16,9 @@ export const useItemStore = defineStore({
   getters: {
     allItems: (state) => {
         return state.items;
+    },
+    uniqueItems: (state) => {
+      return state.items.filter((item) => item.unique);
     }
   },
   actions: {

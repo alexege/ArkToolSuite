@@ -6,12 +6,19 @@
         <!-- <input type="text" v-model="title"> -->
         <div class="container-actions">
             <button>Edit</button>
-            <button>Delete</button>
+            <button @click="deleteThisLayout(props.layout._id)">Delete</button>
         </div>
     </div>
 </template>
-<script setup>    
+<script setup>
+    import { useLayoutStore } from "../stores/layout"
+
+    const { deleteLayout } = useLayoutStore();
     const props = defineProps(['layout'])
+
+    async function deleteThisLayout(id) {
+        deleteLayout(id)
+    }
 </script>
 
 <style scoped>

@@ -1,26 +1,36 @@
 <template>
     <div>
-        <div class="items">
-            <div v-for="(item, idx) in allItems" :key="item.id">
+        <div class="items" v-if="layoutStore.layout && layoutStore.layout.items">
+            <div v-for="item in layoutStore.layout.items" :key="item._id">
                 <div class="block-cell" @drop="onDrop($event, item)" @dragover.prevent @dragenter.prevent @contextmenu="rightClickClear($event, item)">
                     <div class="block" draggable @dragstart="onDrag($event, item)">
-                        <!-- {{ item._id.slice(-3) }} -->
-                        <!-- <pre>{{ idx }} : {{ item.gridPosition }}</pre> -->
+                        <!-- {{ item.slice(-3) }} -->
+                        <!-- {{  item  }} -->
                         <img :src="item.url ? item.url : 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'" :alt="item.title">
                     </div>
                 </div>
             </div>
+            <!-- <div v-for="(item, idx) in allItems" :key="item.id">
+                <div class="block-cell" @drop="onDrop($event, item)" @dragover.prevent @dragenter.prevent @contextmenu="rightClickClear($event, item)">
+                    <div class="block" draggable @dragstart="onDrag($event, item)">
+                        <img :src="item.url ? item.url : 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'" :alt="item.title">
+                    </div>
+                </div>
+            </div> -->
         </div>
     </div>
 </template>
 <script setup>
 
 import { ref } from "vue";
-import { storeToRefs } from 'pinia';
+// import { storeToRefs } from 'pinia';
 import { useItemStore } from '../stores/item';
+import { useLayoutStore } from "../stores/layout";
 
+const layoutStore = useLayoutStore()
+const itemStore = useItemStore()
 const { fetchItems, updateItem } = useItemStore()
-const { allItems } = storeToRefs(useItemStore())
+// const { allItems } = storeToRefs(useItemStore())
 
 const drag_source = ref(null)
 const drag_target = ref(null)
@@ -40,6 +50,7 @@ async function onDrop(evt, item) {
     drag_target_holder.value = this.drag_target;
 
     if(evt.dataTransfer.effectAllowed == 'move'){
+
         let data_target = {
             _id: this.drag_target._id,
             gridPosition: this.drag_source.gridPosition
@@ -49,7 +60,7 @@ async function onDrop(evt, item) {
             _id: this.drag_source._id,
             gridPosition: this.drag_target_holder.gridPosition
         }
-    
+
         try {
             await updateItem(data_target)
             await updateItem(data_source)
@@ -57,9 +68,22 @@ async function onDrop(evt, item) {
             console.log("error:", error)
         }
     } else if(evt.dataTransfer.effectAllowed == 'copy') {
-        let data_source = {
-            _id: this.drag_target._id,
-            url: useItemStore.currentItem.url
+
+        let data_source = null;
+
+        if (this.drag_target) {
+
+            data_source = {
+                _id: this.drag_target._id,
+                // url: useItemStore.currentItem.url
+                url: itemStore.item_drag_source.url
+            }
+        } else {
+            console.log("else:");
+            data_source = {
+                _id: itemStore.item_drag_source._id,
+                url: itemStore.item_drag_source.url
+            }
         }
 
         try {

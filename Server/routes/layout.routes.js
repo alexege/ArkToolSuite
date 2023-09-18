@@ -11,6 +11,8 @@ module.exports = (app) => {
 
     app.get("/api/layouts/all", controller.findAllLayouts);
 
+    app.get("/api/layouts/findOne/:id", controller.findOne);
+
     app.post("/api/layouts/addLayout", controller.addLayout);
 
     //:id is the param that is passed and will be later accessed with req.params.id

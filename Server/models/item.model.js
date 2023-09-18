@@ -6,7 +6,12 @@ const Item = mongoose.model(
         title: String,
         url: String,
         description: String,
-        gridPosition: Number
+        gridPosition: Number,
+        layout: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Layout'
+        },
+        unique: Boolean
     },
     { timestamps: true})
 )

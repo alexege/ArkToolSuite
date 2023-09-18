@@ -12,7 +12,8 @@
             <div class="search-items">
                 <div class="block" v-for="item in filteredList()" :key="item">
                     <div style="color: black;" draggable @dragstart="onDrag($event, item)">
-                        <img :src="item.url" alt="" style="width: 100%; height: 100%;">
+                        <!-- <img :src="item.url" alt="" style="width: 100%; height: 100%;"> -->
+                        {{ item.unique }}
                     </div>
                 </div>
                 <div v-if="input&&!filteredList().length">
@@ -26,6 +27,8 @@
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useItemStore } from "../stores/item";
+
+const itemStore = useItemStore()
 const input = ref("");
 const { fetchItems } = useItemStore()
 fetchItems()
@@ -45,6 +48,7 @@ function filteredList() {
 }
 
 async function onDrag(evt, item) {
+    itemStore.item_drag_source = item;
     useItemStore.currentItem = item;
     evt.dataTransfer.dropEffect = 'copy';
     evt.dataTransfer.effectAllowed = 'copy';

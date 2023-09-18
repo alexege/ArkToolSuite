@@ -19,7 +19,8 @@ const  item = ref ({
     title: '',
     url: '',
     description: '',
-    gridPosition: null
+    gridPosition: null,
+    unique: true
 });
 
 async function add() {

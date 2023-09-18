@@ -5,7 +5,7 @@
         <AddItem class="add-item"/>
 
         <div class="item-grid">
-            <div v-for="(item, idx) in items" :key="item.id" class="cell">
+            <div v-for="(item, idx) in uniqueItems" :key="item._id" class="cell">
             <div class="item">
                 <span>{{ idx + 1 }}</span>
                 <EditItem :item="item"/>
@@ -21,7 +21,7 @@ import EditItem from '../components/EditItem.vue';
 import { storeToRefs } from 'pinia';
 import { useItemStore } from '../stores/item'
 
-const { items } = storeToRefs(useItemStore())
+const { uniqueItems } = storeToRefs(useItemStore())
 const { fetchItems } = useItemStore()
 
 fetchItems()

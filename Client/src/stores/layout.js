@@ -8,7 +8,6 @@ export const useLayoutStore = defineStore({
   state: () => ({
     layouts: [],
     layout: null,
-    currentLayout: null,
     loading: false,
     error: null
   }),
@@ -18,6 +17,13 @@ export const useLayoutStore = defineStore({
     }
   },
   actions: {
+
+    async selectLayout(id) {
+        //The id is passed through the parameters
+        const response = await axios.get(`${API_URL}/layouts/findOne/${id}`)
+        this.layout = response.data.layout;
+    },
+
     async fetchLayouts() {
         this.layouts = []
         const response = await axios.get(`${API_URL}/layouts/all`)
@@ -51,6 +57,15 @@ export const useLayoutStore = defineStore({
       } catch (error) {
         console.log("error:", error);
       }
+    },
+
+    async deleteLayout(id) {
+        try {
+            await axios.delete(`${API_URL}/layouts/delete/${id}`)
+            await this.fetchLayouts()
+        } catch (error) {
+            console.log("error:", error);
+        }
     }
   }
 })

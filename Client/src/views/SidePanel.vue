@@ -21,10 +21,11 @@ import { useLayoutStore } from '../stores/layout';
 import AddEditLayout from '../components/AddEditLayout.vue'
 
 const { allLayouts } = storeToRefs(useLayoutStore())
-const { fetchLayouts, addLayout } = useLayoutStore()
+const { fetchLayouts, addLayout, selectLayout } = useLayoutStore()
 const activeLayoutId = ref(null)
 
 async function activateLayout(id) {
+    await selectLayout(id);
     activeLayoutId.value = id;
 }
 
@@ -38,28 +39,6 @@ async function add() {
 fetchLayouts()
 
 </script>
-<!-- <script>
-import AddEditLayout from '../components/AddEditLayout.vue'
-
-export default {
-    components: { AddEditLayout },
-    data() {
-        return {
-            items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            item: {
-                title: null,
-                description: 'Default description'
-            },
-            layouts: [1, 2, 3, 4, 5, 6]
-        }
-    },
-    methods: {
-        addLayout() {
-            console.log("this is a method firing");
-        }
-    }
-}
-</script> -->
 <style scoped>
     h2 {
         text-align: center;

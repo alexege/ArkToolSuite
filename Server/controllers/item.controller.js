@@ -1,4 +1,5 @@
 const db = require("../models");
+const Layout = require("../models/layout.model");
 const Item = db.item;
 
 // Retrieve all Items from the database.
@@ -34,11 +35,10 @@ exports.addItem = (req, res) => {
       title: req.body.title || "Default Title",
       url: url_link,
       description: req.body.description || "Default Description",
-      gridPosition: items.length
+      gridPosition: items.length,
+      unique: true
     });
-
-    console.log("item:", item);
-  
+ 
     item.save(item)
     .then(data => {
       console.log("saveItem:", data)
@@ -47,7 +47,19 @@ exports.addItem = (req, res) => {
     .catch(err => {
       console.log("err:", err);
     })
+
+    console.log('req.body:', req.body);
+
+    // Layout.findOne({
+    //   _id: "65076cfe41afa9c42b6f94dc"
+    // })
+    // .then((layout) => {
+    //   layout.items.push(item)
+    //   layout.save()
+    // })
   })
+
+ 
 
   // const item = new Item({
   //   title: req.body.title,
