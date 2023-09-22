@@ -7,7 +7,8 @@ export const useAuthStore = defineStore({
   id: 'Auth',
   state: () => ({
     users: [],
-    user: null,
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    //user: null,
     loading: false,
     error: null
 }),
@@ -31,7 +32,7 @@ actions: {
             this.user = response.data
 
             //Store JWT in local storage to keep user logged in between page changes
-            localStorage.setItem('user', JSON.stringify(response))
+            localStorage.setItem('user', JSON.stringify(response.data))
 
             // router.push(this.returnURL || '/')
             this.router.push('/')
@@ -51,6 +52,7 @@ actions: {
     },
     
     logout() {
+        console.log("atteempting to logout");
         this.user = null;
         localStorage.removeItem('user')
         // router.push('/accounts/login')

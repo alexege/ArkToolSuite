@@ -4,6 +4,11 @@ import { storeToRefs } from 'pinia';
 import { useAuthStore } from "./stores/auth.store"
 
 const { activeUser } = storeToRefs(useAuthStore())
+const { logout } = useAuthStore()
+
+function doLogout() {
+  logout()
+}
 
 </script>
 
@@ -18,8 +23,10 @@ const { activeUser } = storeToRefs(useAuthStore())
           <RouterLink to="/login">Login</RouterLink> -
           <RouterLink to="/register">Register</RouterLink>
         </div>
-         <div class="welcome-message" v-if="activeUser">
+        <div class="welcome-message" v-if="activeUser">
           Good morning, {{ activeUser.username }}
+          
+          <button @click="doLogout">Logout</button>
          </div>
        </nav>
      </div>
