@@ -10,6 +10,24 @@ function doLogout() {
   logout()
 }
 
+function welcomeMessage() {
+  var data = [
+    [22, 'Working late are we, '],
+    [18, 'Good evening, '],
+    [12, 'Good afternoon, '],
+    [5,  'Good morning, '],
+    [0,  'The early bird catches the worm, ']
+],
+  hr = new Date().getHours();
+
+  for (var i = 0; i < data.length; i++) {
+      if (hr >= data[i][0]) {
+          return data[i][1]
+      }
+  }
+
+}
+
 </script>
 
 <template>
@@ -24,7 +42,7 @@ function doLogout() {
           <RouterLink to="/register">Register</RouterLink>
         </div>
         <div class="welcome-message" v-if="activeUser">
-          Good morning, {{ activeUser.username }}
+          {{ welcomeMessage() }} {{ activeUser.username }}
           
           <button @click="doLogout">Logout</button>
          </div>
