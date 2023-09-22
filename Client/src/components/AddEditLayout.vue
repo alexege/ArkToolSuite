@@ -11,7 +11,7 @@
     </div>
 </template>
 <script setup>
-    import { useLayoutStore } from "../stores/layout"
+    import { useLayoutStore } from "../stores/layout.store.js"
 
     const { deleteLayout } = useLayoutStore();
     const props = defineProps(['layout'])

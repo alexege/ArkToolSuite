@@ -20,6 +20,8 @@ const db = require("./models");
 const dbConfig = require("./config/db.config");
 const Item = require("./models/item.model");
 const Layout = require("./models/layout.model");
+const User = require("./models/user.model");
+const Role = require("./models/role.model");
 db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -40,8 +42,10 @@ app.get("/", (req, res) => {
 });
 
 //routes
+require('./routes/auth.routes')(app);
 require('./routes/item.routes')(app);
 require('./routes/layout.routes')(app);
+// require('./routes/user.routes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -273,13 +277,60 @@ function initial() {
       const layout = new Layout({
         title: 'New Layout',
         url: 'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png',
-        items: [],
+        items: [], //Modify this so it replicates how it is added elsewhere
       })
 
       layout.save(layout)
       .then((res) => {
         console.log("res:", res);
         //Do nothing
+      })
+      .catch(err => {
+        console.log("err:", err);
+      })
+    }
+  })
+
+  //Roles
+
+  Role.estimatedDocumentCount()
+  .then((count) => {
+    if (count === 0){
+
+      //User
+      const user = new Role({
+        name: "user"
+      })
+
+      user.save(user)
+      .then((res) => {
+        console.log("Adding User role to database!");
+      })
+      .catch(err => {
+        console.log("err:", err);
+      })
+
+      //Moderator
+      const moderator = new Role({
+        name: "moderator"
+      })
+
+      moderator.save(moderator)
+      .then((res) => {
+        console.log("Adding Moderator role to database!");
+      })
+      .catch(err => {
+        console.log("err:", err);
+      })
+
+      //Admin
+      const admin = new Role({
+        name: "admin"
+      })
+
+      admin.save(admin)
+      .then((res) => {
+        console.log("Adding Admin role to database!");
       })
       .catch(err => {
         console.log("err:", err);

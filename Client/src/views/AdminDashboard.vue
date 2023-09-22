@@ -19,7 +19,7 @@
 import AddItem from '../components/AddItem.vue';
 import EditItem from '../components/EditItem.vue';
 import { storeToRefs } from 'pinia';
-import { useItemStore } from '../stores/item'
+import { useItemStore } from '../stores/item.store.js'
 
 const { uniqueItems } = storeToRefs(useItemStore())
 const { fetchItems } = useItemStore()

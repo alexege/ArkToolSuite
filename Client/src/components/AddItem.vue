@@ -12,7 +12,7 @@
 <script setup>
 
 import { ref } from "vue";
-import { useItemStore } from '../stores/item';
+import { useItemStore } from '../stores/item.store.js';
 
 const { addItem } = useItemStore()
 const  item = ref ({

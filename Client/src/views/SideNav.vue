@@ -25,7 +25,7 @@
 <script setup>
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
-import { useItemStore } from "../stores/item";
+import { useItemStore } from "../stores/item.store";
 
 const itemStore = useItemStore()
 const input = ref("");
@@ -107,12 +107,15 @@ async function onDrag(evt, item) {
         text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: stretch;
-        align-content: center;
+        justify-content: center;
+        /* justify-content: stretch; */
+        /* align-content: center; */
         color: #FFF;
         /* background-color: rgb(255, 255, 255); */
-        background-color: black;
+        background-color: #333;
         font-size: 8pt;
+        max-width: 100%;
+        max-height: 100%;
     }
 
     .block:hover {

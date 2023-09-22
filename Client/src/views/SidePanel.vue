@@ -17,7 +17,7 @@
 <script setup>
 import { ref } from "vue"
 import { storeToRefs } from 'pinia';
-import { useLayoutStore } from '../stores/layout';
+import { useLayoutStore } from '../stores/layout.store.js';
 import AddEditLayout from '../components/AddEditLayout.vue'
 
 const { allLayouts } = storeToRefs(useLayoutStore())

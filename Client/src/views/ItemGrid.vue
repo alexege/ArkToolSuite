@@ -21,8 +21,8 @@
 
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
-import { useItemStore } from '../stores/item';
-import { useLayoutStore } from "../stores/layout";
+import { useItemStore } from '../stores/item.store.js';
+import { useLayoutStore } from "../stores/layout.store.js";
 
 const itemStore = useItemStore()
 const { activeLayout } = storeToRefs(useLayoutStore())
@@ -140,8 +140,10 @@ async function rightClickClear(evt, item) {
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: stretch;
-  align-content: center;
+  /* justify-content: stretch; */
+  justify-content: center;
+  /* align-items: center; */
+  /* align-content: center; */
   color: #FFF;
   background-color: rgb(63, 63, 63);
   font-size: 8pt;
@@ -150,7 +152,7 @@ async function rightClickClear(evt, item) {
 .block-cell {
   min-width: 50px;
   min-height: 50px;
-  aspect-ratio: 1;
+  /* aspect-ratio: 1; */
   border-radius: 3px;
   /* padding: .5em;
   margin: .5em; */
@@ -181,6 +183,8 @@ async function rightClickClear(evt, item) {
 }
 
 .block img {
-    aspect-ratio: 1;
+    /* aspect-ratio: 1; */
+    max-height: 100%;
+    max-width: 100%;
 }
 </style>

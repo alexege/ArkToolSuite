@@ -32,7 +32,7 @@
 <script setup>
 import ItemService from '../services/item.service';
 import { ref } from "vue";
-import { useItemStore } from '../stores/item';
+import { useItemStore } from '../stores/item.store.js';
 
 const { fetchItems } = useItemStore()
 const editing = ref(false);

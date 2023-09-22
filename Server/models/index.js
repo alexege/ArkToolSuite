@@ -9,5 +9,10 @@ db.mongoose = mongoose;
 db.url = dbConfig.url;
 db.item = require("./item.model");
 db.layout = require("./layout.model");
+db.user = require("./user.model");
+db.role = require("./role.model");
+db.refreshToken = require("./refreshToken.model");
+
+db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;
