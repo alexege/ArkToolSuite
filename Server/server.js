@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
 require('./routes/auth.routes')(app);
 require('./routes/item.routes')(app);
 require('./routes/layout.routes')(app);
-// require('./routes/user.routes')(app);
+require('./routes/user.routes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -281,8 +281,7 @@ function initial() {
       })
 
       layout.save(layout)
-      .then((res) => {
-        console.log("res:", res);
+      .then(() => {
         //Do nothing
       })
       .catch(err => {
@@ -303,7 +302,7 @@ function initial() {
       })
 
       user.save(user)
-      .then((res) => {
+      .then(() => {
         console.log("Adding User role to database!");
       })
       .catch(err => {
@@ -316,7 +315,7 @@ function initial() {
       })
 
       moderator.save(moderator)
-      .then((res) => {
+      .then(() => {
         console.log("Adding Moderator role to database!");
       })
       .catch(err => {
@@ -329,7 +328,7 @@ function initial() {
       })
 
       admin.save(admin)
-      .then((res) => {
+      .then(() => {
         console.log("Adding Admin role to database!");
       })
       .catch(err => {

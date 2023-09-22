@@ -10,20 +10,18 @@ export const useUserStore = defineStore({
         user: null
     }),
     actions: {
+        async fetchUsers() {
+            // this.users = { loading: true };
+            try {
+                // this.users = await axios.get(`${API_URL}/users/all`);
+                const response = await axios.get(`${API_URL}/users/all`);
 
-        // async register(user) {
-        //     // await axios.post(`${API_URL}/user/register`, user)
-        //     // await axios.post(`${API_URL}/test/all`)
-        // },
-
-        // async getAll() {
-        //     this.users = { loading: true };
-        //     try {
-        //         this.users = await fetchWrapper.get(baseUrl);    
-        //     } catch (error) {
-        //         this.users = { error };
-        //     }
-        // },
+                this.users = response.data
+                
+            } catch (error) {
+                this.users = { error };
+            }
+        },
         // async getById(id) {
         //     this.user = { loading: true };
         //     try {

@@ -25,7 +25,6 @@ exports.signup = (req, result) => {
           user.save()
           .then((res) => {
             result.status(200).send({ message: "User registered successfully!" })
-            console.log("res:", res)
           })
           .catch((err) => console.log("error:", err))
         })
@@ -37,7 +36,6 @@ exports.signup = (req, result) => {
           user.save()
           .then((res) => {
             result.status(200).send({ message: "User registered successfully!" })
-            console.log("res:", res)
           })
           .catch((err) => console.log("error:", err))
         })
@@ -49,6 +47,7 @@ exports.signup = (req, result) => {
   };
 
 exports.signin = (req, res) => {
+  console.log("sigingin in");
     User.findOne({
         username: req.body.username
     })

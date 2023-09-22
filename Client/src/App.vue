@@ -1,5 +1,10 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { storeToRefs } from 'pinia';
+import { useAuthStore } from "./stores/auth.store"
+
+const { activeUser } = storeToRefs(useAuthStore())
+
 </script>
 
 <template>
@@ -7,10 +12,15 @@ import { RouterLink, RouterView } from 'vue-router'
     <header class="navbar">
      <div>
        <nav>
-         <RouterLink to="/">Home</RouterLink> -
-         <RouterLink to="/admin">Admin</RouterLink> -
-         <RouterLink to="/login">Login</RouterLink> -
-         <RouterLink to="/register">Register</RouterLink>
+        <div>
+          <RouterLink to="/">Home</RouterLink> -
+          <RouterLink to="/admin">Admin</RouterLink> -
+          <RouterLink to="/login">Login</RouterLink> -
+          <RouterLink to="/register">Register</RouterLink>
+        </div>
+         <div class="welcome-message" v-if="activeUser">
+          Good morning, {{ activeUser.username }}
+         </div>
        </nav>
      </div>
    </header> 
@@ -20,6 +30,11 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style>
+  nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .navbar {
     background-color: #45906C;
     padding: 1.2rem;
@@ -30,4 +45,9 @@ import { RouterLink, RouterView } from 'vue-router'
     color: white;
     text-decoration: none;
   }
+
+  .welcome-message {
+    color: white;
+  }
+
 </style>

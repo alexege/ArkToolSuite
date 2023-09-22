@@ -21,7 +21,7 @@
 
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
-import { useItemStore } from '../stores/item.store.js';
+import { useItemStore } from "../stores/item.store.js";
 import { useLayoutStore } from "../stores/layout.store.js";
 
 const itemStore = useItemStore()
