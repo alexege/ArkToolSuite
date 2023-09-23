@@ -4,6 +4,7 @@ const User = db.user;
 exports.allUsers = (req, res) => {
     console.log("fetching all users");
     User.find()
+    .populate("roles", "-__v")
     .then((users) => {
         res.status(200).send(users)
     })

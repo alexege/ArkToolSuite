@@ -39,8 +39,13 @@ function welcomeMessage() {
           <RouterLink to="/">Home</RouterLink> -
           <RouterLink to="/admin">Admin</RouterLink> -
           <RouterLink to="/login">Login</RouterLink> -
-          <RouterLink to="/register">Register</RouterLink>
+          <RouterLink to="/register">Register</RouterLink> -
+
+          <RouterLink to="/admin">Admin</RouterLink> -
+          <RouterLink to="/mod">Moderator</RouterLink> -
+          <RouterLink to="/user">User</RouterLink>
         </div>
+
         <div class="welcome-message" v-if="activeUser">
           {{ welcomeMessage() }} {{ activeUser.username }}
           

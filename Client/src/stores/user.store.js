@@ -9,6 +9,11 @@ export const useUserStore = defineStore({
         users: [],
         user: null
     }),
+    getters: {
+        allUsers(state) {
+            return state.users;
+        }
+    },
     actions: {
         async fetchUsers() {
             // this.users = { loading: true };
@@ -17,7 +22,7 @@ export const useUserStore = defineStore({
                 const response = await axios.get(`${API_URL}/users/all`);
 
                 this.users = response.data
-                
+
             } catch (error) {
                 this.users = { error };
             }
