@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from "./stores/auth.store"
@@ -28,29 +29,34 @@ function welcomeMessage() {
 
 }
 
+const showModBoard = computed(() => {
+  if (activeUser && activeUser.roles) return activeUser.roles.includes('ROLE_MODERATOR');
+})
+
 </script>
 
 <template>
-  <div>
+  <div> <pre>{{ activeUser }}</pre>
     <header class="navbar">
      <div>
        <nav>
         <div>
           <RouterLink to="/">Home</RouterLink> -
           <RouterLink to="/admin">Admin</RouterLink> -
-          <RouterLink to="/login">Login</RouterLink> -
-          <RouterLink to="/register">Register</RouterLink> -
 
-          <RouterLink to="/admin">Admin</RouterLink> -
-          <RouterLink to="/mod">Moderator</RouterLink> -
+          <!-- <RouterLink to="/admin">Admin</RouterLink> - -->
+          <RouterLink to="/mod" v-if="showModBoard">Moderator</RouterLink> -
           <RouterLink to="/user">User</RouterLink>
         </div>
 
-        <div class="welcome-message" v-if="activeUser">
-          {{ welcomeMessage() }} {{ activeUser.username }}
-          
-          <button @click="doLogout">Logout</button>
-         </div>
+        <div>
+          <div class="welcome-message" v-if="activeUser">
+            {{ welcomeMessage() }} {{ activeUser.username }}
+            <a href="" style="outline: 1px solid white; padding: .5em" @click="doLogout">Logout</a>
+          </div>
+          <RouterLink to="/login" v-if="!activeUser">Login </RouterLink>
+          <RouterLink to="/register" v-if="!activeUser">Register</RouterLink>
+        </div>
        </nav>
      </div>
    </header> 
@@ -58,7 +64,6 @@ function welcomeMessage() {
    <RouterView />
   </div>
 </template>
-
 <style>
   nav {
     display: flex;

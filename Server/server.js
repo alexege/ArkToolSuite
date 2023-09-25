@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 
@@ -334,6 +335,50 @@ function initial() {
       .catch(err => {
         console.log("err:", err);
       })
+    }
+  })
+
+  User.estimatedDocumentCount()
+  .then((count) => {
+    if (count === 0) {
+
+      const user = new User({
+        username: 'ege',
+        email: 'ege@admin.com',
+        password: bcrypt.hashSync('asdfasdf', 8),
+        roles: [],
+        img: null
+      })
+        
+        //Add Admin Role
+        Role.findOne({ name: 'admin' })
+        .then((role) => {
+          user.roles.push(role);
+          
+          user.save(user)
+          .then((user) => {
+            
+              //Add Mod Role
+            Role.findOne({ name: 'moderator' })
+            .then((role) => {
+              user.roles.push(role);
+              
+              user.save(user)
+              .then(() => {
+                console.log("user:", user);
+              })
+              .catch(err =>{
+                console.log("error:", err);
+              })
+            })
+
+          })
+          .catch(err =>{
+            console.log("error:", err);
+          })
+        })
+
+       
     }
   })
 }

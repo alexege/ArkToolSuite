@@ -4,6 +4,7 @@ import AdminDashboard from '../views/AdminDashboard.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import ModDashboard from '../views/ModDashboard.vue'
+import UserDashboard from '../views/UserDashboard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +41,11 @@ const router = createRouter({
       path: '/mod',
       name: 'modDashboard',
       component: ModDashboard
+    },
+    {
+      path: '/user',
+      name: 'userDashboard',
+      component: UserDashboard
     }
   ]
 })
