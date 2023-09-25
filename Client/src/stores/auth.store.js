@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from "axios"
+import tokenService from '../services/token.service';
 
 const API_URL = 'http://localhost:8080/api'
 
@@ -27,16 +28,24 @@ actions: {
     async login(loginData) {
 
         try {
-            const response = await axios.post(`${API_URL}/auth/signin`, loginData)
+            await axios.post(`${API_URL}/auth/signin`, loginData)
+            .then((response) => {
+                
+                //Update pinia state
+                this.user = response.data
 
-            //Update pinia state
-            this.user = response.data
-            this.loggedIn = true;
-            //Store JWT in local storage to keep user logged in between page changes
-            localStorage.setItem('user', JSON.stringify(response.data))
+                //Update TokenService
+                tokenService.setUser(response.data);
 
-            // router.push(this.returnURL || '/')
-            this.router.push('/')
+                this.loggedIn = true;
+                //Store JWT in local storage to keep user logged in between page changes
+                localStorage.setItem('user', JSON.stringify(response.data))
+    
+    
+    
+                // router.push(this.returnURL || '/')
+                this.router.push('/')
+            })
         } catch (e) {
             console.log("error:", e)
         }
@@ -46,7 +55,11 @@ actions: {
 
         try {
             await axios.post(`${API_URL}/auth/signup`, signUpData)
-            this.router.push('/')
+            .then((response) => {
+                this.users.push(response.data)
+                this.router.push('/')
+            })
+
         } catch (e) {
             console.log("error:", e)
         }

@@ -1,11 +1,14 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from "./stores/auth.store"
 
 const { activeUser } = storeToRefs(useAuthStore())
 const { logout } = useAuthStore()
+
+const showModBoard = ref(false);
+const showAdminBoard = ref(false);
 
 function doLogout() {
   logout()
@@ -26,17 +29,20 @@ function welcomeMessage() {
           return data[i][1]
       }
   }
-
 }
 
-const showModBoard = computed(() => {
-  if (activeUser && activeUser.roles) return activeUser.roles.includes('ROLE_MODERATOR');
+//Having issues with activeUser updating properly. Will revisit to attempt to use a computed for this.
+watch(activeUser, (newVal, oldVal) =>{
+  console.log(`old:${oldVal}, new:${newVal}`)
+  if(newVal && newVal.roles){
+    if(newVal.roles.includes('ROLE_ADMIN')){
+      showAdminBoard.value = true;
+    }
+    if(newVal.roles.includes('ROLE_MODERATOR')){
+      showModBoard.value = true;
+    }
+  }
 })
-
-const showAdminBoard = computed(() => {
-  if (activeUser && activeUser.roles) return activeUser.roles.includes('ROLE_ADMIN');
-})
-
 </script>
 
 <template>
@@ -46,6 +52,7 @@ const showAdminBoard = computed(() => {
        <nav>
         <div>
           <RouterLink class="router-link" to="/">Home</RouterLink>
+          <!-- <RouterLink class="router-link" to="/admin" v-if="showAdminBoard">Admin</RouterLink> -->
           <RouterLink class="router-link" to="/admin" v-if="showAdminBoard">Admin</RouterLink>
 
           <!-- <RouterLink class="router-link" to="/admin">Admin</RouterLink> - -->

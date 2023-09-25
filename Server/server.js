@@ -23,6 +23,7 @@ const Item = require("./models/item.model");
 const Layout = require("./models/layout.model");
 const User = require("./models/user.model");
 const Role = require("./models/role.model");
+// const { useAuthStore } = require("../Client/src/stores/auth.store");
 db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -365,7 +366,7 @@ function initial() {
               
               user.save(user)
               .then(() => {
-                console.log("user:", user);
+                //Do nothing
               })
               .catch(err =>{
                 console.log("error:", err);

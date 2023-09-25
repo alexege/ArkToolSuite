@@ -1,15 +1,28 @@
 <template>
 <div>
     <h2>User Dashboard</h2>
-    <pre>
-        {{ userStore.user }}
-    </pre>
+    <div v-if="user">
+        <div>
+            <label for="Name">Name:</label>
+            <span>{{ user.username }}</span>
+        </div>
+        <div>
+            <label for="Email">Email:</label>
+            <span>{{ user.email }}</span>
+        </div>
+        <label for="roles">Roles:</label>
+        <ul>
+            <li v-for="role in user.roles" :key="role">{{ role }}</li>
+
+        </ul>
+    </div>
 </div>
 </template>
 
 <script setup>
-import { useUserStore } from "../stores/user.store.js"
-const userStore = useUserStore()
+import { useAuthStore } from "../stores/auth.store.js"
+const authStore = useAuthStore()
 
+const user = authStore.user;
 
 </script>
