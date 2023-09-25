@@ -20,11 +20,13 @@
 <script setup>
 
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useAuthStore } from "../stores/auth.store.js";
 import { useItemStore } from "../stores/item.store.js";
 import { useLayoutStore } from "../stores/layout.store.js";
 
 const itemStore = useItemStore()
+const { activeUser } = storeToRefs(useAuthStore())
 const { activeLayout } = storeToRefs(useLayoutStore())
 const { fetchItems, updateItem } = useItemStore()
 const { selectLayout } = useLayoutStore()
@@ -106,6 +108,12 @@ async function rightClickClear(evt, item) {
     await updateItem(clear_item);
     selectLayout(useLayoutStore().layout._id)
 }
+
+onMounted(() => {
+    if(!activeUser.value) {
+        this.$router.push('/login');
+    }
+})
 
 </script>
 <style scoped>

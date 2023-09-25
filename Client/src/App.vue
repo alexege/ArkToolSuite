@@ -33,20 +33,24 @@ const showModBoard = computed(() => {
   if (activeUser && activeUser.roles) return activeUser.roles.includes('ROLE_MODERATOR');
 })
 
+const showAdminBoard = computed(() => {
+  if (activeUser && activeUser.roles) return activeUser.roles.includes('ROLE_ADMIN');
+})
+
 </script>
 
 <template>
-  <div> <pre>{{ activeUser }}</pre>
+  <div>
     <header class="navbar">
      <div>
        <nav>
         <div>
-          <RouterLink to="/">Home</RouterLink> -
-          <RouterLink to="/admin">Admin</RouterLink> -
+          <RouterLink class="router-link" to="/">Home</RouterLink>
+          <RouterLink class="router-link" to="/admin" v-if="showAdminBoard">Admin</RouterLink>
 
-          <!-- <RouterLink to="/admin">Admin</RouterLink> - -->
-          <RouterLink to="/mod" v-if="showModBoard">Moderator</RouterLink> -
-          <RouterLink to="/user">User</RouterLink>
+          <!-- <RouterLink class="router-link" to="/admin">Admin</RouterLink> - -->
+          <RouterLink class="router-link" to="/mod" v-if="showModBoard">Moderator</RouterLink>
+          <RouterLink class="router-link" to="/user">User</RouterLink>
         </div>
 
         <div>
@@ -54,8 +58,8 @@ const showModBoard = computed(() => {
             {{ welcomeMessage() }} {{ activeUser.username }}
             <a href="" style="outline: 1px solid white; padding: .5em" @click="doLogout">Logout</a>
           </div>
-          <RouterLink to="/login" v-if="!activeUser">Login </RouterLink>
-          <RouterLink to="/register" v-if="!activeUser">Register</RouterLink>
+          <RouterLink class="router-link" to="/login" v-if="!activeUser">Login </RouterLink>
+          <RouterLink class="router-link" to="/register" v-if="!activeUser">Register</RouterLink>
         </div>
        </nav>
      </div>
@@ -85,4 +89,7 @@ const showModBoard = computed(() => {
     color: white;
   }
 
+  .router-link {
+    padding-right: 20px;
+  }
 </style>

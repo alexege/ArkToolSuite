@@ -47,7 +47,6 @@ exports.signup = (req, result) => {
   };
 
 exports.signin = (req, res) => {
-  console.log("sigingin in");
     User.findOne({
         username: req.body.username
     })
@@ -74,7 +73,6 @@ exports.signin = (req, res) => {
             expiresIn: config.jwtExpiration
         });
 
-        //Removed await in front of RefreshToken (Not sure if this negatively impacts code yet)
         let refreshToken = await RefreshToken.createToken(user);
 
         var authorities = [];
