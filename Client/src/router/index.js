@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import ModDashboard from '../views/ModDashboard.vue'
 import UserDashboard from '../views/UserDashboard.vue'
+import Timers from '../views/Timers.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,11 @@ const router = createRouter({
       path: '/user',
       name: 'userDashboard',
       component: UserDashboard
+    },
+    {
+      path: '/timers',
+      name: 'timers',
+      component: Timers
     }
   ]
 })

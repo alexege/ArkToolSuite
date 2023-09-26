@@ -60,6 +60,8 @@ watch(activeUser, (newVal, oldVal) =>{
           <RouterLink class="router-link" to="/user">User</RouterLink>
         </div>
 
+        <RouterLink class="router-link" to="/timers">Timers</RouterLink>
+
         <div>
           <div class="welcome-message" v-if="activeUser">
             {{ welcomeMessage() }} {{ activeUser.username }}

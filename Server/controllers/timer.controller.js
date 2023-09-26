@@ -1,0 +1,53 @@
+const { timer } = require("../models");
+const db = require("../models");
+const User = require("../models/user.model");
+const Timer = require("../models/timer.model");
+
+exports.addTimer = (req, res) => {
+    const timer = new Timer({
+        name: req.body.name,
+        creator: req.body.creator,
+        img: req.body.img
+    });
+
+    timer.save()
+    .then((timer) => {
+        if(req.body.creator) {
+            User.findOne({ _id:  { $in: req.body.creator }})
+            .then((creator) => {
+                timer.creator = creator;
+                timer.save()
+                .catch((e) => {
+                    console.log('error:', e);
+                })
+            })
+            .catch((e) => {
+                console.log('error:', e);
+            })
+        }
+    })
+    .catch((e) => {
+        console.log('error:', e);
+    })
+}
+
+exports.deleteTimer = (req, res) => {
+    Timer.deleteOne({ _id: req.params.id })
+    .then((timer) => {
+        res.status.send({ message: `${timer.name} timer deleted` })
+    })
+    .catch((e) => {
+        console.log("error:", e);
+    })
+};
+
+exports.allTimers = (req, res) => {
+    Timer.find()
+    .then((timers) => {
+        res.status(200).send({ timers })
+    })
+    .sort([['createdAt', 'descending']])
+    .catch((e) => {
+        console.log("error:", e);
+    })
+}
