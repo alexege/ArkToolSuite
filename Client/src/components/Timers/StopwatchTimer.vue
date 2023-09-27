@@ -29,7 +29,7 @@ watch([days, hours, minutes, seconds], ([newDays, newHours, newMinutes, newSecon
 
     timeToZero.value = days.value * 86400000 + hours.value * 3600000 + minutes.value * 60000 + seconds.value * 1000;
 
-    console.log(`${newDays}:${newHours}:${newMinutes}:${newSeconds}`)
+    // console.log(`${newDays}:${newHours}:${newMinutes}:${newSeconds}`)
 })
 
 function start() {
@@ -44,8 +44,6 @@ function start() {
         actualDelay = desiredDelay - (actual - desiredDelay);
 
         timeToZero.value -= 1000;
-
-        
 
         if(timeToZero.value > 0) {
             start()
@@ -85,10 +83,6 @@ function addTime(mins) {
     minutes.value += mins;
 }
 
-// function isTimerDone() {
-//     if(percentLeft.value == 0 || percentLeft == '0 %') return true;
-// }
-
 function msToTime(ms) {
     var seconds = Math.floor((ms / 1000) % 60);
     var minutes = Math.floor((ms / (1000 * 60)) % 60);
@@ -106,7 +100,7 @@ const percentLeft = computed(() => {
     
     //If value is null, NaN or infinity, set to 100
     if(value == null || isNaN(value) || value == Infinity){
-        return 100;
+        return 0;
     }
     return value;
 })
@@ -115,6 +109,10 @@ watch(percentLeft, (newVal, oldVal) => {
     if(newVal == 0) {
         timesUp.value = true
     }
+})
+
+const isDisabled = computed(() => {
+    if(days.value == 0 && hours.value == 0 && minutes.value == 0 && seconds.value == 0) return true;
 })
 
 const inputStartTime = computed(() => {
@@ -126,36 +124,45 @@ const inputStartTime = computed(() => {
     <div class="timer" :class="{ timerFinished: timesUp }">
         <h2 v-if="timer">{{ timer.name }}</h2>
 
+        <!-- Circular ProgressBar -->
+        <div class="circular-progress" role="progressbar" :aria-valuenow="percentLeft" aria-valuemin="0" aria-valuemax="100" style="--value:percentLeft"></div>
+
         <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
 
         <div v-if="timer">
             <img  :src='`${timer.img}`' alt="" style="width: 200px; height: 150px;">
         </div>
 
-        <br />
-        <br />
+        <!-- Input Values -->
+        <div>
+            <input type="number" min="0" max="100" v-model="days" placeholder="Days" @change="updateStart()">d :
+            <input type="number" min="0" max="24" v-model="hours" placeholder="Hours" @change="updateStart()">h :
+            <input type="number" min="0" max="60" v-model="minutes" placeholder="Minutes" @change="updateStart()">m :
+            <input type="number" min="0" max="60" v-model="seconds" placeholder="Seconds" @change="updateStart()">s  
+        </div>
 
-        <!-- <h1>{{ msToTime(timeToZero) }}</h1> -->
-        <input type="number" min="0" max="100" v-model="days" placeholder="Days" @change="updateStart()">d :
-        <input type="number" min="0" max="24" v-model="hours" placeholder="Hours" @change="updateStart()">h :
-        <input type="number" min="0" max="60" v-model="minutes" placeholder="Minutes" @change="updateStart()">m :
-        <input type="number" min="0" max="60" v-model="seconds" placeholder="Seconds" @change="updateStart()">s  
-        <br>
-        <button @click="start" ref="startToggle" :disabled="isDisabled">Start</button>
-        <button @click="stop">Stop</button>
-        <button @click="reset">Reset</button>
-        <button @click="clear">Clear</button>
-        <br>
-        <button @click="addTime(1)">+1</button>
-        <button @click="addTime(5)">+5</button>
-        <button @click="addTime(15)">+15</button>
-        <br><h2>{{ msToTime(timeToZero) }}</h2>
+        <!-- Controls -->
+        <div>
+            <button @click="start" ref="startToggle" :disabled="isDisabled">Start</button>
+            <button @click="stop">Stop</button>
+            <button @click="reset">Reset</button>
+            <button @click="clear">Clear</button>
+        </div>
+
+        <!-- Manually Add Time -->
+        <div>
+            <button @click="addTime(1)">+1</button>
+            <button @click="addTime(5)">+5</button>
+            <button @click="addTime(15)">+15</button>
+        </div>
+        <h2>{{ msToTime(timeToZero) }}</h2>
+        
+        <!-- Progress Bar -->
         <div class="progress-bar-container">
             <div class="progress-bar-text">{{ percentLeft }} %</div>
             <div class="progress-bar-background">{{ percentLeft }} %</div>
             <div class="progress-bar" :style="[{width: percentLeft + '%' },{ animation: 'colorChange 6s both'}]"></div>
         </div>
-        <!-- {{ timeToZero }} / {{ startDuration}} * 100 -->
     </div>
 </template>
 <style scoped>
@@ -233,4 +240,54 @@ input[type=number] {
     color: white;
     font-weight: bold;
 }
+
+
+
+
+
+
+
+/* Circular ProgressBar */
+.circular-progress {
+    text-align: center;
+    margin: 20px auto;
+}
+
+@keyframes growProgressBar {
+  0%, 33% { --pgPercentage: 0; }
+  /* 100% { --pgPercentage: var(--value); } */
+  100% { --pgPercentage: v-bind(percentLeft) }
+}
+
+@property --pgPercentage {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+div[role="progressbar"] {
+  --size: 12rem;
+  --fg: lime;
+  --bg: black;
+  --pgPercentage: var(--value);
+  animation: growProgressBar 2s 1 forwards;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: 
+    radial-gradient(closest-side, #181818 80%, transparent 0 99.9%, #181818 0),
+    conic-gradient(var(--fg) calc(var(--pgPercentage) * 1%), var(--bg) 0)
+    ;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: calc(var(--size) / 5);
+  color: var(--fg);
+}
+
+div[role="progressbar"]::before {
+  counter-reset: percentage v-bind(percentLeft);
+  content: counter(percentage) '%';
+}
+
 </style>
