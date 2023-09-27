@@ -109,44 +109,6 @@ function msToTime(ms) {
     return `${days}:${hours}:${minutes}:${seconds}`;
 }
 
-// const percentLeft = computed(() => {
-//     console.log(`timeToZero:${timeToZero.value}\nstartDuration:${startDuration.value}\npercentLeft:${percentLeft.value}`);
-    
-//     let value = Math.floor(timeToZero.value / startDuration.value * 100);
-    
-//     //If value is null, NaN or infinity, set to 100
-//     if(value == null || isNaN(value) || value == Infinity){
-//         timesUp.value = true;
-//         return 0;
-//     }
-//     return value;
-// })
-
-// watch(timeToZero, (newVal, oldVal) => {
-//     console.log(`timeToZero:${timeToZero.value}\nstartDuration:${startDuration.value}\npercentLeft:${percentLeft.value}`);
-//     // timeToZero.value = days.value * 86400000 + hours.value * 3600000 + minutes.value * 60000 + seconds.value * 1000;
-//     // percentLeft.value = 100;
-
-// //    percentLeft.value = timeToZero.value;
-
-
-//     // if(value > 100) {
-//     //     let numFit = Math.floor(value / 100);
-//     //     let remainder = value - (numFit * 100);
-//     //     percentLeft.value = value - remainder;
-//     // }
-
-//     if(newVal == 0) {
-//         timesUp.value = true
-//     }
-// })
-
-// watch(percentLeft, (newVal, oldVal) => {
-//     if(newVal == 0) {
-//         timesUp.value = true
-//     }
-// })
-
 const isDisabled = computed(() => {
     if(days.value == 0 && hours.value == 0 && minutes.value == 0 && seconds.value == 0) return true;
 })
@@ -205,7 +167,7 @@ const inputStartTime = computed(() => {
 
 .timer {
     border: 1px solid black;
-    background-color: #4d906e;
+    /* background-color: #4d906e; */
     padding: 1em; 
     margin: 1em; 
     border-radius: 10px; 
@@ -242,7 +204,17 @@ input[type=number] {
     font-size: 24px;
     width: 100px;
     /* width: 45px; */
+    background-color: black;
+    color: lime;
+    border: 2px solid lime;
 }
+
+/* input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {  
+   opacity: 1;
+
+} */
+
 .progress-bar {
     transition: width 1s;
     background-color: limegreen;
