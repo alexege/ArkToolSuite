@@ -9,7 +9,7 @@ module.exports = function(app) {
         next();
     });
 
-    app.get("/api/timer/allTimers", controller.allTimers);
-    app.post("/api/timer/addTimer", controller.addTimer);
-    app.delete("/api/timer/deleteTimer/:id", controller.deleteTimer);
+    app.get("/api/timers/all", controller.allTimers);
+    app.post("/api/timers/add", controller.addTimer);
+    app.delete("/api/timers/delete/:id", controller.deleteTimer);
 }

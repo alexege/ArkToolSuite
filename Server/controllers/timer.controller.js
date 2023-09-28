@@ -7,7 +7,8 @@ exports.addTimer = (req, res) => {
     const timer = new Timer({
         name: req.body.name,
         creator: req.body.creator,
-        img: req.body.img
+        img: req.body.img,
+        type: req.body.type
     });
 
     timer.save()
@@ -25,6 +26,8 @@ exports.addTimer = (req, res) => {
                 console.log('error:', e);
             })
         }
+        //To be reactive, this must return a timer object
+        res.status(200).send(timer);
     })
     .catch((e) => {
         console.log('error:', e);
@@ -34,7 +37,7 @@ exports.addTimer = (req, res) => {
 exports.deleteTimer = (req, res) => {
     Timer.deleteOne({ _id: req.params.id })
     .then((timer) => {
-        res.status.send({ message: `${timer.name} timer deleted` })
+        res.status(200).send({ message: `${timer.name} timer deleted` })
     })
     .catch((e) => {
         console.log("error:", e);
@@ -44,9 +47,9 @@ exports.deleteTimer = (req, res) => {
 exports.allTimers = (req, res) => {
     Timer.find()
     .then((timers) => {
-        res.status(200).send({ timers })
+        res.status(200).send(timers)
     })
-    .sort([['createdAt', 'descending']])
+    // .sort([['createdAt', 'descending']])
     .catch((e) => {
         console.log("error:", e);
     })

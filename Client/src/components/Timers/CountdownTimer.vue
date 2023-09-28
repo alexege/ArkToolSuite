@@ -13,6 +13,9 @@ const startDuration = ref(0);
 let percentLeft = ref(0);
 const timesUp = ref(false);
 
+const props = defineProps(['timer'])
+const emit = defineEmits(['close'])
+
 watch([days, hours, minutes, seconds], ([newDays, newHours, newMinutes, newSeconds], [oldDays, oldHours, oldMinutes, oldSeconds]) => {
     
     if(newHours == 24){
@@ -94,7 +97,7 @@ function addTime(mins) {
 }
 
 function deleteTimer(timerId) {
-    this.$emit('clicked', timerId);
+    emit('close', timerId)
 }
 
 function msToTime(ms) {
@@ -120,16 +123,15 @@ const inputStartTime = computed(() => {
 </script>
 <template>
     <div class="timer" :class="{ timerFinished: timesUp }">
-        <!-- <h2>{{ timer.name }}</h2> -->
-
+        <h2>{{ timer.name }}</h2>
         <!-- Circular ProgressBar -->
         <div class="circular-progress" role="progressbar" :aria-valuenow="percentLeft" aria-valuemin="0" aria-valuemax="100" style="--value:percentLeft"></div>
 
         <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
 
-        <!-- <div>
+        <div v-if="timer.img">
             <img  :src='`${timer.img}`' alt="" style="width: 200px; height: 150px;">
-        </div> -->
+        </div>
 
         <!-- Input Values -->
         <div>

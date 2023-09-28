@@ -7,6 +7,8 @@ var timeStopped = ref(null)
 var stoppedDuration = ref(0)
 var started = ref(null)
 var running = ref(false)
+const props = defineProps(['timer'])
+const emit = defineEmits(['close'])
 
 function start() {
     if(running.value) return;
@@ -56,10 +58,16 @@ function zeroPrefix(num, digit)  {
     }
     return (zero + num).slice(-digit);
 }
+
+function deleteTimer(timerId) {
+    emit('close', timerId)
+}
 </script>
 
 <template>
     <div id="clock">
+        <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
+
         <span class="time">{{ time }}</span>
 
         <div class="btn-container">
@@ -74,6 +82,7 @@ function zeroPrefix(num, digit)  {
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
  
  #clock {
+     position: relative;
      font-family: 'Share Tech Mono', sans-serif;
 	 order: 0;
 	 flex: 0 1 auto;
@@ -120,6 +129,12 @@ function zeroPrefix(num, digit)  {
 }
  #clock .btn-container a:hover {
 	 color: white;
+}
+
+#clock .deleteButton {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
  
 </style>
