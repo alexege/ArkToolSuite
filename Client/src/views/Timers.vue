@@ -20,7 +20,7 @@ fetchTimers()
 async function add(type) {
 
     var data = {
-        name: 'name',
+        name: 'Timer Name',
         type: type,
         creator: null,
         url: ''

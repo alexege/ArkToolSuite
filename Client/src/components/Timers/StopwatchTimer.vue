@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useTimerStore } from '../../stores/timer.store';
 
-var time = ref('00:00:00.000')
+var time = ref('00:00:00.00')
 var timeBegan = ref(null)
 var timeStopped = ref(null)
 var stoppedDuration = ref(0)
@@ -36,7 +36,7 @@ function reset() {
     stoppedDuration.value = 0;
     timeBegan.value = null;
     timeStopped.value = null;
-    time.value = "00:00:00.000";
+    time.value = "00:00:00.00";
 }
 
 function clockRunning() {
@@ -49,7 +49,7 @@ function clockRunning() {
       time.value = zeroPrefix(hour, 2) + ":" +
                   zeroPrefix(min, 2) + ":" +
                   zeroPrefix(sec, 2) + ":" +
-                  zeroPrefix(ms, 3);
+                  zeroPrefix(ms, 2);
 }
 
 function zeroPrefix(num, digit)  {
@@ -122,7 +122,7 @@ async function updateTimerName() {
      border-radius: 10px;
 }
  #clock .time {
-	 font-size: 6.5em;
+	 font-size: 4.5em;
 }
  #clock .text {
 	 margin-top: 30px;

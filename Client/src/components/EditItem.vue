@@ -23,7 +23,7 @@
                 <button @click="updateItem(updatedItem)" v-else>Update</button>
 
                 <button v-if="editing" @click="toggleEdit">Cancel</button>
-                <button v-else @click="deleteItem(updatedItem._id)">Delete</button>
+                <button v-else @click="deleteItemById(updatedItem._id)">Delete</button>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@ import ItemService from '../services/item.service';
 import { ref } from "vue";
 import { useItemStore } from '../stores/item.store.js';
 
-const { fetchItems } = useItemStore()
+const { fetchItems, deleteItem } = useItemStore()
 const editing = ref(false);
 const props = defineProps(["item"]);
 
@@ -67,14 +67,8 @@ function updateItem(item) {
     })
 }
 
-function deleteItem(id) {
-    ItemService.delete(id)
-    .then(() => {
-        fetchItems()
-    })
-    .catch(error => {
-        console.log(error);
-    })
+function deleteItemById(id) {
+    deleteItem(id)
 }
 
 </script>

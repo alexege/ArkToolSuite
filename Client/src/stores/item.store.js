@@ -55,6 +55,16 @@ export const useItemStore = defineStore({
       } catch (error) {
         console.log("error:", error);
       }
+    },
+    
+    async deleteItem(id) {
+      try {
+        await axios.delete(`${API_URL}/items/delete/${id}`)
+        let index = this.items.findIndex(item => item._id == id)
+              this.items.splice(index, 1)
+      } catch (error) {
+        console.log("error:", error);
+      }
     }
   }
 })

@@ -121,10 +121,17 @@ const inputStartTime = computed(() => {
     return days.value * 86400000 + hours.value * 3600000 + minutes.value * 60000 + seconds.value * 1000;
 })
 
+
+/////////////////////////////////////
+//////////Customization//////////////
+/////////////////////////////////////
+
+
+// Update Timer Name
 const { updateTimer } = useTimerStore()
 const isEditingTimerName = ref(false);
 const editTimer = {
-    name: 'Name'
+    name: 'Timer Name'
 }
 
 function editName() {
@@ -141,14 +148,39 @@ async function updateTimerName() {
     isEditingTimerName.value = false;
 }
 
+// Editing Timer Settings
+// const isEditingTimer = ref(false);
+// function toggleEditTimer() {
+//     isEditingTimer.value = !isEditingTimer.value
+// }
+
 </script>
 <template>
     <div class="timer" :class="{ timerFinished: timesUp }">
+
+        <!-- <div class="timer-settings">
+            <template v-if="isEditingTimer">
+                <button class="edit-button" @click="toggleEditTimer">edit</button>
+                <label for="">Status Bar Type:</label>
+                <select name="" id="" v-model="">
+                    <option value="both">both</option>
+                    <option value="circle">circle</option>
+                    <option value="line">line</option>
+                </select>
+                <button>A</button>
+                <button>B</button>
+                <button>C</button>
+            </template>
+            <template v-else>
+                <button class="edit-button" @click="toggleEditTimer">edit</button>
+            </template>
+        </div> -->
+
         <template v-if="isEditingTimerName">
-            <input type="text" v-model="editTimer.name" @blur="updateTimerName">
+            <input type="text" v-model="editTimer.name" @blur="updateTimerName" class="timer-name-input">
         </template>
         <template v-else>
-            <h2 @dblclick="editName">{{ timer.name }}</h2>
+            <h2 @dblclick="editName" class="timer-name">{{ timer.name }}</h2>
         </template>
 
         <!-- Circular ProgressBar -->
@@ -204,6 +236,19 @@ async function updateTimerName() {
     position: relative;
 }
 
+.timer-name {
+    color: lime;
+}
+
+.timer-name-input {
+    color: white;
+    background-color: black;
+    border: none;
+    font-size: 1.5em;
+    text-align: center;
+    border: 1px solid white;
+}
+
 button {
     padding: 10px;
     background-color: transparent;
@@ -215,6 +260,14 @@ button {
 button:hover {
     cursor: pointer;
 }
+
+/* Timer Settings Buttons */
+.edit-button {
+    position: absolute;
+    top: 0;
+    right: 2em;
+}
+
 
 .time-left {
     color: white;

@@ -63,7 +63,11 @@ export const useLayoutStore = defineStore({
     async deleteLayout(id) {
         try {
             await axios.delete(`${API_URL}/layouts/delete/${id}`)
-            await this.fetchLayouts()
+            .then(() => {
+              let index = this.layouts.findIndex(layout => layout._id == id)
+              this.layouts.splice(index, 1)
+            })
+            // await this.fetchLayouts()
         } catch (error) {
             console.log("error:", error);
         }
