@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useTimerStore } from '../../stores/timer.store';
 
 const days = ref(0);
 const hours = ref(0);
@@ -59,7 +60,7 @@ function start() {
             start()
         } else {
             percentLeft.value = 0;
-            console.log("Timer is up!");
+            alert(`${props.timer.name} timer is up!`);
         }
     }, actualDelay)
 }
@@ -120,10 +121,36 @@ const inputStartTime = computed(() => {
     return days.value * 86400000 + hours.value * 3600000 + minutes.value * 60000 + seconds.value * 1000;
 })
 
+const { updateTimer } = useTimerStore()
+const isEditingTimerName = ref(false);
+const editTimer = {
+    name: 'Name'
+}
+
+function editName() {
+    isEditingTimerName.value = true;
+}
+
+async function updateTimerName() {
+    var data = {
+        _id: props.timer._id,
+        name: editTimer.name
+    }
+    await updateTimer(data)
+    props.timer.name = data.name
+    isEditingTimerName.value = false;
+}
+
 </script>
 <template>
     <div class="timer" :class="{ timerFinished: timesUp }">
-        <h2>{{ timer.name }}</h2>
+        <template v-if="isEditingTimerName">
+            <input type="text" v-model="editTimer.name" @blur="updateTimerName">
+        </template>
+        <template v-else>
+            <h2 @dblclick="editName">{{ timer.name }}</h2>
+        </template>
+
         <!-- Circular ProgressBar -->
         <div class="circular-progress" role="progressbar" :aria-valuenow="percentLeft" aria-valuemin="0" aria-valuemax="100" style="--value:percentLeft"></div>
 

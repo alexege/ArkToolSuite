@@ -11,5 +11,6 @@ module.exports = function(app) {
 
     app.get("/api/timers/all", controller.allTimers);
     app.post("/api/timers/add", controller.addTimer);
+    app.patch("/api/timers/update/:id", controller.updateTimer);
     app.delete("/api/timers/delete/:id", controller.deleteTimer);
 }

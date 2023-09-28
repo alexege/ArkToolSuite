@@ -55,17 +55,8 @@ export const useTimerStore = defineStore({
 
     async updateTimer(timer) {
       try {
+        console.log("timer:", timer);
         await axios.patch(`${API_URL}/timers/update/${timer._id}`, timer)
-        await this.fetchTimers()
-      } catch (error) {
-        console.log("error:", error);
-      }
-    },
-
-    async update(timer) {
-      try {
-        await axios.patch(`${API_URL}/timers/update/${timer._id}`)
-        await this.fetchTimers()
       } catch (error) {
         console.log("error:", error);
       }

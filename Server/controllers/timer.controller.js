@@ -34,6 +34,20 @@ exports.addTimer = (req, res) => {
     })
 }
 
+exports.updateTimer = (req, res) => {
+    console.log("updating timer from controller:", req.body);
+    let data = {
+        name: req.body.name
+    }
+    Timer.findByIdAndUpdate({ _id: req.params.id }, data)
+    .then(timer => {
+        res.status(200).send({ timer })
+    })
+    .catch(err => {
+        res.status(500).send({ message: err })
+    })
+}
+
 exports.deleteTimer = (req, res) => {
     Timer.deleteOne({ _id: req.params.id })
     .then((timer) => {
