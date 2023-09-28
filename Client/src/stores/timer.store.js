@@ -74,7 +74,10 @@ export const useTimerStore = defineStore({
     async deleteTimer(id) {
         try {
             await axios.delete(`${API_URL}/timers/delete/${id}`)
-            await this.fetchTimers()
+            .then(() => {
+              let index = this.timers.findIndex(timer => timer._id == id)
+              this.timers.splice(index, 1)
+            })
         } catch (error) {
             console.log("error:", error);
         }

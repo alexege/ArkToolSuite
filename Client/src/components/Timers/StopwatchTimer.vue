@@ -90,6 +90,9 @@ function deleteTimer(timerId) {
      text-align: center;
 	 /* color: #c8c8c8; */
      color: lime;
+     border: 1px solid black;
+     margin: 15px;
+     border-radius: 10px;
 }
  #clock .time {
 	 font-size: 6.5em;
