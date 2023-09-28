@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useTimerStore } from '../../stores/timer.store';
 
 var time = ref('00:00:00.000')
 var timeBegan = ref(null)
@@ -62,12 +63,38 @@ function zeroPrefix(num, digit)  {
 function deleteTimer(timerId) {
     emit('close', timerId)
 }
+
+const { updateTimer } = useTimerStore()
+const isEditingTimerName = ref(false);
+const editTimer = {
+    name: 'Name'
+}
+
+function editName() {
+    isEditingTimerName.value = true;
+}
+
+async function updateTimerName() {
+    var data = {
+        _id: props.timer._id,
+        name: editTimer.name
+    }
+    await updateTimer(data)
+    props.timer.name = data.name
+    isEditingTimerName.value = false;
+}
+
 </script>
 
 <template>
     <div id="clock">
         <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
-
+        <template v-if="isEditingTimerName">
+            <input type="text" v-model="editTimer.name" @blur="updateTimerName">
+        </template>
+        <template v-else>
+            <h2 @dblclick="editName">{{ timer.name }}</h2>
+        </template>
         <span class="time">{{ time }}</span>
 
         <div class="btn-container">
