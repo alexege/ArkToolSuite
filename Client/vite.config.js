@@ -12,6 +12,9 @@ export default defineConfig({
     vue(),
   ],
   resolve: {
+    // alias: [{
+    //   find: '@', replacement: path.resolve(__dirname, 'src'),
+    // }],
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }

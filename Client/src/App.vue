@@ -43,6 +43,7 @@ watch(activeUser, (newVal, oldVal) =>{
     }
   }
 })
+
 </script>
 
 <template>
@@ -61,6 +62,7 @@ watch(activeUser, (newVal, oldVal) =>{
         </div>
 
         <RouterLink class="router-link" to="/timers">Timers</RouterLink>
+        <RouterLink class="router-link" to="/todo">TodoList</RouterLink>
 
         <div>
           <div class="welcome-message" v-if="activeUser">

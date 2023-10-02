@@ -6,6 +6,7 @@ import Register from '../views/Register.vue'
 import ModDashboard from '../views/ModDashboard.vue'
 import UserDashboard from '../views/UserDashboard.vue'
 import Timers from '../views/Timers.vue'
+import TodoList from '../views/TodoList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,11 @@ const router = createRouter({
       path: '/timers',
       name: 'timers',
       component: Timers
+    },
+    {
+      path: '/todo',
+      name: 'todo',
+      component: TodoList
     }
   ]
 })
