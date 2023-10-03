@@ -1,13 +1,17 @@
 <template>
+  <div>
     <div v-for="todo in todoList" :key="todo.id" class="list">
       <div class="item">
-        <span :class="{ completed: todo.completed }">{{ todo.item }}</span>
-        <div>
+        <span :class="{ completed: todo.completed }" class="title">{{ todo.item }}</span>
+        <div class="priority">{{ todo.priority }}</div>
+        <div class="assignee">{{todo?.assignee?.username || 'assignee'}}</div>
+        <div class="actions">
           <span @click.stop="toggleCompleted(todo.id)">&#10004;</span>
           <span @click="deleteTodo(todo.id)" class="x">&#10060;</span>
         </div>
       </div>
     </div>
+  </div>
   </template>
   
   <script setup>
@@ -43,4 +47,23 @@
     width: 80vw;
     padding: 5px;
   }
+
+.title {
+  display: flex;
+  flex: 2.5 1 0%;
+}
+.priority {
+  display: flex;
+  flex: .5 1 0%;
+}
+
+.assignee {
+  display: flex;
+  flex: .5 1 0%;
+}
+
+.action {
+  display: flex;
+  flex: .5 1 0%;
+}
   </style>

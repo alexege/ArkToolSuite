@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia'
+import axios from "axios"
+
+const API_URL = 'http://localhost:8080/api'
 
 export const useTodoListStore = defineStore('todoList', {
   state: () => ({
@@ -6,7 +9,8 @@ export const useTodoListStore = defineStore('todoList', {
     id: 0,
   }),
   actions: {
-    addTodo(item) {
+    async addTodo(item) {
+        await axios.post(`${API_URL}/todo/addTodo`, item)
         this.todoList.push({ item, id: this.id++, completed: false })
     },
 
