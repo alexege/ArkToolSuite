@@ -12,7 +12,13 @@ exports.allUsers = (req, res) => {
         console.log("error:", e)
     })
     // res.status(200).send("Public Content.");
-  };
+};
+
+exports.getById = (req, res) => {
+    console.log("params:", req.params);
+    User.findOne({ _id: req.params.id})
+    
+}
 
 // exports.allAccess = (req, res) => {
 //   User.find({}, (err, users) => {

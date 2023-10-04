@@ -27,14 +27,14 @@ export const useUserStore = defineStore({
                 this.users = { error };
             }
         },
-        // async getById(id) {
-        //     this.user = { loading: true };
-        //     try {
-        //         this.user = await fetchWrapper.get(`${baseUrl}/${id}`);
-        //     } catch (error) {
-        //         this.user = { error };
-        //     }
-        // },
+        async getById(id) {
+            this.user = { loading: true };
+            try {
+                this.user = await axios.get(`${API_URL}/user/${id}`);
+            } catch (error) {
+                this.user = { error };
+            }
+        },
         // async update(id, params) {
         //     await fetchWrapper.put(`${baseUrl}/${id}`, params);
 

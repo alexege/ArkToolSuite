@@ -5,6 +5,7 @@ const Todo = db.todo;
 // Retrieve all Todos from the database.
 exports.findAllTodos = (req, res) => {
   Todo.find()
+  .populate("assignee")
   .sort([["gridPosition", "ascending"]])
   .then(todos => {
     res.send(todos);
@@ -28,7 +29,6 @@ exports.addTodo = (req, res) => {
     });
 
     console.log("new todo:", req.body);
-    todo.save(todo)
     if(req.body.assignee){
         User.findOne({ _id: req.body.assignee })
         .then((user) => {
@@ -47,8 +47,6 @@ exports.addTodo = (req, res) => {
           console.log("error:", e);
         })
   }
-
- 
 
   // const todo = new Todo({
   //   title: req.body.title,

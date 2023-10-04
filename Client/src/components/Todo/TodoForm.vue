@@ -13,7 +13,7 @@
       <div class="assignee">
         <select name="" id="" v-model="todoItem.assignee" class="assignee-input">
           <option value="" disabled>Asignee</option>
-          <option value="" v-for="user in allUsers" :key="user.id">{{ user.username }}</option>
+          <option :value="user._id" v-for="user in allUsers" :key="user.id">{{ user.username }}</option>
         </select>
       </div>
       <div class="actions">
@@ -38,8 +38,6 @@ import { ref } from "vue";
     fetchUsers()
     fetchTodos()
 
-    const user = JSON.parse(localStorage.getItem("user"));
-
     //Set default values
     const todoItem = ref({
       title: null,
@@ -50,11 +48,13 @@ import { ref } from "vue";
 
     function addTodoItem() {
 
+      console.log("ass:", todoItem.value.assignee);
+
       const item = {
         title: todoItem.value.title,
         priority: todoItem.value.priority,
         completed: todoItem.value.completed,
-        assignee: user.id
+        assignee: todoItem.value.assignee
       }
       
       todoStore.addTodo(item)

@@ -17,18 +17,20 @@ export const useTodoListStore = defineStore('todoList', {
 
     async fetchTodos() {
       try {
+        this.todoList = { loading: true }
         const response = await axios.get(`${API_URL}/todo/all`);
         this.todoList = response.data
 
-    } catch (error) {
-        this.todoList = { error };
-    }
+      } catch (error) {
+          this.todoList = { error };
+      }
     },
 
     async addTodo(item) {
       console.log("Adding todo in pinia", item);
-        await axios.post(`${API_URL}/todo/addTodo`, item)
-        this.todoList.push({ item, id: this.id++, completed: false })
+        const todoItem = await axios.post(`${API_URL}/todo/addTodo`, item)
+        console.log("item:", todoItem.data);
+        await this.todoList.push(todoItem.data)
     },
 
     deleteTodo(itemID) {
