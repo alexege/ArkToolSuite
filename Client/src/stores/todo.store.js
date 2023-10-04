@@ -33,16 +33,20 @@ export const useTodoListStore = defineStore('todoList', {
         await this.todoList.push(todoItem.data)
     },
 
-    deleteTodo(itemID) {
-        this.todoList = this.todoList.filter((object) => {
-          return object.id !== itemID
-        })
+    async deleteTodo(todoId) {
+        await axios.delete(`${API_URL}/todo/delete/${todoId}`)
+        let index = this.todoList.findIndex(todo => todo._id === todoId)
+        this.todoList.splice(index, 1)
+        // this.todoList = this.todoList.filter((object) => {
+        //   return object.id !== todoId
+        // })
       },
 
-    toggleCompleted(idToFind) {
-        const todo = this.todoList.find((obj) => obj.id === idToFind);
-        if (todo) {
-          todo.completed = !todo.completed;
+    async toggleCompleted(todo) {
+      await axios.patch(`${API_URL}/todo/update/${todo._id}`, { completed: todo.completed })
+        const todoItem = this.todoList.find((obj) => obj._id === todo._id);
+        if (todoItem) {
+          todoItem.completed = !todoItem.completed;
         }
       },
   },

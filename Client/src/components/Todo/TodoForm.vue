@@ -12,7 +12,7 @@
       </div>
       <div class="assignee">
         <select name="" id="" v-model="todoItem.assignee" class="assignee-input">
-          <option value="" disabled>Asignee</option>
+          <option value="Assignee" disabled>Asignee</option>
           <option :value="user._id" v-for="user in allUsers" :key="user.id">{{ user.username }}</option>
         </select>
       </div>
@@ -27,7 +27,6 @@ import { useTodoListStore } from '../../stores/todo.store'
 import { useUserStore } from '../../stores/user.store';
 import { storeToRefs } from 'pinia'
 import { ref } from "vue";
-    const todo = ref("");
 
     const todoStore = useTodoListStore()
     const { fetchTodos } = useTodoListStore()
@@ -41,7 +40,7 @@ import { ref } from "vue";
     //Set default values
     const todoItem = ref({
       title: null,
-      priority: 'low',
+      priority: 'Low',
       completed: false,
       assignee: null
     })
@@ -54,11 +53,11 @@ import { ref } from "vue";
         title: todoItem.value.title,
         priority: todoItem.value.priority,
         completed: todoItem.value.completed,
-        assignee: todoItem.value.assignee
+        assignee: todoItem.value.assignee || null
       }
       
       todoStore.addTodo(item)
-      todo.value = ''
+      todoItem.value.title = ''
     }
 </script>
 <style scoped>

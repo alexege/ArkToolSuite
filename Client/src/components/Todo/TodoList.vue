@@ -1,13 +1,13 @@
 <template>
   <div>
     <div v-for="todo in todoList" :key="todo.id" class="list">
-      <div class="item">
+      <div class="item" v-if="todo">
         <span :class="{ completed: todo.completed }" class="title">{{ todo.title }}</span>
         <div class="priority">{{ todo?.priority }}</div>
         <div class="assignee">{{todo?.assignee?.username || 'assignee'}}</div>
         <div class="actions">
-          <span @click.stop="toggleCompleted(todo.id)">&#10004;</span>
-          <span @click="deleteTodo(todo.id)" class="x">&#10060;</span>
+          <span @click.stop="toggleComp(todo)">&#10004;</span>
+          <span @click="delTodo(todo._id)" class="x">&#10060;</span>
         </div>
       </div>
     </div>
@@ -20,6 +20,14 @@
 
       const { todoList } = storeToRefs(useTodoListStore());
       const { toggleCompleted, deleteTodo } = useTodoListStore();
+
+      function toggleComp(todo) {
+        toggleCompleted(todo)
+      }
+
+      function delTodo(id) {
+        deleteTodo(id)
+      }
 
   </script>
   

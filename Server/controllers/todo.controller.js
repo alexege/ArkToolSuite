@@ -78,17 +78,19 @@ exports.findOne = (req, res) => {
 
 // Update a Todo by the id in the request
 exports.update = (req, res) => {
-  console.log("updating:", req.params);
-  console.log("body:", req.body);
+
+  console.log("req.body:", req.body)
+  // console.log("params:", req.params)
+
   let updateData = {
-    title: req.body.title,
-    url: req.body.url,
-    description: req.body.description,
-    gridPosition: req.body.gridPosition
+    completed: !req.body.completed
   };
+
+  console.log("updateData:", updateData);
 
   Todo.findByIdAndUpdate({ _id: req.params.id }, updateData)
   .then(todo => {
+    console.log("final updated item: ", todo.completed);
     res.status(200).send({ todo });
   })
   .catch(err => {
