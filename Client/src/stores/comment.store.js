@@ -8,8 +8,8 @@ export const useCommentStore = defineStore({
   }),
   getters: {
     getPostComments: (state) => {
-      const postSore = usePostStore()
-      return state.comments.filter((post) => post.postId === postSore.post.id)
+      const postStore = usePostStore()
+      return state.comments.filter((post) => post.postId === postStore.post.id)
     }
   },
   actions: {

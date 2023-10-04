@@ -3,6 +3,7 @@ import TokenService from "./token.service";
 
 class AuthService {
   login({ username, password }) {
+    console.log("logging in using AuthService from auth.service.js");
     return api
       .post("/auth/signin", {
         username,

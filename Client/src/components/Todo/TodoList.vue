@@ -2,8 +2,8 @@
   <div>
     <div v-for="todo in todoList" :key="todo.id" class="list">
       <div class="item">
-        <span :class="{ completed: todo.completed }" class="title">{{ todo.item }}</span>
-        <div class="priority">{{ todo.priority }}</div>
+        <span :class="{ completed: todo.completed }" class="title">{{ todo.title }}</span>
+        <div class="priority">{{ todo?.priority }}</div>
         <div class="assignee">{{todo?.assignee?.username || 'assignee'}}</div>
         <div class="actions">
           <span @click.stop="toggleCompleted(todo.id)">&#10004;</span>
@@ -18,11 +18,9 @@
   import { useTodoListStore } from "../../stores/todo.store.js";
   import { storeToRefs } from "pinia";
 
-      const store = useTodoListStore();
-  
-      const { todoList } = storeToRefs(store);
-      const { toggleCompleted, deleteTodo } = store;
-  
+      const { todoList } = storeToRefs(useTodoListStore());
+      const { toggleCompleted, deleteTodo } = useTodoListStore();
+
   </script>
   
   <style scoped>

@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="addTodo(todoItem)">
+    <form @submit.prevent="addTodoItem()">
       <div class="title">
         <input v-model="todoItem.title" type="text" class="title-input"/>
       </div>
@@ -30,10 +30,13 @@ import { ref } from "vue";
     const todo = ref("");
 
     const todoStore = useTodoListStore()
+    const { fetchTodos } = useTodoListStore()
+    
     const { allUsers } = storeToRefs(useUserStore())
     const { fetchUsers } = useUserStore()
 
     fetchUsers()
+    fetchTodos()
 
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -42,15 +45,19 @@ import { ref } from "vue";
       title: null,
       priority: 'low',
       completed: false,
-      assignee: user.id
+      assignee: null
     })
 
-    function addTodo(item) {
-      console.log("user:", user);
-      if (item.length === 0){
-        return
+    function addTodoItem() {
+
+      const item = {
+        title: todoItem.value.title,
+        priority: todoItem.value.priority,
+        completed: todoItem.value.completed,
+        assignee: user.id
       }
-      todoStore.addTodo(todoItem.value)
+      
+      todoStore.addTodo(item)
       todo.value = ''
     }
 </script>

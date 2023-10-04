@@ -1,8 +1,10 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from "./stores/auth.store"
+
+import EventBus from './common/EventBus'
 
 const { activeUser } = storeToRefs(useAuthStore())
 const { logout } = useAuthStore()
@@ -12,6 +14,9 @@ const showAdminBoard = ref(false);
 
 function doLogout() {
   logout()
+  
+  //Added for JWT Refresh
+  this.$router.push('/')
 }
 
 function welcomeMessage() {

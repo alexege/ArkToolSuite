@@ -74,7 +74,7 @@ actions: {
     },
 
     //Custom adding - not sure if necessary
-    refreshToken(state, accessToken) {
+    refreshToken(accessToken) {
         this.loggedIn = true;
         this.user = { ...this.user, accessToken };
     }

@@ -19,7 +19,7 @@ exports.findAllTodos = (req, res) => {
 // Create and Save a new Todo
 exports.addTodo = (req, res) => {
 
-    // console.log("req.body:", req.body)
+    console.log("req.body:", req.body)
 
     const todo = new Todo({
       title: req.body.title,
@@ -28,7 +28,7 @@ exports.addTodo = (req, res) => {
     });
 
     console.log("new todo:", req.body);
-    todo.save()
+    todo.save(todo)
     if(req.body.assignee){
         User.findOne({ _id: req.body.assignee })
         .then((user) => {
