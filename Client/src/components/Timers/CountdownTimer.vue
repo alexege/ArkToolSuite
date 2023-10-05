@@ -42,8 +42,8 @@ watch([days, hours, minutes, seconds], ([newDays, newHours, newMinutes, newSecon
 })
 
 function start() {
-
-    isEditing.value = false;
+    isPaused.value = false
+    isEditing.value = false
 
     var startTime = Date.now()
     var desiredDelay = 1000;
@@ -63,6 +63,7 @@ function start() {
         } else {
             percentLeft.value = 0;
             alert(`${props.timer.name} timer is up!`);
+            isPaused.value = true
         }
     }, actualDelay)
 }
@@ -72,15 +73,18 @@ function updateStart() {
 }
 
 function stop() {
+    isPaused.value = true
     clearTimeout(timeOut.value)
 }
 
 function reset() {
+    isPaused.value = true
     clearTimeout(timeOut.value)
     timeToZero.value = inputStartTime.value
 }
 
 function clear() {
+    isPaused.value = true
     clearTimeout(timeOut.value)
     days.value = 0;
     hours.value = 0;
@@ -158,36 +162,83 @@ async function updateTimerName() {
 
 // Editing Timer Time
 const isEditing = ref(false)
+const isHovering = ref(false)
+const isPaused = ref(true)
 
-const fullSize = ref(false)
+const changeTimerIcon = () => {
+    alert("Attempting to change timer image")
+}
+
+const timeIsEmpty = computed(() => {
+    return timeToZero.value === 0;
+})
 
 </script>
 <template>
     <div class="timer" :class="{ timerFinished: timesUp }">
 
-    <!-- Compact Timer Layout -->
-    <div class="compact-timer">
-        
-        <div class="column">
-            <div>
-                <template v-if="isEditingTimerName">
-                    <input type="text" v-model="editTimer.name" @blur="updateTimerName" class="timer-name-input">
-                </template>
-                <template v-else>
-                    <h2 @dblclick="editName" class="timer-name">{{ timer.name }}</h2>
-                </template>
-            </div>
-            <div class="row">
-                <img  :src='`${timer.img}`' alt="" style="width: 80px; height: 80px;">
-                <div class="column">
+    <!-- <div class="options" v-if="isHovering" @mouseleave="isHovering = false">
+        <a @click="deleteTimer(timer._id)" class="deleteButton">&#9932;</a>
+        <button @click="toggleEditMode" class="edit-button">&#x270E;</button>
 
-                    <template v-if="isEditing">
-                        <!-- Input Values -->
-                        <div>
-                            <input type="number" min="0" max="100" v-model="days" placeholder="Days" @change="updateStart()">d :
-                            <input type="number" min="0" max="24" v-model="hours" placeholder="Hours" @change="updateStart()">h :
-                            <input type="number" min="0" max="60" v-model="minutes" placeholder="Minutes" @change="updateStart()">m :
-                            <input type="number" min="0" max="60" v-model="seconds" placeholder="Seconds" @change="updateStart()">s  
+        <template v-if="isPaused">
+            <button @click="start">&#9654;</button>
+        </template>
+        <template v-else>
+            <button @click="stop">||</button>
+        </template>
+        <button @click="edit">&#x270E;</button>
+        <button @click="reset">&#8634;</button>
+        <button @click="clear" class="clear-button">&#9212;</button>
+    </div> -->
+
+    <div class="nav-timer">
+         <div class="nav-img" @dblclick="changeTimerIcon">
+            <img :src="timer.img" alt="" v-if="timer.img">
+            <img src="https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg" width="80px" alt="" v-else>
+            <!-- <img :src='`${timer.img}` || "https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg"' alt="Timer Image"> -->
+         </div>
+         
+            <div class="nav-content" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
+                <div class="timer-title">
+                    <template v-if="isEditingTimerName">
+                        <input type="text" v-model="editTimer.name" @blur="updateTimerName" class="timer-name-input">
+                    </template>
+                    <template v-else>
+                        <h2 @dblclick="editName" class="timer-name">{{ timer.name }}</h2>
+                    </template>
+                </div>
+                <div class="timer-value">
+                    <template v-if="isHovering">
+
+                        <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
+
+                        <div class="time-left-controls">
+                            <div class="input-control">
+                                <label for="days">day</label>
+                                <div class="input-control-value">
+                                    <input type="number" min="0" max="100" v-model="days" placeholder="Days" @change="updateStart()">
+                                    <span>:</span>
+                                </div>
+                            </div>
+                            <div class="input-control">
+                                <label for="hours">hrs</label>
+                                <div class="input-control-value">
+                                    <input type="number" min="0" max="24" v-model="hours" placeholder="Hours" @change="updateStart()">
+                                    <span>:</span>
+                                </div>
+                            </div>
+                            <div class="input-control">
+                                <label for="minutes">min</label>
+                                <div class="input-control-value">
+                                    <input type="number" min="0" max="60" v-model="minutes" placeholder="Minutes" @change="updateStart()">
+                                    <span>:</span>
+                                </div>
+                            </div>
+                            <div class="input-control">
+                                <label for="seconds">sec</label>
+                                <input type="number" min="0" max="60" v-model="seconds" placeholder="Seconds" @change="updateStart()">
+                            </div>
                         </div>
                     </template>
                     <template v-else>
@@ -199,95 +250,42 @@ const fullSize = ref(false)
                         </h2>
                     </template>
 
-                    <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
+                <div v-if="isHovering" class="options">
+                    <template v-if="isPaused">
+                        <button @click="start" class="options-button" :class="{disabled:timeIsEmpty}" :disabled="timeIsEmpty">&#9654;<br>Start</button>
+                    </template>
+                    <template v-else>
+                        <button @click="stop" class="options-button">||<span>Pause</span></button>
+                    </template>
+                    <button @click="reset" class="options-button">&#8634;<br>reset</button>
+                    <button @click="clear" class="options-button">&#9932;<br>clear</button>
+                </div>
 
-                    <!-- Controls -->
-                    <div>
-                       <button @click="start" ref="startToggle" :disabled="isDisabled">Start</button>
-                       <button @click="stop">Stop</button>
-                       <button @click="reset">Reset</button>
-                       <button @click="clear">Clear</button>
-                   </div>
+                <a @click="deleteTimer(timer._id)" class="deleteButton">&#9932;</a>
 
-                   <!-- Progress Bar -->
+                </div>
+                <div class="timer-progress">
                    <div class="progress-bar-container">
                        <div class="progress-bar-text">{{ percentLeft }} %</div>
                        <div class="progress-bar-background">{{ percentLeft }} %</div>
                        <div class="progress-bar" :style="[{width: percentLeft + '%' },{ animation: 'colorChange 2s both'}]"></div>
                    </div>
-
                 </div>
-                
+
+                <!-- Manually Add Time -->
+                <!-- <div>
+                    <button @click="addTime(1)">+1</button>
+                    <button @click="addTime(5)">+5</button>
+                    <button @click="addTime(15)">+15</button>
+                </div> -->
             </div>
-            
         </div>
-        <!-- <button @click="isEditing = !isEditing">Edit</button> -->
-
-
-
-
-         
-
-    </div>
-
-    <div class="full-size" v-if="fullSize">
-
-        <template v-if="isEditingTimerName">
-            <input type="text" v-model="editTimer.name" @blur="updateTimerName" class="timer-name-input">
-        </template>
-        <template v-else>
-            <h2 @dblclick="editName" class="timer-name">{{ timer.name }}</h2>
-        </template>
-
-        <!-- Circular ProgressBar -->
-        <!-- <div class="circular-progress" role="progressbar" :aria-valuenow="percentLeft" aria-valuemin="0" aria-valuemax="100" style="--value:percentLeft"></div> -->
-
-        <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
-
-        <div v-if="timer.img">
-            <img  :src='`${timer.img}`' alt="" style="width: 200px; height: 150px;">
-        </div>
-
-        <!-- Input Values -->
-        <div>
-            <input type="number" min="0" max="100" v-model="days" placeholder="Days" @change="updateStart()">d :
-            <input type="number" min="0" max="24" v-model="hours" placeholder="Hours" @change="updateStart()">h :
-            <input type="number" min="0" max="60" v-model="minutes" placeholder="Minutes" @change="updateStart()">m :
-            <input type="number" min="0" max="60" v-model="seconds" placeholder="Seconds" @change="updateStart()">s  
-        </div>
-
-        <!-- Controls -->
-        <div>
-            <button @click="start" ref="startToggle" :disabled="isDisabled">Start</button>
-            <button @click="stop">Stop</button>
-            <button @click="reset">Reset</button>
-            <button @click="clear">Clear</button>
-        </div>
-
-        <!-- Manually Add Time -->
-        <div>
-            <button @click="addTime(1)">+1</button>
-            <button @click="addTime(5)">+5</button>
-            <button @click="addTime(15)">+15</button>
-        </div>
-        <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
-        
-        <!-- Progress Bar -->
-        <div class="progress-bar-container">
-            <div class="progress-bar-text">{{ percentLeft }} %</div>
-            <div class="progress-bar-background">{{ percentLeft }} %</div>
-            <div class="progress-bar" :style="[{width: percentLeft + '%' },{ animation: 'colorChange 2s both'}]"></div>
-        </div>
-    </div>
 </div>
 </template>
 <style scoped>
 
 .timer {
-    /* border: 1px solid black; */
-    /* background-color: #4d906e; */
     font-family: 'Share Tech Mono', sans-serif;
-    padding: 1em; 
     margin: 1em; 
     border-radius: 10px; 
     text-align: center; 
@@ -307,25 +305,12 @@ const fullSize = ref(false)
     border: 1px solid white;
 }
 
-button {
-    padding: 5px;
-    background-color: transparent;
-    border-radius: 20px;
-    color: lime;
-    background-color: black;
-}
-
-button:hover {
-    cursor: pointer;
-}
-
 /* Timer Settings Buttons */
 .edit-button {
     position: absolute;
     top: 0;
     right: 2em;
 }
-
 
 .time-left {
     color: white;
@@ -348,7 +333,7 @@ button {
 input[type=number] {
     font-size: 24px;
     /* width: 100px; */
-    width: 45px;
+    width: 55px;
     /* background-color: black;
     color: lime;
     border: 2px solid lime; */
@@ -380,7 +365,7 @@ input[type=number] {
 .progress-bar-container {
     position: relative;
     width: 100%;
-    height: 40px;
+    height: 25px;
     text-align: center;
 }
 .progress-bar {
@@ -461,11 +446,12 @@ div[role="progressbar"]::before {
     outline: 1px dashed lime;
     position: relative;
 }
-.column {
+.content {
     display: flex;
     flex-direction: column;
+    flex: 3;
 }
-.row {
+.main {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -473,5 +459,130 @@ div[role="progressbar"]::before {
     align-items: center;
 }
 
+.main img {
+    flex: 1;
+}
+
+/* .options {
+    position: absolute;
+    z-index: 999999;
+    background-color: rgba(14, 161, 219, 0.3);
+    backdrop-filter: blur(3px);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.options button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 36px;
+} */
+
+
+/* Nav Timer Layout */
+
+.nav-timer {
+    display: flex;
+    flex-direction: row;
+    outline: 1px solid lime;
+}
+
+.nav-img {
+    display: flex;
+    justify-content: stretch;
+    align-items: center;
+    flex: 1fr;
+}
+
+.nav-img img {
+    min-width: 100px;
+    aspect-ratio: 1;
+    padding: 10px;
+}
+
+.nav-content {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    flex: 3;
+}
+
+.time-left {
+    font-size: 36px;
+}
+
+.edit-button {
+    position: absolute;
+    top: 10px;
+    right: 40px;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    color: white;
+}
+
+.time-left-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.input-control {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-control-value {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Action buttons */
+.options-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Share Tech Mono', sans-serif;
+    color: #ebebeba3;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 5px 15px;
+    margin: 10px;
+    background-color: transparent;
+    border: none;
+}
+
+.options-button:hover {
+    color: white;
+}
+
+.disabled {
+    color: black !important;
+}
+
+.options-button span {
+    padding: 0.5em;
+    font-size: .65em;
+}
+
+.options {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
 
 </style>
