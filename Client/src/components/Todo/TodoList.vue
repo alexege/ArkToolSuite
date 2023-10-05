@@ -3,6 +3,7 @@
     <div v-for="todo in todoList" :key="todo.id" class="list">
       <div class="item" v-if="todo">
         <span :class="{ completed: todo.completed }" class="title">{{ todo.title }}</span>
+        <span class="created-at">{{ new Date(todo.createdAt).toLocaleString() }}</span>
         <div class="priority">{{ todo?.priority }}</div>
         <div class="assignee">{{todo?.assignee?.username || 'assignee'}}</div>
         <div class="actions">

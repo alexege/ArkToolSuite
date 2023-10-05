@@ -43,6 +43,8 @@ watch([days, hours, minutes, seconds], ([newDays, newHours, newMinutes, newSecon
 
 function start() {
 
+    isEditing.value = false;
+
     var startTime = Date.now()
     var desiredDelay = 1000;
     var actualDelay = 1000;
@@ -154,27 +156,81 @@ async function updateTimerName() {
 //     isEditingTimer.value = !isEditingTimer.value
 // }
 
+// Editing Timer Time
+const isEditing = ref(false)
+
+const fullSize = ref(false)
+
 </script>
 <template>
     <div class="timer" :class="{ timerFinished: timesUp }">
 
-        <!-- <div class="timer-settings">
-            <template v-if="isEditingTimer">
-                <button class="edit-button" @click="toggleEditTimer">edit</button>
-                <label for="">Status Bar Type:</label>
-                <select name="" id="" v-model="">
-                    <option value="both">both</option>
-                    <option value="circle">circle</option>
-                    <option value="line">line</option>
-                </select>
-                <button>A</button>
-                <button>B</button>
-                <button>C</button>
-            </template>
-            <template v-else>
-                <button class="edit-button" @click="toggleEditTimer">edit</button>
-            </template>
-        </div> -->
+    <!-- Compact Timer Layout -->
+    <div class="compact-timer">
+        
+        <div class="column">
+            <div>
+                <template v-if="isEditingTimerName">
+                    <input type="text" v-model="editTimer.name" @blur="updateTimerName" class="timer-name-input">
+                </template>
+                <template v-else>
+                    <h2 @dblclick="editName" class="timer-name">{{ timer.name }}</h2>
+                </template>
+            </div>
+            <div class="row">
+                <img  :src='`${timer.img}`' alt="" style="width: 80px; height: 80px;">
+                <div class="column">
+
+                    <template v-if="isEditing">
+                        <!-- Input Values -->
+                        <div>
+                            <input type="number" min="0" max="100" v-model="days" placeholder="Days" @change="updateStart()">d :
+                            <input type="number" min="0" max="24" v-model="hours" placeholder="Hours" @change="updateStart()">h :
+                            <input type="number" min="0" max="60" v-model="minutes" placeholder="Minutes" @change="updateStart()">m :
+                            <input type="number" min="0" max="60" v-model="seconds" placeholder="Seconds" @change="updateStart()">s  
+                        </div>
+                    </template>
+                    <template v-else>
+                        <h2 class="time-left">
+                            <span>{{ msToTime(timeToZero)[0] }}{{ msToTime(timeToZero)[1] }}:</span>
+                            <span>{{ msToTime(timeToZero)[3] }}{{ msToTime(timeToZero)[4] }}:</span>
+                            <span>{{ msToTime(timeToZero)[6] }}{{ msToTime(timeToZero)[7] }}:</span>
+                            <span>{{ msToTime(timeToZero)[9] }}{{ msToTime(timeToZero)[10] }}</span>
+                        </h2>
+                    </template>
+
+                    <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
+
+                    <!-- Controls -->
+                    <div>
+                       <button @click="start" ref="startToggle" :disabled="isDisabled">Start</button>
+                       <button @click="stop">Stop</button>
+                       <button @click="reset">Reset</button>
+                       <button @click="clear">Clear</button>
+                   </div>
+
+                   <!-- Progress Bar -->
+                   <div class="progress-bar-container">
+                       <div class="progress-bar-text">{{ percentLeft }} %</div>
+                       <div class="progress-bar-background">{{ percentLeft }} %</div>
+                       <div class="progress-bar" :style="[{width: percentLeft + '%' },{ animation: 'colorChange 2s both'}]"></div>
+                   </div>
+
+                </div>
+                
+            </div>
+            
+        </div>
+        <!-- <button @click="isEditing = !isEditing">Edit</button> -->
+
+
+
+
+         
+
+    </div>
+
+    <div class="full-size" v-if="fullSize">
 
         <template v-if="isEditingTimerName">
             <input type="text" v-model="editTimer.name" @blur="updateTimerName" class="timer-name-input">
@@ -184,7 +240,7 @@ async function updateTimerName() {
         </template>
 
         <!-- Circular ProgressBar -->
-        <div class="circular-progress" role="progressbar" :aria-valuenow="percentLeft" aria-valuemin="0" aria-valuemax="100" style="--value:percentLeft"></div>
+        <!-- <div class="circular-progress" role="progressbar" :aria-valuenow="percentLeft" aria-valuemin="0" aria-valuemax="100" style="--value:percentLeft"></div> -->
 
         <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
 
@@ -223,12 +279,14 @@ async function updateTimerName() {
             <div class="progress-bar" :style="[{width: percentLeft + '%' },{ animation: 'colorChange 2s both'}]"></div>
         </div>
     </div>
+</div>
 </template>
 <style scoped>
 
 .timer {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     /* background-color: #4d906e; */
+    font-family: 'Share Tech Mono', sans-serif;
     padding: 1em; 
     margin: 1em; 
     border-radius: 10px; 
@@ -250,7 +308,7 @@ async function updateTimerName() {
 }
 
 button {
-    padding: 10px;
+    padding: 5px;
     background-color: transparent;
     border-radius: 20px;
     color: lime;
@@ -277,6 +335,11 @@ button:hover {
     position: absolute;
     top: 10px;
     right: 15px;
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    color: white;
 }
 
 button {
@@ -284,18 +347,12 @@ button {
 }
 input[type=number] {
     font-size: 24px;
-    width: 100px;
-    /* width: 45px; */
-    background-color: black;
+    /* width: 100px; */
+    width: 45px;
+    /* background-color: black;
     color: lime;
-    border: 2px solid lime;
+    border: 2px solid lime; */
 }
-
-/* input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button {  
-   opacity: 1;
-
-} */
 
 .progress-bar {
     transition: width 1s;
@@ -396,5 +453,25 @@ div[role="progressbar"]::before {
   counter-reset: percentage v-bind(percentLeft);
   content: counter(percentage) '%';
 }
+
+
+
+/* compact-timer */
+.compact-timer {
+    outline: 1px dashed lime;
+    position: relative;
+}
+.column {
+    display: flex;
+    flex-direction: column;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
 
 </style>
