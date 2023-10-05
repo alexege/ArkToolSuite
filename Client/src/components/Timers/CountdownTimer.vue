@@ -154,12 +154,6 @@ async function updateTimerName() {
     isEditingTimerName.value = false;
 }
 
-// Editing Timer Settings
-// const isEditingTimer = ref(false);
-// function toggleEditTimer() {
-//     isEditingTimer.value = !isEditingTimer.value
-// }
-
 // Editing Timer Time
 const isEditing = ref(false)
 const isHovering = ref(false)
@@ -173,24 +167,19 @@ const timeIsEmpty = computed(() => {
     return timeToZero.value === 0;
 })
 
+const progressColor = computed(() => {
+    if (percentLeft.value > 60){
+        return 'green'
+    } else if(percentLeft.value > 30){
+        return 'yellow'
+    } else {
+        return 'red'
+    }
+})
+
 </script>
 <template>
     <div class="timer" :class="{ timerFinished: timesUp }">
-
-    <!-- <div class="options" v-if="isHovering" @mouseleave="isHovering = false">
-        <a @click="deleteTimer(timer._id)" class="deleteButton">&#9932;</a>
-        <button @click="toggleEditMode" class="edit-button">&#x270E;</button>
-
-        <template v-if="isPaused">
-            <button @click="start">&#9654;</button>
-        </template>
-        <template v-else>
-            <button @click="stop">||</button>
-        </template>
-        <button @click="edit">&#x270E;</button>
-        <button @click="reset">&#8634;</button>
-        <button @click="clear" class="clear-button">&#9212;</button>
-    </div> -->
 
     <div class="nav-timer">
          <div class="nav-img" @dblclick="changeTimerIcon">
@@ -202,7 +191,7 @@ const timeIsEmpty = computed(() => {
             <div class="nav-content" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
                 <div class="timer-title">
                     <template v-if="isEditingTimerName">
-                        <input type="text" v-model="editTimer.name" @blur="updateTimerName" class="timer-name-input">
+                        <input type="text" v-model="editTimer.name" @blur="updateTimerName" @keydown.enter="updateTimerName" class="timer-name-input">
                     </template>
                     <template v-else>
                         <h2 @dblclick="editName" class="timer-name">{{ timer.name }}</h2>
@@ -242,13 +231,15 @@ const timeIsEmpty = computed(() => {
                         </div>
                     </template>
                     <template v-else>
-                        <h2 class="time-left">
-                            <span>{{ msToTime(timeToZero)[0] }}{{ msToTime(timeToZero)[1] }}:</span>
-                            <span>{{ msToTime(timeToZero)[3] }}{{ msToTime(timeToZero)[4] }}:</span>
-                            <span>{{ msToTime(timeToZero)[6] }}{{ msToTime(timeToZero)[7] }}:</span>
-                            <span>{{ msToTime(timeToZero)[9] }}{{ msToTime(timeToZero)[10] }}</span>
-                        </h2>
+                        <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
                     </template>
+
+                <div v-if="isHovering" class="add-time">
+                    <button @click="addTime(1)" class="add-time-button">+1</button>
+                    <button @click="addTime(5)" class="add-time-button">+5</button>
+                    <button @click="addTime(15)" class="add-time-button">+15</button>
+                    <span>mins</span>
+                </div>
 
                 <div v-if="isHovering" class="options">
                     <template v-if="isPaused">
@@ -268,16 +259,9 @@ const timeIsEmpty = computed(() => {
                    <div class="progress-bar-container">
                        <div class="progress-bar-text">{{ percentLeft }} %</div>
                        <div class="progress-bar-background">{{ percentLeft }} %</div>
-                       <div class="progress-bar" :style="[{width: percentLeft + '%' },{ animation: 'colorChange 2s both'}]"></div>
+                       <div class="progress-bar" :style="[{width: percentLeft + '%' },{ animation: 'colorChange 2s both'},{'background-color':progressColor}]"></div>
                    </div>
                 </div>
-
-                <!-- Manually Add Time -->
-                <!-- <div>
-                    <button @click="addTime(1)">+1</button>
-                    <button @click="addTime(5)">+5</button>
-                    <button @click="addTime(15)">+15</button>
-                </div> -->
             </div>
         </div>
 </div>
@@ -551,6 +535,11 @@ div[role="progressbar"]::before {
 }
 
 /* Action buttons */
+.options {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
 .options-button {
     display: flex;
     flex-direction: column;
@@ -561,9 +550,12 @@ div[role="progressbar"]::before {
     cursor: pointer;
     font-size: 1em;
     padding: 5px 15px;
-    margin: 10px;
     background-color: transparent;
     border: none;
+}
+.options-button span {
+    padding: 0.25em;
+    font-size: .65em;
 }
 
 .options-button:hover {
@@ -574,15 +566,30 @@ div[role="progressbar"]::before {
     color: black !important;
 }
 
-.options-button span {
-    padding: 0.5em;
-    font-size: .65em;
-}
-
-.options {
+.add-time {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
+}
+
+.add-time-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Share Tech Mono', sans-serif;
+    color: #ebebeba3;
+    cursor: pointer;
+    font-size: 1em;
+    /* padding: 5px 15px; */
+    /* margin: 10px; */
+    background-color: transparent;
+    border: none;
+}
+
+.add-time-button:hover {
+    color: white;
 }
 
 </style>
