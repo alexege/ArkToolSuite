@@ -198,7 +198,8 @@ const progressColor = computed(() => {
                     </template>
                 </div>
                 <div class="timer-value">
-                    <template v-if="isHovering">
+                    <transition name="slide-fade">
+                    <div v-if="isHovering" style="transition-delay: 0.1s;">
 
                         <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
 
@@ -229,11 +230,11 @@ const progressColor = computed(() => {
                                 <input type="number" min="0" max="60" v-model="seconds" placeholder="Seconds" @change="updateStart()">
                             </div>
                         </div>
-                    </template>
-                    <template v-else>
+                    </div>
+                    <div v-else>
                         <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
-                    </template>
-
+                    </div>
+                </transition>
                 <div v-if="isHovering" class="add-time">
                     <button @click="addTime(1)" class="add-time-button">+1</button>
                     <button @click="addTime(5)" class="add-time-button">+5</button>
@@ -590,6 +591,22 @@ div[role="progressbar"]::before {
 
 .add-time-button:hover {
     color: white;
+}
+
+
+/* Transitions */
+.slide-fade-enter-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.1s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
 }
 
 </style>
