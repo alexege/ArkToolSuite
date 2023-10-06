@@ -3,8 +3,8 @@ import { ref, watch } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from "./stores/auth.store"
-
 import EventBus from './common/EventBus'
+
 
 const { activeUser } = storeToRefs(useAuthStore())
 const { logout } = useAuthStore()
@@ -49,6 +49,7 @@ watch(activeUser, (newVal, oldVal) =>{
   }
 })
 
+
 </script>
 
 <template>
@@ -84,7 +85,7 @@ watch(activeUser, (newVal, oldVal) =>{
    <RouterView />
   </div>
 </template>
-<style>
+<style scoped>
   nav {
     display: flex;
     justify-content: space-between;
@@ -108,4 +109,5 @@ watch(activeUser, (newVal, oldVal) =>{
   .router-link {
     padding-right: 20px;
   }
+
 </style>

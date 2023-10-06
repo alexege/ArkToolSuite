@@ -4,6 +4,7 @@ const User = require("../models/user.model");
 const Timer = require("../models/timer.model");
 
 exports.addTimer = (req, res) => {
+    console.log("req.body:", req.body);
     const timer = new Timer({
         name: req.body.name,
         creator: req.body.creator,
@@ -37,7 +38,8 @@ exports.addTimer = (req, res) => {
 exports.updateTimer = (req, res) => {
     console.log("updating timer from controller:", req.body);
     let data = {
-        name: req.body.name
+        name: req.body.name,
+        img: req.body.img
     }
     Timer.findByIdAndUpdate({ _id: req.params.id }, data)
     .then(timer => {

@@ -1,4 +1,5 @@
 <script setup>
+import { storeToRefs } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import { useTimerStore } from '../../stores/timer.store';
 
@@ -119,10 +120,6 @@ function msToTime(ms) {
     return `${days}:${hours}:${minutes}:${seconds}`;
 }
 
-const isDisabled = computed(() => {
-    if(days.value == 0 && hours.value == 0 && minutes.value == 0 && seconds.value == 0) return true;
-})
-
 const inputStartTime = computed(() => {
     return days.value * 86400000 + hours.value * 3600000 + minutes.value * 60000 + seconds.value * 1000;
 })
@@ -159,9 +156,7 @@ const isEditing = ref(false)
 const isHovering = ref(false)
 const isPaused = ref(true)
 
-const changeTimerIcon = () => {
-    alert("Attempting to change timer image")
-}
+
 
 const timeIsEmpty = computed(() => {
     return timeToZero.value === 0;
@@ -177,9 +172,65 @@ const progressColor = computed(() => {
     }
 })
 
+
+
+
+
+// Modal Logic
+
+const changeTimerIcon = () => {
+    showModal.value = true
+}
+
+import Modal from "../../components/Modal.vue"
+const showModal = ref(false)
+
+const closeModal = () => {
+  console.log("closing modal")
+  showModal.value = false
+}
+
+const updateImage = async (name) => {
+    showModal.value = false
+    
+    const urlString = `src/assets/dinos/${name}.png`
+
+    //Logic to update timer with desired url
+    const data = { 
+        _id: props.timer._id,
+        img: urlString 
+    }
+    
+    //If timer name is default, set it to dino name
+    if(props.timer.name == 'Timer Name'){
+        console.log("Name was left default, setting it to dinosaur name.")
+        data.name = name
+    }
+
+    await updateTimer(data)
+
+}
+
+// Adding dinos to the Modal
+import { useItemStore } from "../../stores/item.store"
+const { fetchItems } = useItemStore()
+const { uniqueItems } = storeToRefs(useItemStore())
+fetchItems()
+
 </script>
+
 <template>
     <div class="timer" :class="{ timerFinished: timesUp }">
+
+    <!-- Modal -->
+    <teleport to="#modals">
+      <div class="modal-bg" v-if="showModal" @click.self="closeModal">
+        <div class="modal">
+          <Modal @close="closeModal" @selectedImage="updateImage" :items="uniqueItems">
+          </Modal>
+        </div>
+      </div>
+    </teleport>
 
     <div class="nav-timer">
          <div class="nav-img" @dblclick="changeTimerIcon">
@@ -198,8 +249,8 @@ const progressColor = computed(() => {
                     </template>
                 </div>
                 <div class="timer-value">
-                    <transition name="slide-fade">
-                    <div v-if="isHovering" style="transition-delay: 0.1s;">
+                    
+                    <div v-if="isHovering">
 
                         <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
 
@@ -234,7 +285,6 @@ const progressColor = computed(() => {
                     <div v-else>
                         <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
                     </div>
-                </transition>
                 <div v-if="isHovering" class="add-time">
                     <button @click="addTime(1)" class="add-time-button">+1</button>
                     <button @click="addTime(5)" class="add-time-button">+5</button>
@@ -362,7 +412,6 @@ input[type=number] {
     position: absolute;
     top: 0;
     color: white;
-    z-index: 1;
     width: 100%;
     font-weight: bold;
 }
@@ -488,7 +537,8 @@ div[role="progressbar"]::before {
 }
 
 .nav-img img {
-    min-width: 100px;
+    min-width: 10px;
+    max-width: 100px;
     aspect-ratio: 1;
     padding: 10px;
 }
@@ -594,19 +644,32 @@ div[role="progressbar"]::before {
 }
 
 
-/* Transitions */
-.slide-fade-enter-active {
-  transition: all 0.25s ease-out;
-}
 
-.slide-fade-leave-active {
-  transition: all 0.1s cubic-bezier(1, 0.5, 0.8, 1);
-}
 
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateY(10px);
-  opacity: 0;
-}
+
+
+
+/* Modals */
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 80%;
+    width: 80%;
+    background: black;
+    text-align: center;
+    position: fixed;
+    overflow: auto;
+  }
+
+  .modal-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    backdrop-filter: blur(3px);
+  }
 
 </style>
