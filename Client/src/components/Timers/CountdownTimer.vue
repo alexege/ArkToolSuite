@@ -200,7 +200,7 @@ const updateImage = async (name) => {
         _id: props.timer._id,
         img: urlString 
     }
-    
+
     //If timer name is default, set it to dino name
     if(props.timer.name == 'Timer Name'){
         console.log("Name was left default, setting it to dinosaur name.")
@@ -249,7 +249,6 @@ fetchItems()
                     </template>
                 </div>
                 <div class="timer-value">
-                    
                     <div v-if="isHovering">
 
                         <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
@@ -285,13 +284,14 @@ fetchItems()
                     <div v-else>
                         <h2 class="time-left">{{ msToTime(timeToZero) }}</h2>
                     </div>
-                <div v-if="isHovering" class="add-time">
-                    <button @click="addTime(1)" class="add-time-button">+1</button>
+                    <div v-if="isHovering" class="add-time">
+                        <button @click="addTime(1)" class="add-time-button">+1</button>
                     <button @click="addTime(5)" class="add-time-button">+5</button>
                     <button @click="addTime(15)" class="add-time-button">+15</button>
                     <span>mins</span>
                 </div>
 
+            <transition name="fadeHeight" mode="out-in">
                 <div v-if="isHovering" class="options">
                     <template v-if="isPaused">
                         <button @click="start" class="options-button" :class="{disabled:timeIsEmpty}" :disabled="timeIsEmpty">&#9654;<br>Start</button>
@@ -302,6 +302,7 @@ fetchItems()
                     <button @click="reset" class="options-button">&#8634;<br>reset</button>
                     <button @click="clear" class="options-button">&#9932;<br>clear</button>
                 </div>
+            </transition>
 
                 <a @click="deleteTimer(timer._id)" class="deleteButton">&#9932;</a>
 
@@ -414,6 +415,7 @@ input[type=number] {
     color: white;
     width: 100%;
     font-weight: bold;
+    z-index: 1;
 }
 .progress-bar-background {
     background-color: black;
@@ -665,6 +667,7 @@ div[role="progressbar"]::before {
 
   .modal-bg {
     position: fixed;
+    z-index: 2;
     top: 0;
     left: 0;
     height: 100vh;
@@ -672,4 +675,18 @@ div[role="progressbar"]::before {
     backdrop-filter: blur(3px);
   }
 
+
+
+  /* Animate open */
+  .fadeHeight-enter-active,
+.fadeHeight-leave-active {
+  transition: all 0.5s;
+  max-height: 430px;
+}
+.fadeHeight-enter,
+.fadeHeight-leave-to
+{
+  opacity: 0;
+  max-height: 0px;
+}
 </style>

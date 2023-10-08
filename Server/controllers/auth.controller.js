@@ -13,7 +13,7 @@ exports.signup = (req, result) => {
       username: req.body.username,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
-      img: "../assets/default_profile.png"
+      img: "https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg"
     });
 
     user.save()

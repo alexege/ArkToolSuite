@@ -32,7 +32,8 @@ async function onRegister() {
     const userInfo = {
         username: username.value,
         password: password.value,
-        email: email.value
+        email: email.value,
+        img: 'https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg'
     }
 
     await register(userInfo)
