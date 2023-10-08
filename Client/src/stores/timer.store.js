@@ -55,13 +55,18 @@ export const useTimerStore = defineStore({
     },
 
     async updateTimer(updatedTimer) {
-      console.log("@@@@@@@@@@updated Timer:@@@@@@@@@", updatedTimer);
+      console.log("updatedTimer")
       try {
-        let result = await axios.patch(`${API_URL}/timers/update/${updatedTimer._id}`, updatedTimer)
-        console.log("UPdated TIMER:", result.data);
-        let current = this.timers.find(timer => timer._id == updatedTimer._id);
-        current.img = updatedTimer.img;
-        console.log("current:", current);
+        await axios.patch(`${API_URL}/timers/update/${updatedTimer._id}`, updatedTimer)
+        
+        let timerToUpdateIdx = this.timers.indexOf(this.timers.find((timer) => timer._id == updatedTimer._id));
+
+        let merged = {
+          ...this.timers[timerToUpdateIdx],
+          ...updatedTimer
+        }
+
+        this.timers[timerToUpdateIdx] = merged;
       } catch (error) {
         console.log("error:", error);
       }

@@ -240,8 +240,6 @@ exports.addItem = (req, res) => {
       console.log("err:", err);
     })
 
-    console.log('req.body:', req.body);
-
     // Layout.findOne({
     //   _id: "65076cfe41afa9c42b6f94dc"
     // })
@@ -283,8 +281,7 @@ exports.findOne = (req, res) => {
 
 // Update a Item by the id in the request
 exports.update = (req, res) => {
-  console.log("updating:", req.params);
-  console.log("body:", req.body);
+  
   let updateData = {
     title: req.body.title,
     url: req.body.url,

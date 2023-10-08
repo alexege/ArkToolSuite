@@ -4,7 +4,6 @@ const User = require("../models/user.model");
 const Timer = require("../models/timer.model");
 
 exports.addTimer = (req, res) => {
-    console.log("req.body:", req.body);
     const timer = new Timer({
         name: req.body.name,
         creator: req.body.creator,

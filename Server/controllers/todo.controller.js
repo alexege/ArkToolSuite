@@ -20,15 +20,12 @@ exports.findAllTodos = (req, res) => {
 // Create and Save a new Todo
 exports.addTodo = (req, res) => {
 
-    console.log("req.body:", req.body)
-
     const todo = new Todo({
       title: req.body.title,
       priority: req.body.priority,
       completed: req.body.completed,
     });
 
-    console.log("new todo:", req.body);
     if(req.body.assignee){
         User.findOne({ _id: req.body.assignee })
         .then((user) => {
@@ -78,9 +75,6 @@ exports.findOne = (req, res) => {
 
 // Update a Todo by the id in the request
 exports.update = (req, res) => {
-
-  console.log("req.body:", req.body)
-  // console.log("params:", req.params)
 
   let updateData = {
     completed: !req.body.completed

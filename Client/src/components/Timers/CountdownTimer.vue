@@ -322,10 +322,11 @@ fetchItems()
 
 .timer {
     font-family: 'Share Tech Mono', sans-serif;
-    margin: 1em; 
+    margin: .5em; 
     border-radius: 10px; 
     text-align: center; 
     position: relative;
+    width: 100%;
 }
 
 .timer-name {

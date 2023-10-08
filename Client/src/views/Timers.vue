@@ -36,17 +36,16 @@ async function add(type) {
     <div>
         <h2>Timers Page</h2>
         
-        <button @click="add('countDown')">Add Countdown</button>
-        <br/><br/>
-        <button @click="add('stopWatch')">Add Stopwatch</button>
-
         <div class="timer-container">
             <div class="stopwatches">
                 <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer" @close="close"/>
+                <button class="add-timer-button" @click="add('stopWatch')">+</button>
             </div>
-    
+            
+            
             <div class="countdowns">
                 <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id"  :timer="timer" @close="close"/>
+                <button class="add-timer-button" @click="add('countDown')">+</button>
             </div>
         </div>
 
@@ -68,6 +67,21 @@ h2{
 }
 
 .countdowns {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
     width: 50%;
+}
+
+.add-timer-button {
+    /* width: 100%; */
+    width: 50px;
+    display: block;
+    background: transparent;
+    border: 1px solid lime;
+    color: white;
+    padding: 1em;
+    margin: 15px;
 }
 </style>
