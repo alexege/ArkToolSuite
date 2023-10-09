@@ -22,7 +22,7 @@ const { fetchUsers } = useUserStore()
 fetchUsers()
 
 </script>
-<style>
+<style scoped>
   .title {
     width: 100%;
     margin: 0 auto;
