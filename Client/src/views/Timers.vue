@@ -34,7 +34,7 @@ async function add(type) {
 </script>
 <template>
     <div>
-        <h2>Timers Page</h2>
+        <h2>Timers</h2>
         
         <div class="timer-container">
             <div class="stopwatches">
@@ -54,22 +54,27 @@ async function add(type) {
 <style scoped>
 h2{
     text-align: center;
+    color: white;
+    font-size: 36px;
 }
 
 .timer-container {
     display: flex;
     flex-direction: row;
     align-content: start;
+    gap: 20px;
 }
 
 .stopwatches {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 50%;
 }
 
 .countdowns {
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
     width: 50%;
 }
@@ -83,5 +88,10 @@ h2{
     color: white;
     padding: 1em;
     margin: 15px;
+    cursor: pointer;
+}
+
+.add-timer-button:hover {
+    background: rgba(0, 255, 0, 0.25)
 }
 </style>

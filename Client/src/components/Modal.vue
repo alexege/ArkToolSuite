@@ -23,7 +23,7 @@ function selectImg(url) {
                 <div v-for="item in props.items" :key="item._id">
                     <div class="block-cell">
                         <div class="block">
-                            <img :src="item.url" :alt="item.title" @dblclick="selectImg(item.title)">
+                            <img :src="item.url" :alt="item.title" @click="selectImg(item.title)">
                         </div>
                     </div>
                 </div>
@@ -91,6 +91,7 @@ function selectImg(url) {
 
 .block:hover {
     background-color: rgb(102, 102, 102);
+    outline: 2px solid lime;
     /* transform: rotate(10deg);
     animation: 2s; */
     transition-property: transform;

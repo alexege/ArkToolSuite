@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useTimerStore } from '../../stores/timer.store';
 
-var time = ref('00:00:00.00')
+var time = ref('00:00:00:00')
 var timeBegan = ref(null)
 var timeStopped = ref(null)
 var stoppedDuration = ref(0)
@@ -36,7 +36,7 @@ function reset() {
     stoppedDuration.value = 0;
     timeBegan.value = null;
     timeStopped.value = null;
-    time.value = "00:00:00.00";
+    time.value = "00:00:00:00";
 }
 
 function clockRunning() {
@@ -87,10 +87,10 @@ async function updateTimerName() {
 </script>
 
 <template>
-    <div id="clock">
-        <a @click="deleteTimer(timer._id)" class="deleteButton">x</a>
+    <div id="clock" >
+        <a @click="deleteTimer(timer._id)" class="deleteButton">&#9932;</a>
         <template v-if="isEditingTimerName">
-            <input type="text" v-model="editTimer.name" @blur="updateTimerName">
+            <input type="text" v-model="editTimer.name" @blur="updateTimerName" @keydown.enter="updateTimerName">
         </template>
         <template v-else>
             <h2 @dblclick="editName">{{ timer.name }}</h2>
@@ -112,21 +112,30 @@ async function updateTimerName() {
      position: relative;
      font-family: 'Share Tech Mono', sans-serif;
 	 order: 0;
+     display: flex;
+     flex-direction: column;
 	 flex: 0 1 auto;
-	 align-self: center;
+	 align-items: center;
      text-align: center;
 	 /* color: #c8c8c8; */
      color: lime;
-     border: 1px solid black;
-     margin: 15px;
-     border-radius: 10px;
+     outline: 1px solid lime;
+     /* margin: 15px; */
+     margin: .5em; 
+     width: 100%;
 }
+
+#clock h2 {
+    font-size: 1.5em;
+}
+
  #clock .time {
-	 font-size: 4.5em;
+	 font-size: 36px;
+     color: white;
 }
  #clock .text {
 	 margin-top: 30px;
-	 font-size: 1em;
+     font-size: 15px;
 	 color: rgba(200, 200, 200, .4);
 	 text-align: center;
 }
@@ -140,7 +149,6 @@ async function updateTimerName() {
 }
  #clock .btn-container {
 	 display: flex;
-	 margin-top: 15px;
 }
  #clock .btn-container a {
 	 text-align: center;
@@ -152,7 +160,7 @@ async function updateTimerName() {
 	 padding: 10px 15px;
 	 margin: 0 10px;
 	 text-transform: uppercase;
-	 font-size: 2em;
+	 /* font-size: 2em; */
 	 cursor: pointer;
 	 flex-grow: 1;
 	 transition: color 0.1s ease-out;
@@ -163,8 +171,13 @@ async function updateTimerName() {
 
 #clock .deleteButton {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+}
+
+#clock .deleteButton:hover {
+    color: white;
 }
  
 </style>

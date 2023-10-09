@@ -428,6 +428,7 @@ input[type=number] {
     width: 100%;
     font-weight: bold;
     z-index: 1;
+    text-shadow: 2px 2px black;
 }
 .progress-bar-background {
     background-color: black;
