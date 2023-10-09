@@ -1,8 +1,5 @@
-Following tutorials:
-https://signoz.io/blog/mevn-stack-tutorial/
+Using this project as a fun playground to learn new things.
 
-Using:
-nodemon - to constantly restart server
-concurrently - to run simultaneous commands
+Utilizing Vue3 with Pinia for state management.
 
-Any inconsistencies with api mismatching could be related to converting localhost to 127.0.0.0.1 (May have to reset this later)
+Start project by running: npm run dev in both the client and server folders.
