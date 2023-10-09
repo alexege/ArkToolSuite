@@ -211,6 +211,16 @@ const updateImage = async (name) => {
 
 }
 
+const hide = ref(true)
+
+function showSettingsCog() {
+    hide.value = false;
+}
+
+function hideSettingsCog() {
+    hide.value = true;
+}
+
 // Adding dinos to the Modal
 import { useItemStore } from "../../stores/item.store"
 const { fetchItems } = useItemStore()
@@ -233,7 +243,8 @@ fetchItems()
     </teleport>
 
     <div class="nav-timer">
-         <div class="nav-img" @dblclick="changeTimerIcon">
+         <div class="nav-img" @mouseenter="showSettingsCog" @mouseleave="hideSettingsCog">
+            <span class="edit-nav-img" :class="{hide: hide}" @click="changeTimerIcon">Edit</span>
             <img :src="timer.img" alt="" v-if="timer.img">
             <img src="https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg" width="80px" alt="" v-else>
             <!-- <img :src='`${timer.img}` || "https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg"' alt="Timer Image"> -->
@@ -537,6 +548,9 @@ div[role="progressbar"]::before {
     justify-content: stretch;
     align-items: center;
     flex: 1fr;
+    background-color: rgb(0, 0, 0);
+    border: 1px solid lime;
+    position: relative;
 }
 
 .nav-img img {
@@ -544,6 +558,24 @@ div[role="progressbar"]::before {
     max-width: 100px;
     aspect-ratio: 1;
     padding: 10px;
+}
+
+.edit-nav-img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 255, 0, 0.25);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.hide {
+    display: none;
 }
 
 .nav-content {
