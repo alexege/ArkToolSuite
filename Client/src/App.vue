@@ -4,6 +4,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from "./stores/auth.store"
 import EventBus from './common/EventBus'
+import Sidebar from './views/Sidebar.vue'
 
 
 const { activeUser } = storeToRefs(useAuthStore())
@@ -54,6 +55,9 @@ watch(activeUser, (newVal, oldVal) =>{
 
 <template>
   <div>
+
+    <Sidebar />
+
     <header class="navbar">
      <div>
        <nav>
