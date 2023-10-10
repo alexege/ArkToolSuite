@@ -25,6 +25,15 @@
 				<span class="material-icons">timer</span>
 				<span class="text">Timers</span>
 			</router-link>
+            <div>
+                <div class="timer-selection">
+                    <button>Countdown</button>
+                    <button>Stopwatch</button>
+                </div>
+                <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id" :timer="timer"></CountdownTimer>
+                <!-- <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer"></StopwatchTimer> -->
+            </div>
+
 			<router-link to="/todo" class="button">
 				<span class="material-icons">fact_check</span>
 				<span class="text">todo</span>
@@ -44,6 +53,15 @@
 
 <script setup>
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import CountdownTimer from '../components/Timers/SidebarCountdownTimer.vue';
+import StopwatchTimer from '../components/Timers/StopwatchTimer.vue';
+import { useTimerStore } from '../stores/timer.store.js'
+
+const { fetchTimers } = useTimerStore()
+const { allStopwatchTimers, allCountDownTimers } = storeToRefs(useTimerStore())
+
+fetchTimers()
 // import logoURL from '../assets/logo.png'
 
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
@@ -121,6 +139,11 @@ aside {
 
 	.menu {
 		margin: 0 -1rem;
+
+        .timer-selection {
+            display: flex;
+            justify-content: center;
+        }
 
 		.button {
 			display: flex;

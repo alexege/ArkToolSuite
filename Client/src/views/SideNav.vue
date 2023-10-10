@@ -123,8 +123,8 @@ async function onDrag(evt, item) {
     }
 
     .block img {
-        aspect-ratio: 1;
-        max-width: 100%;
+        /* max-width: 100%; */
         max-height: 100%;
+        aspect-ratio: 1;
     }
 </style>

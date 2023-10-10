@@ -3,11 +3,8 @@
         <div>
             <div class="card">
                 <p class="card-title">SidePanel</p>
-                <button class="save-button">
-                    Save
-                </button>
                 <button class="add-button" @click="add">
-                    +
+                    New Layout
                 </button>
             </div>
             <AddEditLayout v-for="layout in allLayouts" :key="layout._id" v-bind:layout="layout" @click="activateLayout(layout._id)" :class="activeLayoutId === layout._id ? 'active' : ''"/>
@@ -63,16 +60,12 @@ fetchLayouts()
         margin: 0.25em;
     }
 
-    .save-button {
-        width: 25%;
-        padding: 1em;
-        margin: 0.25em;
-    }
-
     .add-button {
         width: 25%;
         padding: 1em;
         margin: 0.25em;
+        outline: 1px solid lime;
+        color: lime;
     }
 
     .active {

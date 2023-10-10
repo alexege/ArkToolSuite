@@ -58,7 +58,7 @@ watch(activeUser, (newVal, oldVal) =>{
 
     <Sidebar />
 
-    <div class="main">
+    <main>
 
     <header class="navbar">
      <div>
@@ -89,7 +89,7 @@ watch(activeUser, (newVal, oldVal) =>{
    </header> 
  
    <RouterView />
-  </div>
+  </main>
 </div>
 </template>
 <style lang="scss">
@@ -100,7 +100,7 @@ watch(activeUser, (newVal, oldVal) =>{
 	--dark: #1e293b;
 	--dark-alt: #334155;
   --dark-black: black;
-	--light: #0458ac;
+	--light: white;
 	--sidebar-width: 300px;
 }
 
@@ -131,6 +131,10 @@ button {
 			padding-left: 6rem;
 		}
 	}
+
+  .main {
+    width: 100%;
+  }
 }
 </style>
 <style scoped>
