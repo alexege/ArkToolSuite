@@ -22,7 +22,7 @@ import {
         if (userDetails) {
           const uid = userDetails.uid;
           user.value = { email: userDetails.email, uid };
-          router.push({ name: 'notes' });
+          // router.push({ name: 'notes' });
         //   notesStore.getNotes();
         } else {
           user.value = {};

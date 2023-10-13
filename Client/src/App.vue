@@ -2,11 +2,14 @@
 import { ref, watch, onMounted } from 'vue'
 import { useRouter, RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
-import { useAuthStore } from "./stores/auth.store"
+// import { useAuthStore } from "./stores/auth.store"
+import { useAuthStore } from "./stores/AuthStore"
 import Sidebar from '@/views/Sidebar.vue'
 
 const router = useRouter()
-const { activeUser } = storeToRefs(useAuthStore())
+// const { activeUser } = storeToRefs(useAuthStore())
+
+const authStore = useAuthStore()
 
 const showModBoard = ref(false);
 const showAdminBoard = ref(false);
@@ -30,17 +33,17 @@ function welcomeMessage() {
 }
 
 //Having issues with activeUser updating properly. Will revisit to attempt to use a computed for this.
-watch(activeUser, (newVal, oldVal) =>{
-  console.log(`old:${oldVal}, new:${newVal}`)
-  if(newVal && newVal.roles){
-    if(newVal.roles.includes('ROLE_ADMIN')){
-      showAdminBoard.value = true;
-    }
-    if(newVal.roles.includes('ROLE_MODERATOR')){
-      showModBoard.value = true;
-    }
-  }
-})
+// watch(activeUser, (newVal, oldVal) =>{
+//   console.log(`old:${oldVal}, new:${newVal}`)
+//   if(newVal && newVal.roles){
+//     if(newVal.roles.includes('ROLE_ADMIN')){
+//       showAdminBoard.value = true;
+//     }
+//     if(newVal.roles.includes('ROLE_MODERATOR')){
+//       showModBoard.value = true;
+//     }
+//   }
+// })
 
 
 
@@ -48,6 +51,7 @@ import { signOut, getAuth, onAuthStateChanged } from "firebase/auth"
 const isLoggedIn = ref(false)
 
 onMounted(() => {
+    authStore.init()
     onAuthStateChanged(getAuth(), (user) => {
       if (user) {
         isLoggedIn.value = true
