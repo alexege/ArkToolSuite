@@ -1,8 +1,7 @@
 <template>
 	<aside :class="`${is_expanded ? 'is-expanded' : ''}`">
 		<div class="logo">
-            <img src="" alt="Error 404">
-			<!-- <img :src="logoURL" alt="Vue" />  -->
+            <span class="material-icons">menu</span>
 		</div>
 
 		<div class="menu-toggle-wrap">

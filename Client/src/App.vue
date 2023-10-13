@@ -1,24 +1,16 @@
 <script setup>
-import { ref, watch } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { ref, watch, onMounted } from 'vue'
+import { useRouter, RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from "./stores/auth.store"
-import EventBus from './common/EventBus'
 import Sidebar from '@/views/Sidebar.vue'
 
-
+const router = useRouter()
 const { activeUser } = storeToRefs(useAuthStore())
-const { logout } = useAuthStore()
 
 const showModBoard = ref(false);
 const showAdminBoard = ref(false);
 
-function doLogout() {
-  logout()
-  
-  //Added for JWT Refresh
-  this.$router.push('/')
-}
 
 function welcomeMessage() {
   var data = [
@@ -51,6 +43,28 @@ watch(activeUser, (newVal, oldVal) =>{
 })
 
 
+
+import { signOut, getAuth, onAuthStateChanged } from "firebase/auth"
+const isLoggedIn = ref(false)
+
+onMounted(() => {
+    onAuthStateChanged(getAuth(), (user) => {
+      if (user) {
+        isLoggedIn.value = true
+      } else {
+        isLoggedIn.value = false
+      }
+    })
+  })
+
+//Log User out
+const handleSignOut = () => {
+  signOut(getAuth()).then((res) => {
+      console.log("signing out...", res)
+      router.push("/")
+    })
+}
+
 </script>
 
 <template>
@@ -81,8 +95,10 @@ watch(activeUser, (newVal, oldVal) =>{
             {{ welcomeMessage() }} {{ activeUser.username }}
             <a href="" style="outline: 1px solid white; padding: .5em" @click="doLogout">Logout</a>
           </div>
-          <RouterLink class="router-link" to="/login" v-if="!activeUser">Login </RouterLink>
-          <RouterLink class="router-link" to="/register" v-if="!activeUser">Register</RouterLink>
+          <!-- <RouterLink class="router-link" to="/login" v-if="!activeUser">Login </RouterLink>
+          <RouterLink class="router-link" to="/register" v-if="!activeUser">Register</RouterLink> -->
+          <RouterLink class="router-link" to="/auth">Login/Register</RouterLink>
+          <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
         </div>
        </nav>
      </div>

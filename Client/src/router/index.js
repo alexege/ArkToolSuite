@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 import Dashboard from '../views/Dashboard.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import Login from '../views/Login.vue'
@@ -7,6 +8,7 @@ import ModDashboard from '../views/ModDashboard.vue'
 import UserDashboard from '../views/UserDashboard.vue'
 import Timers from '../views/Timers.vue'
 import TodoList from '../views/TodoList.vue'
+import AuthView from '../views/AuthView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,20 +16,26 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Dashboard
+      component: Dashboard,
+      meta: {
+        requiresAuth: false
+      }
     },
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/AboutView.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/admin',
       name: 'admin',
-      component: AdminDashboard
+      component: AdminDashboard,
+      meta: {
+        requiresAuth: false
+      }
     },
     {
       path: '/login',
@@ -42,39 +50,83 @@ const router = createRouter({
     {
       path: '/mod',
       name: 'modDashboard',
-      component: ModDashboard
+      component: ModDashboard,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/user',
       name: 'userDashboard',
-      component: UserDashboard
+      component: UserDashboard,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/timers',
       name: 'timers',
-      component: Timers
+      component: Timers,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/todo',
       name: 'todo',
-      component: TodoList
+      component: TodoList,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/auth',
+      name: 'auth',
+      component: AuthView
     }
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/register', '/home'];
-  const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem('user');
+const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+      const removeListener = onAuthStateChanged(
+          getAuth(),
+          (user) => {
+              removeListener()
+              resolve(user)
+          },
+          reject
+      )
+  })
+}
 
-  // trying to access a restricted page + not logged in
-  // redirect to login page
-  if (authRequired && !loggedIn) {
-    next('/login');
+router.beforeEach(async(to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)){
+      if (await getCurrentUser()) {
+        console.log("successfully gathered user");
+          next()
+      } else {
+          alert("You do not have access to this page!\nPlease login to continue!")
+          next("/auth")
+      }
   } else {
-    next();
+      next()
   }
 });
+
+// router.beforeEach((to, from, next) => {
+//   const publicPages = ['/login', '/register', '/home'];
+//   const authRequired = !publicPages.includes(to.path);
+//   const loggedIn = localStorage.getItem('user');
+
+//   // trying to access a restricted page + not logged in
+//   // redirect to login page
+//   if (authRequired && !loggedIn) {
+//     next('/login');
+//   } else {
+//     next();
+//   }
+// });
 
 export default router
 
