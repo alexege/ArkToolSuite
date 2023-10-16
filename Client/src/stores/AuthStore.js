@@ -42,7 +42,8 @@ import {
           if(userCredential.user.uid){
             userStore.register(userCredential.user, credentials.username, credentials.password)
             .then((res) => {
-              //Todo
+              console.log("Just registered. Now loggign in")
+              loginUser(credentials)
             })
             .catch((error) => {
               console.log("Error registering user: ", error);
