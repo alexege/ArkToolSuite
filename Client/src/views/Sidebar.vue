@@ -32,7 +32,10 @@
                 <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id" :timer="timer"></CountdownTimer>
                 <!-- <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer"></StopwatchTimer> -->
             </div>
-
+			<router-link to="/layouts" class="button">
+				<span class="material-icons">description</span>
+				<span class="text">Layouts</span>
+			</router-link>
 			<router-link to="/todo" class="button">
 				<span class="material-icons">fact_check</span>
 				<span class="text">todo</span>

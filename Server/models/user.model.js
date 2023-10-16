@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const User = mongoose.model(
     "User",
     new mongoose.Schema({
+        _id: String,
         username: String,
         email: String,
         password: String,
@@ -12,10 +13,7 @@ const User = mongoose.model(
                 ref: "Role"
             }
         ],
-        img: { 
-            data: Buffer, 
-            contentType: String 
-        }
+        img: String
     },
     { timestamps: true})
 );

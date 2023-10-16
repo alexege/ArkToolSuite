@@ -12,7 +12,9 @@ import {
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
 //   import { useNotesStore } from './NotesStore';
-  
+
+  import { useUserStore } from './user.store'
+ 
   export const useAuthStore = defineStore('authStore', () => {
     const user = ref({});
     const router = useRouter();
@@ -32,12 +34,21 @@ import {
       });
     };
     const registerUser = (credentials) => {
+    const userStore = useUserStore()
+      console.log("credentials:", credentials)
       createUserWithEmailAndPassword(auth, credentials.email, credentials.password)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          console.log(user);
-          // ...
+        .then(userCredential => {
+
+          if(userCredential.user.uid){
+            userStore.register(userCredential.user, credentials.username, credentials.password)
+            .then((res) => {
+              //Todo
+            })
+            .catch((error) => {
+              console.log("Error registering user: ", error);
+            })
+          }
+
         })
         .catch((error) => {
           console.log(error.message);
@@ -45,11 +56,17 @@ import {
         });
     };
 
-    const googleSignin = () => {
+    const googleSignin = (credentials) => {
       const provider = new GoogleAuthProvider()
+      // const userStore = useUserStore()
+
       signInWithPopup(getAuth(), provider)
-      .then((response) => {
-        console.log("successfully sent login attempt with google signin:", response)
+      .then((userCredentials) => {
+        console.log("successfully sent login attempt with google signin:", userCredentials)
+        
+        // If user account with uid exists, set that user to activeUser
+        // Else create a new user with uid
+        // userStore.register(userCredentials.user, credentials.password)
         router.push("/")
       })
       .catch((error) => {
@@ -62,7 +79,7 @@ import {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log(user);
+          console.log("user:", user);
           router.push("/")
           // ...
         })

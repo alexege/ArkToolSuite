@@ -15,6 +15,29 @@ export const useUserStore = defineStore({
         }
     },
     actions: {
+
+        async register(signUpData, username, password) {
+            console.log("::::::::::::::registering from user.store::::::::::", signUpData);
+
+            let data = {
+                signUpData,
+                username,
+                password
+            }
+
+            try {
+                await axios.post(`${API_URL}/users/signup`, data)
+                .then((response) => {
+                    console.log("register response:", response);
+                    this.users.push(response.data)
+                    this.router.push('/')
+                })
+    
+            } catch (e) {
+                console.log("error:", e)
+            }
+        },
+
         async fetchUsers() {
             // this.users = { loading: true };
             try {

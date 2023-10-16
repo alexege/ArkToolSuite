@@ -9,6 +9,7 @@ import UserDashboard from '../views/UserDashboard.vue'
 import Timers from '../views/Timers.vue'
 import TodoList from '../views/TodoList.vue'
 import AuthView from '../views/AuthView.vue'
+import Layouts from '../views/LayoutView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -67,6 +68,14 @@ const router = createRouter({
       path: '/timers',
       name: 'timers',
       component: Timers,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/layouts',
+      name: 'layouts',
+      component: Layouts,
       meta: {
         requiresAuth: true
       }

@@ -9,40 +9,41 @@ const { refreshToken: RefreshToken } = require("../models");
 const { isValidObjectId } = require("mongoose");
 
 exports.signup = (req, result) => {
-    const user = new User({
-      username: req.body.username,
-      email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, 8),
-      img: "https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg"
-    });
+    console.log("Signing up via auth controller: ", req.body);
+    // const user = new User({
+    //   username: req.body.username,
+    //   email: req.body.email,
+    //   password: bcrypt.hashSync(req.body.password, 8),
+    //   img: "https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg"
+    // });
 
-    user.save()
-    .then((user) => {
-      if(req.body.roles) {
-        Role.find({ name: { $in: req.body.roles }})
-        .then((roles) => {
-          user.roles = roles.map(role => role._id)
-          user.save()
-          .then((res) => {
-            result.status(200).send({ message: "User registered successfully!" })
-          })
-          .catch((err) => console.log("error:", err))
-        })
-        .catch((err) => console.log("error:", err))
-      } else {
-        Role.findOne({ name: "user" })
-        .then((role) => {
-          user.roles = [role._id]
-          user.save()
-          .then((res) => {
-            result.status(200).send({ message: "User registered successfully!" })
-          })
-          .catch((err) => console.log("error:", err))
-        })
-        .catch((err) => console.log("error:", err))
-      }
-    })
-    .catch((err) => console.log("error:", err))
+    // user.save()
+    // .then((user) => {
+    //   if(req.body.roles) {
+    //     Role.find({ name: { $in: req.body.roles }})
+    //     .then((roles) => {
+    //       user.roles = roles.map(role => role._id)
+    //       user.save()
+    //       .then((res) => {
+    //         result.status(200).send({ message: "User registered successfully!" })
+    //       })
+    //       .catch((err) => console.log("error:", err))
+    //     })
+    //     .catch((err) => console.log("error:", err))
+    //   } else {
+    //     Role.findOne({ name: "user" })
+    //     .then((role) => {
+    //       user.roles = [role._id]
+    //       user.save()
+    //       .then((res) => {
+    //         result.status(200).send({ message: "User registered successfully!" })
+    //       })
+    //       .catch((err) => console.log("error:", err))
+    //     })
+    //     .catch((err) => console.log("error:", err))
+    //   }
+    // })
+    // .catch((err) => console.log("error:", err))
   
   };
 

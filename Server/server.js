@@ -341,47 +341,48 @@ function initial() {
     }
   })
 
-  User.estimatedDocumentCount()
-  .then((count) => {
-    if (count === 0) {
+  // User.estimatedDocumentCount()
+  // .then((count) => {
+  //   if (count === 0) {
 
-      const user = new User({
-        username: 'ege',
-        email: 'ege@admin.com',
-        password: bcrypt.hashSync('asdfasdf', 8),
-        roles: [],
-        img: null
-      })
+  //     const user = new User({
+  //       _id: 1,
+  //       username: 'ege',
+  //       email: 'ege@admin.com',
+  //       password: bcrypt.hashSync('asdfasdf', 8),
+  //       roles: [],
+  //       img: null
+  //     })
         
-        //Add Admin Role
-        Role.findOne({ name: 'admin' })
-        .then((role) => {
-          user.roles.push(role);
+  //       //Add Admin Role
+  //       Role.findOne({ name: 'admin' })
+  //       .then((role) => {
+  //         user.roles.push(role);
           
-          user.save(user)
-          .then((user) => {
+  //         user.save(user)
+  //         .then((user) => {
             
-              //Add Mod Role
-            Role.findOne({ name: 'moderator' })
-            .then((role) => {
-              user.roles.push(role);
+  //             //Add Mod Role
+  //           Role.findOne({ name: 'moderator' })
+  //           .then((role) => {
+  //             user.roles.push(role);
               
-              user.save(user)
-              .then(() => {
-                //Do nothing
-              })
-              .catch(err =>{
-                console.log("error:", err);
-              })
-            })
+  //             user.save(user)
+  //             .then(() => {
+  //               //Do nothing
+  //             })
+  //             .catch(err =>{
+  //               console.log("error:", err);
+  //             })
+  //           })
 
-          })
-          .catch(err =>{
-            console.log("error:", err);
-          })
-        })
+  //         })
+  //         .catch(err =>{
+  //           console.log("error:", err);
+  //         })
+  //       })
 
        
-    }
-  })
+  //   }
+  // })
 }

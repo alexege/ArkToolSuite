@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed} from 'vue'
 import { useRouter, RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
 // import { useAuthStore } from "./stores/auth.store"
@@ -44,8 +44,6 @@ function welcomeMessage() {
 //     }
 //   }
 // })
-
-
 
 import { signOut, getAuth, onAuthStateChanged } from "firebase/auth"
 const isLoggedIn = ref(false)
@@ -92,12 +90,13 @@ const handleSignOut = () => {
         </div>
 
         <RouterLink class="router-link" to="/timers">Timers</RouterLink>
+        <RouterLink class="router-link" to="/layouts">Layouts</RouterLink>
         <RouterLink class="router-link" to="/todo">TodoList</RouterLink>
 
         <div>
-          <div class="welcome-message" v-if="activeUser">
-            {{ welcomeMessage() }} {{ activeUser.username }}
-            <a href="" style="outline: 1px solid white; padding: .5em" @click="doLogout">Logout</a>
+          <div class="welcome-message" v-if="authStore.user.uid">
+            {{ welcomeMessage() }} {{ authStore.user.email }}
+            <!-- <a href="" style="outline: 1px solid white; padding: .5em" @click="doLogout">Logout</a> -->
           </div>
           <!-- <RouterLink class="router-link" to="/login" v-if="!activeUser">Login </RouterLink>
           <RouterLink class="router-link" to="/register" v-if="!activeUser">Register</RouterLink> -->

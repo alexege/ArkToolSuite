@@ -1,16 +1,19 @@
 <script setup>
-import SideNav from "./SideNav.vue"
-import SidePanel from "./SidePanel.vue"
-import ItemGrid from "./ItemGrid.vue"
+import { useUserStore } from '../stores/user.store'
+const { fetchUsers } = useUserStore()
+const userStore = useUserStore()
+fetchUsers()
+
+import { useAuthStore } from '../stores/AuthStore'
+const authStore = useAuthStore()
+
 </script>
 
 <template>
   <div>
-    <p class="title">Item Layout</p>
     <div class="container">
-      <SideNav/>
-      <ItemGrid />
-      <SidePanel/>
+      <h2>{{ authStore.user }}</h2>
+      <pre>{{ userStore.users }}</pre>
     </div>
   </div>
 </template>

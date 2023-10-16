@@ -6,6 +6,9 @@
         
         <form @submit.prevent="doLogin" class="login-form">
 
+            <label for="username">username</label>
+            <input type="text" v-model="credentials.username">
+
             <label for="email">email</label>
             <input type="email" v-model="credentials.email">
     
@@ -30,8 +33,9 @@
     const authStore = useAuthStore();
   
     const credentials = reactive({
+      username: '',
       email: '',
-      password: ''
+      password: '',
     });
   
     const formTitle = computed(() => {
