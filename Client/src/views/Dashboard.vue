@@ -12,6 +12,7 @@ const authStore = useAuthStore()
 <template>
   <div>
     <div class="container">
+      <h2>{{ userStore.user}}</h2>
       <h2>{{ authStore.user }}</h2>
       <pre>{{ userStore.users }}</pre>
     </div>

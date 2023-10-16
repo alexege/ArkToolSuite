@@ -29,7 +29,9 @@ export const useUserStore = defineStore({
                 await axios.post(`${API_URL}/users/signup`, data)
                 .then((response) => {
                     console.log("register response:", response);
-                    this.users.push(response.data)
+                    this.user = response.data.user
+                    // this.users.push(response.data)
+                    this.users.push(response.data.user)
                     this.router.push('/')
                 })
     

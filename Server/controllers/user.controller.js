@@ -56,7 +56,8 @@ exports.signup = (req, result) => {
           user.roles = roles.map(role => role._id)
           user.save()
           .then((res) => {
-            result.status(200).send({ message: "User registered successfully!" })
+            result.status(200).send({ user })
+            // result.status(200).send({ message: "User registered successfully!" })
           })
           .catch((err) => console.log("error:", err))
         })
@@ -67,7 +68,8 @@ exports.signup = (req, result) => {
           user.roles = [role._id]
           user.save()
           .then((res) => {
-            result.status(200).send({ message: "User registered successfully!" })
+            result.status(200).send({ user })
+            // result.status(200).send({ message: "User registered successfully!" })
           })
           .catch((err) => console.log("error:", err))
         })
