@@ -11,19 +11,23 @@ import {
   import { auth } from '../js/firebase';
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
+  import { useUserStore } from './user.store';
 //   import { useNotesStore } from './NotesStore';
-
-  import { useUserStore } from './user.store'
  
   export const useAuthStore = defineStore('authStore', () => {
     const user = ref({});
     const router = useRouter();
+    const userStore = useUserStore()
     // const notesStore = useNotesStore();
     const init = () => {
+      console.log("authStore.init")
       onAuthStateChanged(auth, (userDetails) => {
         if (userDetails) {
           const uid = userDetails.uid;
           user.value = { email: userDetails.email, uid };
+
+          //Set userStore's user value to the active user in AuthStore
+          userStore.user = userStore.getActiveUser(user)
           // router.push({ name: 'notes' });
         //   notesStore.getNotes();
         } else {

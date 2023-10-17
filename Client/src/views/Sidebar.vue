@@ -14,7 +14,7 @@
 		<div class="menu">
 			<router-link to="/" class="button">
 				<span class="material-icons">home</span>
-				<span class="text">Home</span>
+				<span class="text">Dashboard</span>
 			</router-link>
 			<router-link to="/user" class="button">
 				<span class="material-icons">description</span>
@@ -45,10 +45,10 @@
 		<div class="flex"></div>
 		
 		<div class="menu">
-			<!-- <router-link to="/settings" class="button">
+			<router-link to="/settings" class="button">
 				<span class="material-icons">settings</span>
 				<span class="text">Settings</span>
-			</router-link> -->
+			</router-link>
 		</div>
 	</aside>
 </template>
@@ -225,4 +225,6 @@ aside {
 		z-index: 99;
 	}
 }
+
+
 </style>

@@ -42,8 +42,7 @@ exports.signup = (req, result) => {
       username: req.body.username,
       email: req.body.signUpData.email,
       password: bcrypt.hashSync(req.body.password, 8),
-      img: 'http://www.google.com'
-      // img: req.body.img ? req.body.img : "https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg"
+      img: req.body.img ? req.body.img : "https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg"
     });
 
     console.log("user:", user)

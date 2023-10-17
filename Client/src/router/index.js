@@ -10,6 +10,7 @@ import Timers from '../views/Timers.vue'
 import TodoList from '../views/TodoList.vue'
 import AuthView from '../views/AuthView.vue'
 import Layouts from '../views/LayoutView.vue'
+import SettingsView from '../views/SettingsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -92,6 +93,11 @@ const router = createRouter({
       path: '/auth',
       name: 'auth',
       component: AuthView
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView
     }
   ]
 })

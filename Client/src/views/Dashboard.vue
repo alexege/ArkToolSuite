@@ -12,9 +12,9 @@ const authStore = useAuthStore()
 <template>
   <div>
     <div class="container">
-      <h2>{{ userStore.user}}</h2>
-      <h2>{{ authStore.user }}</h2>
-      <pre>{{ userStore.users }}</pre>
+      <pre>User:{{ userStore.user}}</pre><br /><br />
+      <pre>AuthUser:{{ authStore.user }}</pre><br /><br />
+      <pre>All Users:{{ userStore.users }}</pre>
     </div>
   </div>
 </template>
@@ -30,9 +30,6 @@ const authStore = useAuthStore()
 }
 
 .container {
-  display: grid;
-  grid-template-columns: 25% 50% 25%;
-  grid-template-rows: auto;
-  /* outline: 1px solid red; */
+  
 }
 </style>

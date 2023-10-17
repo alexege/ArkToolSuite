@@ -22,9 +22,9 @@
 </template>
 
 <script setup>
-import { useAuthStore } from "../stores/auth.store.js"
-const authStore = useAuthStore()
+import { useUserStore } from "../stores/user.store.js"
+const userStore = useUserStore()
 
-const user = authStore.user;
+const user = userStore.user;
 
 </script>

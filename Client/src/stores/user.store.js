@@ -12,9 +12,20 @@ export const useUserStore = defineStore({
     getters: {
         allUsers(state) {
             return state.users;
-        }
+        },
     },
     actions: {
+
+        getActiveUser(user) {
+            console.log("user:", user.value.uid);
+            console.log("users:", this.users)
+            let uid = user.value.uid;
+            console.log("uid:", uid);
+            if (user.value.uid) {
+                console.log("active user is: ", this.users.filter((user) => user._id === uid))
+                return this.users.filter(user => user._id == uid)[0]
+            }
+        },
 
         async register(signUpData, username, password) {
             console.log("::::::::::::::registering from user.store::::::::::", signUpData);

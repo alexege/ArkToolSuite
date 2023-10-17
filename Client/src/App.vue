@@ -4,6 +4,7 @@ import { useRouter, RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia';
 // import { useAuthStore } from "./stores/auth.store"
 import { useAuthStore } from "./stores/AuthStore"
+import { useUserStore } from "./stores/user.store"
 import Sidebar from '@/views/Sidebar.vue'
 
 const router = useRouter()
@@ -14,6 +15,7 @@ const authStore = useAuthStore()
 const showModBoard = ref(false);
 const showAdminBoard = ref(false);
 
+const userStore = useUserStore()
 
 function welcomeMessage() {
   var data = [
@@ -80,34 +82,34 @@ const handleSignOut = () => {
      <div>
        <nav>
         <div>
-          <RouterLink class="router-link" to="/">Home</RouterLink>
+          <RouterLink class="router-link" to="/">Dashboard</RouterLink>
           <!-- <RouterLink class="router-link" to="/admin" v-if="showAdminBoard">Admin</RouterLink> -->
           <RouterLink class="router-link" to="/admin" v-if="showAdminBoard">Admin</RouterLink>
 
           <!-- <RouterLink class="router-link" to="/admin">Admin</RouterLink> - -->
           <RouterLink class="router-link" to="/mod" v-if="showModBoard">Moderator</RouterLink>
-          <RouterLink class="router-link" to="/user">User</RouterLink>
         </div>
+        <RouterLink class="router-link" to="/user">User</RouterLink>
 
         <RouterLink class="router-link" to="/timers">Timers</RouterLink>
         <RouterLink class="router-link" to="/layouts">Layouts</RouterLink>
         <RouterLink class="router-link" to="/todo">TodoList</RouterLink>
 
+        <div class="welcome-message" v-if="userStore.user">
+          {{ welcomeMessage() }} {{ userStore.user.username }}
+        </div>
         <div>
-          <div class="welcome-message" v-if="authStore.user.uid">
-            {{ welcomeMessage() }} {{ authStore.user.email }}
-            <!-- <a href="" style="outline: 1px solid white; padding: .5em" @click="doLogout">Logout</a> -->
-          </div>
-          <!-- <RouterLink class="router-link" to="/login" v-if="!activeUser">Login </RouterLink>
-          <RouterLink class="router-link" to="/register" v-if="!activeUser">Register</RouterLink> -->
-          <RouterLink class="router-link" to="/auth">Login/Register</RouterLink>
-          <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
+          <button @click="handleSignOut" v-if="isLoggedIn">
+    				<!-- <span class="material-icons">timer</span> -->
+            Sign Out
+          </button>
+          <RouterLink class="router-link" to="/auth" v-else>Login/Register</RouterLink>
         </div>
        </nav>
      </div>
    </header> 
  
-   <RouterView />
+   <RouterView class="router-view"/>
   </main>
 </div>
 </template>
@@ -131,6 +133,10 @@ body {
 	background: var(--dark-black);
 }
 
+.router-view {
+  padding: 1em;
+}
+
 button {
 	cursor: pointer;
 	appearance: none;
@@ -144,7 +150,8 @@ button {
 
 	main {
 		flex: 1 1 0;
-		padding: 2rem;
+		// padding: 2rem;
+    overflow: hidden;
 
 		@media (max-width: 1024px) {
 			padding-left: 6rem;
@@ -165,9 +172,8 @@ button {
   .navbar {
     display: flex;
     flex-direction: column;
-    background-color: #45906C;
+    background-color: #42b883;
     padding: 1.2rem;
-    border-radius: 5px;
   }
 
   .navbar a {
