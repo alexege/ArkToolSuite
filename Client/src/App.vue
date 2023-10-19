@@ -127,9 +127,13 @@ const handleSignOut = () => {
 	--sidebar-width: 300px;
 }
 
+.router-view {
+  height: 100%;
+  outline: 2px solid white;
+}
+
 * {
   font-family: 'Share Tech Mono', sans-serif;
-  color: white;
 }
 
 body {

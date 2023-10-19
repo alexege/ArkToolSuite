@@ -4,6 +4,7 @@ const Todo = mongoose.model(
     "Todo",
     new mongoose.Schema({
         title: String,
+        category: String,
         priority: String,
         completed: Boolean,
         assignee: {

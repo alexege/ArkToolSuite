@@ -40,6 +40,7 @@ import { ref } from "vue";
     //Set default values
     const todoItem = ref({
       title: null,
+      category: 'breeding',
       priority: 'Low',
       completed: false,
       assignee: null
@@ -47,10 +48,9 @@ import { ref } from "vue";
 
     function addTodoItem() {
 
-      console.log("ass:", todoItem.value.assignee);
-
       const item = {
         title: todoItem.value.title,
+        category: todoItem.value.category,
         priority: todoItem.value.priority,
         completed: todoItem.value.completed,
         assignee: todoItem.value.assignee || null

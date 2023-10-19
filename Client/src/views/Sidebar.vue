@@ -1,7 +1,8 @@
 <template>
 	<aside :class="`${is_expanded ? 'is-expanded' : ''}`">
 		<div class="logo">
-            <span class="material-icons">menu</span>
+			<img src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/d/d3/Giganotosaurus.png/" alt="">
+            <!-- <span class="material-icons">menu</span> -->
 		</div>
 
 		<div class="menu-toggle-wrap">
@@ -153,7 +154,11 @@ aside {
 		margin-bottom: 1rem;
 
 		img {
-			width: 2rem;
+			width: 4rem;
+			background-color: white;
+			border-radius: 50%;
+			margin: .25em;
+			padding: 10px;
 		}
 	}
 
@@ -272,6 +277,7 @@ aside {
 		}
 
 		.button {
+			
 			.material-icons {
 				margin-right: 1rem;
 			}

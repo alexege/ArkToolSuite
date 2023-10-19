@@ -10,12 +10,8 @@
   import TodoForm from "../components/Todo/TodoForm.vue";
   import TodoList from "../components/Todo/TodoList.vue";
   </script>
-  <style scoped>
+  <style lang="scss" scoped>
   .todo-app {
-    padding: 5vh;
-    min-height: 100vh;
-    width: 100%;
-    background-color: black;
     color: white;
   }
   </style>

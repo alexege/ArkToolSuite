@@ -22,6 +22,7 @@ exports.addTodo = (req, res) => {
 
     const todo = new Todo({
       title: req.body.title,
+      category: req.body.category,
       priority: req.body.priority,
       completed: req.body.completed,
     });

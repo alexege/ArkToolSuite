@@ -128,7 +128,8 @@ async function rightClickClear(evt, item) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  overflow: visible;
+  overflow: auto;
+  max-height: 80vh;
   justify-content: space-between;
 }
 
