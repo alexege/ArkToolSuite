@@ -25,11 +25,24 @@
 				<span class="text">Timers</span>
 			</router-link>
             <div>
-                <div class="timer-selection">
-                    <button>Countdown</button>
-                    <button>Stopwatch</button>
-                </div>
-                <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id" :timer="timer"></CountdownTimer>
+
+				<AccordionPanel aria-title="" title="Active Timers" icon="timer">
+					<div class="timer-selection">
+						<div class="timer-options">
+							<button>Countdown</button>
+							<button class="add-timer-button" @click="add('stopWatch')">+</button>
+						</div>
+						<div class="timer-options">
+							<button>Mix</button>
+						</div>
+						<div class="timer-options">
+							<button>Stopwatch</button>
+							<button class="add-timer-button" @click="add('countDown')">+</button>
+						</div>
+					</div>
+					<CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id" :timer="timer" @close="close"></CountdownTimer>
+				</AccordionPanel>
+
                 <!-- <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer"></StopwatchTimer> -->
             </div>
 			<router-link to="/layouts" class="button">
@@ -50,15 +63,21 @@
 				<span class="text">Settings</span>
 			</router-link>
 		</div>
+
+		<div :style="contentStyle" class="content">
+		<p :style="infoStyle" class="info">{{ info }}</p>
+		</div>
+
 	</aside>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import CountdownTimer from '../components/Timers/SidebarCountdownTimer.vue';
 import StopwatchTimer from '../components/Timers/StopwatchTimer.vue';
 import { useTimerStore } from '../stores/timer.store.js'
+import AccordionPanel from '../components/accordion/AccordionPanel.vue';
 
 const { fetchTimers } = useTimerStore()
 const { allStopwatchTimers, allCountDownTimers } = storeToRefs(useTimerStore())
@@ -72,20 +91,57 @@ const ToggleMenu = () => {
 	is_expanded.value = !is_expanded.value
 	localStorage.setItem("is_expanded", is_expanded.value)
 }
+
+// Accordion Toggle
+const expanded = ref(false);
+const contentStyle = computed(() => {
+	return { "max-height": expanded.value? "100px" : 0 }
+});
+
+const infoStyle = computed(() => {
+	return { opacity: expanded.value ? 1 : 0 }
+})
+
+// Add Timers
+const { addTimer, deleteTimer } = useTimerStore()
+async function add(type) {
+
+    var data = {
+        name: 'Timer Name',
+        type: type,
+        creator: null,
+        img: 'https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg'
+    }
+
+    await addTimer(data)
+    .then((res) => {
+        console.log("added item with result:", res);
+    })
+}
+
+async function close(timerId) {
+    await deleteTimer(timerId)
+}
+
 </script>
 
 <style lang="scss" scoped>
+
 aside {
 	display: flex;
 	flex-direction: column;
 
-	background-color: var(--dark);
+	// background-color: var(--dark);
+	background-color: #081c24;
 	color: var(--light);
+
+    border-right: 1px solid white;
 
 	width: calc(2rem + 32px);
 	overflow: hidden;
 	min-height: 100vh;
 	padding: 1rem;
+	// height: 100vh;
 
 	transition: 0.2s ease-in-out;
 
@@ -141,6 +197,12 @@ aside {
 
 	.menu {
 		margin: 0 -1rem;
+
+		.timer-options {
+			display: flex;
+			flex-direction: column;
+			justify-content: start
+		}
 
         .timer-selection {
             display: flex;

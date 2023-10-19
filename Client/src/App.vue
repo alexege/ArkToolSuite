@@ -115,10 +115,12 @@ const handleSignOut = () => {
 </template>
 <style lang="scss">
 :root {
-	--primary: #4ade80;
+	--primary: #2d6f67;
+	// --primary: #4ade80;
 	--primary-alt: #22c55e;
 	--grey: #64748b;
-	--dark: #1e293b;
+	// --dark: #1e293b;
+	--dark: black;
 	--dark-alt: #334155;
   --dark-black: black;
 	--light: white;
@@ -127,6 +129,7 @@ const handleSignOut = () => {
 
 * {
   font-family: 'Share Tech Mono', sans-serif;
+  color: white;
 }
 
 body {
@@ -172,7 +175,9 @@ button {
   .navbar {
     display: flex;
     flex-direction: column;
-    background-color: #42b883;
+    /* background-color: #42b883; */
+    /* background-color: #2d6f67; */
+    background-color: #041e27;
     padding: 1.2rem;
   }
 
