@@ -96,4 +96,10 @@ form {
   display: flex;
   flex: .5 1 0%;
 }
+
+.actions button {
+  color: white;
+  border: 1px solid white;
+  padding: 5px;
+}
 </style>

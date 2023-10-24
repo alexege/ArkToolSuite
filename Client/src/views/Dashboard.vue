@@ -14,7 +14,13 @@ const authStore = useAuthStore()
     <div class="container">
       <pre>User:{{ userStore.user}}</pre><br /><br />
       <pre>AuthUser:{{ authStore.user }}</pre><br /><br />
-      <pre>All Users:{{ userStore.users }}</pre>
+      <label for="">All Users:</label>
+      <ul>
+        <li v-for="user in userStore.users" :key="user._id">
+          <pre>{{ user.username }}</pre>
+        </li>
+      </ul>
+      
     </div>
   </div>
 </template>

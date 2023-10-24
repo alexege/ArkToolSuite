@@ -542,6 +542,7 @@ div[role="progressbar"]::before {
     display: flex;
     flex-direction: row;
     outline: 1px solid lime;
+    background-color: #041e27de;
 }
 
 .nav-img {

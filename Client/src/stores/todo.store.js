@@ -10,7 +10,12 @@ export const useTodoListStore = defineStore('todoList', {
   }),
   getters: {
     allTodos: (state) => {
+      if(Array.isArray(state.todoList)) return state.todoList.filter((item) => item.completed == false);
       return state.todoList;
+    },
+
+    completedItems: (state) => {
+      if(Array.isArray(state.todoList)) return state.todoList.filter((item) => item.completed == true);
     }
   },
   actions: {
@@ -27,10 +32,10 @@ export const useTodoListStore = defineStore('todoList', {
     },
 
     async addTodo(item) {
-      console.log("Adding todo in pinia", item);
+      if(item.assignee){
         const todoItem = await axios.post(`${API_URL}/todo/addTodo`, item)
-        console.log("item:", todoItem.data);
         await this.todoList.push(todoItem.data)
+      }
     },
 
     async deleteTodo(todoId) {

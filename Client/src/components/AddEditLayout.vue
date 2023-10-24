@@ -5,7 +5,7 @@
         <label for="">{{ props.layout.title }}</label>
         <!-- <input type="text" v-model="title"> -->
         <div class="container-actions">
-            <button>Edit</button>
+            <!-- <button>Edit</button> -->
             <button @click="deleteThisLayout(props.layout._id)">Delete</button>
         </div>
     </div>

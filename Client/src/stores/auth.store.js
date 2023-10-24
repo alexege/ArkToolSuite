@@ -8,7 +8,6 @@ export const useAuthStore = defineStore({
   id: 'Auth',
   state: () => ({
     users: [],
-    // user: JSON.parse(localStorage.getItem('user')) || null,
     user: null,
     loggedIn: false,
     loading: false,
@@ -41,9 +40,6 @@ actions: {
                 //Store JWT in local storage to keep user logged in between page changes
                 localStorage.setItem('user', JSON.stringify(response.data))
     
-    
-    
-                // router.push(this.returnURL || '/')
                 this.router.push('/')
             })
         } catch (e) {
@@ -66,14 +62,13 @@ actions: {
     },
     
     logout() {
-        console.log("atteempting to logout");
         this.user = null;
         this.loggedIn = false;
         localStorage.removeItem('user')
-        // router.push('/accounts/login')
+        //This appears to be unreachable TODO::Figure out what is intercepting it first.
+        this.router.push('/auth')
     },
 
-    //Custom adding - not sure if necessary
     refreshToken(accessToken) {
         this.loggedIn = true;
         this.user = { ...this.user, accessToken };

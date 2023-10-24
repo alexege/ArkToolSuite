@@ -63,7 +63,8 @@ async function onDrag(evt, item) {
         margin: 5px;
         padding: 5px;
         overflow: auto;
-        height: 100%;
+        /* height: 100%; */
+        max-height: 80vh;
     }
 
     .search {

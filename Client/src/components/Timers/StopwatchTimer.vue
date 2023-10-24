@@ -120,6 +120,7 @@ async function updateTimerName() {
 	 /* color: #c8c8c8; */
      color: lime;
      outline: 1px solid lime;
+     background-color: #041e27de;
      /* margin: 15px; */
      margin: .5em; 
      width: 100%;

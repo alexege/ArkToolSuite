@@ -1,34 +1,33 @@
-import api from "./api";
-import TokenService from "./token.service";
+// import api from "./api";
+// import TokenService from "./token.service";
 
-class AuthService {
-  login({ username, password }) {
-    console.log("logging in using AuthService from auth.service.js");
-    return api
-      .post("/auth/signin", {
-        username,
-        password
-      })
-      .then((response) => {
-        if (response.data.accessToken) {
-          TokenService.setUser(response.data);
-        }
+// class AuthService {
+//   login({ username, password }) {
+//     return api
+//       .post("/auth/signin", {
+//         username,
+//         password
+//       })
+//       .then((response) => {
+//         if (response.data.accessToken) {
+//           TokenService.setUser(response.data);
+//         }
 
-        return response.data;
-      });
-  }
+//         return response.data;
+//       });
+//   }
 
-  logout() {
-    TokenService.removeUser();
-  }
+//   logout() {
+//     TokenService.removeUser();
+//   }
 
-  register({ username, email, password }) {
-    return api.post("/auth/signup", {
-      username,
-      email,
-      password
-    });
-  }
-}
+//   register({ username, email, password }) {
+//     return api.post("/auth/signup", {
+//       username,
+//       email,
+//       password
+//     });
+//   }
+// }
 
-export default new AuthService();
+// export default new AuthService();

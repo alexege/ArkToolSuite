@@ -6,8 +6,8 @@ const Todo = db.todo;
 exports.findAllTodos = (req, res) => {
   Todo.find()
   .populate("assignee")
-  .sort([["gridPosition", "ascending"]])
-  .then(todos => {
+  // .sort([["gridPosition", "ascending"]])
+  .then((todos) => {
     res.send(todos);
   })
   .catch(err => {
