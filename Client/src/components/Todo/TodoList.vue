@@ -73,42 +73,42 @@
     <!-- Completed Items -->
     <ul class="todo-labels">
       <li class="label idx">idx</li>
-      <li class="label title" @click.prevent="sort('title')">
+      <li class="label title" @click.prevent="sortCompleted('title')">
         Task Title
         <div v-if="sortBy === 'title'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
-      <li class="label category" @click.prevent="sort('category')">
+      <li class="label category" @click.prevent="sortCompleted('category')">
         Category
         <div v-if="sortBy === 'category'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
-      <li class="label created-at" @click.prevent="sort('createdAt')">
+      <li class="label created-at" @click.prevent="sortCompleted('createdAt')">
         Created
         <div v-if="sortBy === 'createdAt'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
-      <li class="label priority" @click.prevent="sort('priority')">
+      <li class="label priority" @click.prevent="sortCompleted('priority')">
         Priority
         <div v-if="sortBy === 'priority'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
-      <li class="label assignee" @click.prevent="sort('assignee')">
+      <li class="label assignee" @click.prevent="sortCompleted('assignee')">
         Assignee
         <div v-if="sortBy === 'assignee'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
-      <li class="label action" @click.prevent="sort('completed')">
+      <li class="label action" @click.prevent="sortCompleted('completed')">
         Completed
         <!-- <div v-if="sortBy === 'completed'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
@@ -116,7 +116,7 @@
         </div> -->
       </li>
     </ul>
-    <div class="list" v-for="todo, idx in completedItems" :key="todo._id">
+    <div class="list" v-for="todo, idx in sortedCompletedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
           <li class="idx">{{  idx + 1 }}</li>
@@ -197,6 +197,40 @@
         }
       }
       return todoListStore.allTodos
+  })
+
+  //Sort Completed Items
+  var sortByCompleted = ref('')
+  var sortDirectionCompleted = ref(1)
+
+  function sortCompleted(type) {
+    if(sortByCompleted.value != type) sortDirection.value = 1
+    sortByCompleted.value = type
+    sortDirectionCompleted.value *= -1
+  }
+
+  var sortedCompletedProperties = computed(() => {
+    if(sortDirectionCompleted.value){
+      const direction = sortDirectionCompleted.value
+      const type = sortByCompleted.value
+
+      if(Array.isArray(todoListStore.completedItems)){
+        let copy = [...todoListStore.completedItems]
+
+        if(type == 'priority'){
+          var priorityOrder = { 'High':0, 'Medium':1, 'Low':2}
+          if(sortDirectionCompleted.value === 1){
+            return copy.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+          } else {
+            return copy.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority])
+          }
+        }
+
+          //Generic Sort Selection
+          return copy.sort(sortMethods(type, direction))
+        }
+      }
+      return todoListStore.completedItems
   })
 
   var completed = computed(() => {
