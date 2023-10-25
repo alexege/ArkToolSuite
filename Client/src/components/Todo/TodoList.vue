@@ -2,6 +2,7 @@
   <div>
     <div>
       <ul class="todo-labels">
+      <li class="label idx">idx</li>
       <li class="label title" @click.prevent="sort('title')">
         Task Title
         <div v-if="sortBy === 'title'">
@@ -18,7 +19,7 @@
       </li>
       <li class="label created-at" @click.prevent="sort('createdAt')">
         Created
-        <div v-if="sortBy === 'created'">
+        <div v-if="sortBy === 'createdAt'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
@@ -50,9 +51,10 @@
       <li class="item" v-if="todo"></li>
     </ul> -->
 
-    <div class="list" v-for="todo in sortedProperties" :key="todo._id">
+    <div class="list" v-for="todo, idx in sortedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
+          <li class="label idx">{{ idx + 1 }}</li>
           <li class="label title" :class="{ completed: todo.completed }">{{ todo.title }}</li>
           <li class="label category">{{ todo.category }}</li>
           <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
@@ -70,6 +72,7 @@
     <!-- <pre>{{ todoList}}</pre> -->
     <!-- Completed Items -->
     <ul class="todo-labels">
+      <li class="label idx">idx</li>
       <li class="label title" @click.prevent="sort('title')">
         Task Title
         <div v-if="sortBy === 'title'">
@@ -86,7 +89,7 @@
       </li>
       <li class="label created-at" @click.prevent="sort('createdAt')">
         Created
-        <div v-if="sortBy === 'created'">
+        <div v-if="sortBy === 'createdAt'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
@@ -113,9 +116,10 @@
         </div> -->
       </li>
     </ul>
-    <div class="list" v-for="todo in completedItems" :key="todo._id">
+    <div class="list" v-for="todo, idx in completedItems" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
+          <li class="idx">{{  idx + 1 }}</li>
           <li class="title" :class="{ completed: todo.completed }">{{ todo.title }}</li>
           <li class="category">{{ todo.category }}</li>
           <li class="created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
@@ -180,18 +184,19 @@
         let copy = [...todoListStore.allTodos]
 
         if(type == 'priority'){
-          let priorityList = []
+          var priorityOrder = { 'High':0, 'Medium':1, 'Low':2}
+          if(sortDirection.value === 1){
+            return copy.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+          } else {
+            return copy.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority])
           }
-
-
-          // console.log("Attempting to sort via priority");
-          return copy.sort(sortMethods(type, direction))
         }
 
+          //Generic Sort Selection
+          return copy.sort(sortMethods(type, direction))
+        }
       }
       return todoListStore.allTodos
-    // }
-    // return todoListStore.allTodos
   })
 
   var completed = computed(() => {
@@ -265,6 +270,11 @@
   padding: 5px;
   /* font-size: 1.5em; */
   gap: .5em;
+}
+
+.idx {
+  display: flex;
+  flex: .25 1 0%;
 }
 
 .title {
