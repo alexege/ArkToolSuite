@@ -24,7 +24,7 @@ exports.addTodo = (req, res) => {
       title: req.body.title,
       category: req.body.category,
       priority: req.body.priority,
-      completed: req.body.completed,
+      completed: req.body.completed
     });
 
     if(req.body.assignee){

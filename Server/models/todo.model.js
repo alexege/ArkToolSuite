@@ -11,6 +11,10 @@ const Todo = mongoose.model(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
+        commments: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Comment'
+        }]
     },
     { timestamps: true})
 )

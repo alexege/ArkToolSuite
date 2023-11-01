@@ -38,7 +38,7 @@
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
-      <li class="label action" @click.prevent="sort('completed')">
+      <li class="label action">
         Completed
         <!-- <div v-if="sortBy === 'completed'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
@@ -59,15 +59,19 @@
           <li class="label category">{{ todo.category }}</li>
           <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
           <li class="label priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
-          <li class="label assignee">{{ todo.assignee?.username || 'assignee' }}</li>
+          <li class="label assignee">{{ todo.assignee?.username }}</li>
           <li class="label action">
             <span @click.stop="toggleComp(todo)">&#10004;</span>
             <span @click="delTodo(todo._id)" class="x">&#10060;</span>
           </li>
         </ul>
       </div>
+      <!-- <div>
+        <input type="textarea">
+        <button @click="addComment(todo)">Comment</button>
+      </div> -->
     </div>
-    
+
     <h2>Completed</h2>
     <!-- <pre>{{ todoList}}</pre> -->
     <!-- Completed Items -->
@@ -75,42 +79,42 @@
       <li class="label idx">idx</li>
       <li class="label title" @click.prevent="sortCompleted('title')">
         Task Title
-        <div v-if="sortBy === 'title'">
-          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
+        <div v-if="sortByCompleted === 'title'">
+          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
       <li class="label category" @click.prevent="sortCompleted('category')">
         Category
-        <div v-if="sortBy === 'category'">
-          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
+        <div v-if="sortByCompleted === 'category'">
+          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
       <li class="label created-at" @click.prevent="sortCompleted('createdAt')">
         Created
-        <div v-if="sortBy === 'createdAt'">
-          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
+        <div v-if="sortByCompleted === 'createdAt'">
+          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
       <li class="label priority" @click.prevent="sortCompleted('priority')">
         Priority
-        <div v-if="sortBy === 'priority'">
-          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
+        <div v-if="sortByCompleted === 'priority'">
+          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
       <li class="label assignee" @click.prevent="sortCompleted('assignee')">
         Assignee
-        <div v-if="sortBy === 'assignee'">
-          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
+        <div v-if="sortByCompleted === 'assignee'">
+          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
-      <li class="label action" @click.prevent="sortCompleted('completed')">
+      <li class="label action">
         Completed
-        <!-- <div v-if="sortBy === 'completed'">
+        <!-- <div v-if="sortByCompleted === 'completed'">
           <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div> -->
@@ -124,7 +128,7 @@
           <li class="category">{{ todo.category }}</li>
           <li class="created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
           <li class="priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
-          <li class="assignee">{{ todo.assignee?.username || 'assignee' }}</li>
+          <li class="assignee">{{ todo.assignee?.username }}</li>
           <li class="action">
             <span @click.stop="toggleComp(todo)">&#10004;</span>
             <span @click="delTodo(todo._id)" class="x">&#10060;</span>
@@ -132,10 +136,6 @@
         </ul>
       </div>
     </div>
-
-    <!-- sorted: <pre>{{ sortedProperties }}</pre> <br /> -->
-    <!-- sortDirection: {{ sortDirection }} <br /> -->
-    <!-- sortBy: {{ sortBy }} -->
 
   </div>
   </template>
@@ -192,6 +192,10 @@
           }
         }
 
+        // if(type == 'assignee'){
+        //   return copy.sort((a, b) => a.assignee.username - b.assignee.username)
+        // }
+
           //Generic Sort Selection
           return copy.sort(sortMethods(type, direction))
         }
@@ -204,7 +208,7 @@
   var sortDirectionCompleted = ref(1)
 
   function sortCompleted(type) {
-    if(sortByCompleted.value != type) sortDirection.value = 1
+    if(sortByCompleted.value != type) sortDirectionCompleted.value = 1
     sortByCompleted.value = type
     sortDirectionCompleted.value *= -1
   }
@@ -336,7 +340,7 @@
   flex: .5 1 0%;
 }
 
-.actions {
+.action {
   display: flex;
   flex: .5 1 0%;
 }

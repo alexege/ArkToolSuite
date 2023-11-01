@@ -12,6 +12,7 @@ import AuthView from '../views/AuthView.vue'
 import Layouts from '../views/LayoutView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import Accordion from '../views/Accordion.vue'
+import ScoutMap from '../views/ScoutMap.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -78,6 +79,14 @@ const router = createRouter({
       path: '/todo',
       name: 'todo',
       component: TodoList,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/map',
+      name: 'scoutmap',
+      component: ScoutMap,
       meta: {
         requiresAuth: true
       }

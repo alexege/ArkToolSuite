@@ -94,6 +94,7 @@ const handleSignOut = () => {
         <RouterLink class="router-link" to="/timers">Timers</RouterLink>
         <RouterLink class="router-link" to="/layouts">Layouts</RouterLink>
         <RouterLink class="router-link" to="/todo">TodoList</RouterLink>
+        <RouterLink class="router-link" to="/map">Map/Scout</RouterLink>
 
         <div class="welcome-message" v-if="userStore.user">
           {{ welcomeMessage() }} {{ userStore.user.username }}

@@ -1,7 +1,16 @@
 <template>
-    <form @submit.prevent="addTodoItem()">
+    <form @submit.prevent="addTodoItem()" class="headers-form">
+      <div class="idx"></div>
       <div class="title">
-        <input v-model="todoItem.title" type="text" class="title-input"/>
+        <input v-model="todoItem.title" type="text" class="title-input" placeholder="Todo Title"/>
+      </div>
+      <div class="category">
+        <select name="" id="" v-model="todoItem.category" class="category-input">
+          <option :value="category" v-for="category in categories" :key="category">{{ category }}</option>
+        </select>
+      </div>
+      <div class="createdAt">
+        Created
       </div>
       <div class="priority">
         <select name="" id="" v-model="todoItem.priority" class="priority-input">
@@ -37,23 +46,38 @@ import { ref } from "vue";
     fetchUsers()
     fetchTodos()
 
+    const categories = [
+      "Breeding",
+      "Taming",
+      "Pvp",
+      "Farming",
+      "Artifacts",
+      "Scouting"
+    ]
+
     //Set default values
     const todoItem = ref({
       title: null,
       category: 'breeding',
       priority: 'Low',
       completed: false,
-      assignee: null
+      assignee: null,
+      comments: []
     })
 
     function addTodoItem() {
+
+      if (!todoItem.value.assignee) {
+        todoItem.value.assignee = useUserStore?.user?.username
+      }
 
       const item = {
         title: todoItem.value.title,
         category: todoItem.value.category,
         priority: todoItem.value.priority,
         completed: todoItem.value.completed,
-        assignee: todoItem.value.assignee || null
+        assignee: todoItem.value.assignee || null,
+        comments: []
       }
       
       todoStore.addTodo(item)
@@ -61,8 +85,16 @@ import { ref } from "vue";
     }
 </script>
 <style scoped>
-form {
+
+.headers-form {
   display: flex;
+  gap: 0.5em;
+  padding: 5px;
+}
+
+.idx {
+  display: flex;
+  flex: 0.25 1 0%;
 }
 
 .title {
@@ -72,6 +104,20 @@ form {
 
 .title-input {
   width: 100%;
+}
+
+.category {
+  display: flex;
+  flex: .5 1 0%;
+}
+
+.category-input {
+  width: 100%;
+}
+
+.createdAt {
+  display: flex;
+  flex: .5 1 0%;
 }
 
 .priority {
@@ -92,7 +138,7 @@ form {
   width: 100%;
 }
 
-.action {
+.actions {
   display: flex;
   flex: .5 1 0%;
 }
@@ -101,5 +147,6 @@ form {
   color: white;
   border: 1px solid white;
   padding: 5px;
+  width: 100%;
 }
 </style>
