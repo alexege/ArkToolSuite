@@ -145,7 +145,7 @@ body {
   padding: 1em;
 }
 
-button {
+.menu button, .menu-toggle-wrap button {
 	cursor: pointer;
 	appearance: none;
 	border: none;

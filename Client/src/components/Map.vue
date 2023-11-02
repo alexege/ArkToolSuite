@@ -4,14 +4,15 @@
             <div class="map-container">
                 <div class="map-view" @mousemove="getLiveMousePos($event)" @dblclick.prevent="setPoint($event, props.id)">
                     <span class="coord-tooltip" :style="[{'left':`${tooltipX}px`},{'top':`${tooltipY}px`}]">{{ currentMouseY }},{{ currentMouseX }}</span>
-                    <span class="crosshair-x" :style="[{'top':`${topv}px`}]">{{ currentMouseX }}</span>
-                    <span class="crosshair-y" :style="[{'left':`${leftv}px`}]">{{ currentMouseY }}</span>            
+                    <span class="crosshair-x" :style="[{'top':`${crosshairX}px`}]">{{ currentMouseX }}</span>
+                    <span class="crosshair-y" :style="[{'left':`${crosshairY}px`}]">{{ currentMouseY }}</span>            
                 </div>
-                <div class="map-sidebar">
+                <div class="map-sidebar-container">
                     This is the sidebar
-                    <div>
-                        <input type="text" v-model="leftv">
-                        <input type="text" v-model="topv">
+                    <div class="map-sidebar">
+                        <input type="number" class="coord-input" v-model="crosshairY">
+                        <input type="number" class="coord-input" v-model="crosshairX">
+                        <button @click.prevent="addPoint">Add</button>
                     </div>
                 </div>
             </div>
@@ -21,10 +22,12 @@
     import { ref } from 'vue'
 
     // Sidebar Content
+    // const w = Math.floor(e.pageX - e.currentTarget.offsetLeft / e.currentTarget.offsetWidth * 100);
+    // const h = Math.floor(e.pageY - e.currentTarget.offsetTop / e.currentTarget.offsetHeight * 100);
 
     // Map Content
-    const topv = ref(0);
-    const leftv = ref(0);
+    const crosshairX = ref(0);
+    const crosshairY = ref(0);
     const currentMouseX = ref(0);
     const currentMouseY = ref(0);
     const tooltipX = ref(0);
@@ -40,8 +43,8 @@
         
         tooltipX.value = e.pageX - e.currentTarget.offsetLeft + 20;
         tooltipY.value = e.pageY - e.currentTarget.offsetTop;
-        topv.value = e.pageY - e.currentTarget.offsetTop;
-        leftv.value = e.pageX - e.currentTarget.offsetLeft;
+        crosshairX.value = e.pageY - e.currentTarget.offsetTop;
+        crosshairY.value = e.pageX - e.currentTarget.offsetLeft;
     }
     const setPoint = (e, id) => {
         console.log("event:", e);
@@ -90,10 +93,22 @@
         position: absolute;
     }
 
-    .map-sidebar {
+    .map-sidebar-container {
         background-color: rgba(11, 155, 212, 0.458);
         color: white;
         padding: 1em;
+        display: flex;
+        width: 20vw;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .map-sidebar {
+        display: flex;
+    }
+
+    .coord-input {
+        width: 50%;
     }
     </style>
     

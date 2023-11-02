@@ -1,6 +1,11 @@
 <template>
     <div>
         <h2>Scout Map</h2>
+        <div class="add-map">
+            <input type="text" placeholder="Name">
+            <input type="text" placeholder="Url">
+            <input type="text" placeholder="bgUrl">
+        </div>
         <div class="map-selection">
             <div class="map">Island</div>
             <div class="map">Scortched Earth</div>
