@@ -227,6 +227,21 @@ const { fetchItems } = useItemStore()
 const { uniqueItems } = storeToRefs(useItemStore())
 fetchItems()
 
+const dinoName = ref("");
+
+function filteredList() {
+    return uniqueItems.value.filter((item) => {
+        if(typeof(item) == 'object'){
+            for(const value of Object.values(item)) {
+                if (value.toString().toLowerCase().includes(dinoName.value.toLowerCase())) {
+                    return item;
+                }
+            }
+        }
+    })
+}
+
+
 </script>
 
 <template>
@@ -236,7 +251,11 @@ fetchItems()
     <teleport to="#modals">
       <div class="modal-bg" v-if="showModal" @click.self="closeModal">
         <div class="modal">
-          <Modal @close="closeModal" @selectedImage="updateImage" :items="uniqueItems">
+          <!-- <Modal @close="closeModal" @selectedImage="updateImage" :items="uniqueItems"> -->
+          <!-- <Modal @close="closeModal" @selectedImage="updateImage" :items="uniqueItems"> -->
+          <Modal @close="closeModal" @selectedImage="updateImage" :items="filteredList()">
+            <h2>Dino Search</h2>
+            <input type="text" class="search-bar" v-model="dinoName">
           </Modal>
         </div>
       </div>
@@ -692,9 +711,10 @@ div[role="progressbar"]::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-height: 80%;
+    height: 80%;
     width: 80%;
     background: black;
+    outline: 1px solid white;
     text-align: center;
     position: fixed;
     overflow: auto;

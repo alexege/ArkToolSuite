@@ -17,12 +17,12 @@ function selectImg(url) {
     <div>
         <div class="wrapper">
             <span class="close" @click="close">X</span>
-            <h2>Modal</h2>
             <slot></slot>
             <div class="grid">
-                <div v-for="item in props.items" :key="item._id">
+                <div v-for="item in props.items" :key="item._id" class="grid-item">
                     <div class="block-cell">
                         <div class="block">
+                            <label>{{ item.title }}</label>
                             <img :src="item.url" :alt="item.title" @click="selectImg(item.title)">
                         </div>
                     </div>
@@ -41,6 +41,10 @@ function selectImg(url) {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.grid-item {
+    margin: 0 auto;
 }
 
 .close {
@@ -72,6 +76,10 @@ function selectImg(url) {
 .block-cell {
   min-width: 50px;
   min-height: 50px;
+
+  max-width: 100px;
+  max-height: 100px;
+
   /* aspect-ratio: 1; */
   border-radius: 3px;
   /* padding: .5em;
