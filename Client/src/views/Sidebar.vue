@@ -26,25 +26,6 @@
 				<span class="text">Timers</span>
 			</router-link>
             <div>
-
-				<AccordionPanel aria-title="" title="Active Timers" icon="timer">
-					<div class="timer-selection">
-						<div class="timer-options">
-							<button>Countdown</button>
-							<button class="add-timer-button" @click="add('stopWatch')">+</button>
-						</div>
-						<div class="timer-options">
-							<button>Mix</button>
-						</div>
-						<div class="timer-options">
-							<button>Stopwatch</button>
-							<button class="add-timer-button" @click="add('countDown')">+</button>
-						</div>
-					</div>
-					<CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id" :timer="timer" @close="close"></CountdownTimer>
-				</AccordionPanel>
-
-                <!-- <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer"></StopwatchTimer> -->
             </div>
 			<router-link to="/layouts" class="button">
 				<span class="material-icons">description</span>
@@ -75,16 +56,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import CountdownTimer from '../components/Timers/SidebarCountdownTimer.vue';
-import StopwatchTimer from '../components/Timers/StopwatchTimer.vue';
 import { useTimerStore } from '../stores/timer.store.js'
-import AccordionPanel from '../components/accordion/AccordionPanel.vue';
-
-const { fetchTimers } = useTimerStore()
-const { allStopwatchTimers, allCountDownTimers } = storeToRefs(useTimerStore())
-
-fetchTimers()
-// import logoURL from '../assets/logo.png'
 
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 

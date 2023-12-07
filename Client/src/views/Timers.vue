@@ -8,7 +8,7 @@ const { fetchTimers } = useTimerStore()
 
 const { addTimer, deleteTimer } = useTimerStore()
 
-const { allStopwatchTimers, allCountDownTimers } = storeToRefs(useTimerStore())
+const { allTimers, allStopwatchTimers, allCountDownTimers } = storeToRefs(useTimerStore())
 
 
 async function close(timerId) {
@@ -36,7 +36,7 @@ async function add(type) {
     <div>
         <h2>Timers</h2>
         
-        <div class="timer-container">
+        <!-- <div class="timer-container">
             <div class="stopwatches">
                 <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer" @close="close"/>
                 <button class="add-timer-button" @click="add('stopWatch')">+</button>
@@ -47,11 +47,43 @@ async function add(type) {
                 <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id"  :timer="timer" @close="close"/>
                 <button class="add-timer-button" @click="add('countDown')">+</button>
             </div>
+        </div> -->
+
+        <div class="timer-grid">
+                <div v-for="timer in allTimers" :key="timer._id" >
+                    <template v-if="timer.type == 'stopWatch'">
+                        <StopwatchTimer :timer="timer" @close="close"/>
+                    </template>
+                    <template v-if="timer.type == 'countDown'">
+                        <CountdownTimer :timer="timer" @close="close"/>
+                    </template>
+                </div>
+                <!-- <StopwatchTimer v-for="timer in allTimers" :key="timer._id" :timer="timer" @close="close"/>
+                <CountdownTimer v-for="timer in allTimers" :key="timer._id" :timer="timer" @close="close"/> -->
         </div>
+            <button class="add-timer-button" @click="add('stopWatch')">+</button>
+            <button class="add-timer-button" @click="add('countDown')">+</button>
 
     </div>
 </template>
 <style scoped>
+
+.timer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(5, .5fr);
+    gap: .5em;
+}
+
+/* @media screen and (min-width:480px) {
+    .timer-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 1em;
+    }
+} */
+
 h2{
     text-align: center;
     color: white;

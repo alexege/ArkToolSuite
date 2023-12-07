@@ -3,6 +3,8 @@ import { storeToRefs } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import { useTimerStore } from '../../stores/timer.store';
 
+const dinoLevel = ref(150);
+
 const days = ref(0);
 const hours = ref(0);
 const minutes = ref(0);
@@ -104,9 +106,15 @@ function addTime(mins) {
     minutes.value += mins;
 }
 
+function toggleSettings(timerId) {
+    console.log("id:", timerId)
+    this.isHovering = !this.isHovering;
+}
+
 function deleteTimer(timerId) {
     emit('close', timerId)
 }
+
 
 function msToTime(ms) {
     var seconds = Math.floor((ms / 1000) % 60);
@@ -241,7 +249,6 @@ function filteredList() {
     })
 }
 
-
 </script>
 
 <template>
@@ -269,7 +276,7 @@ function filteredList() {
             <!-- <img :src='`${timer.img}` || "https://t3.ftcdn.net/jpg/03/45/05/92/360_F_345059232_CPieT8RIWOUk4JqBkkWkIETYAkmz2b75.jpg"' alt="Timer Image"> -->
          </div>
          
-            <div class="nav-content" @mouseenter="isHovering = true" @mouseleave="isHovering = false">
+            <div class="nav-content">
                 <div class="timer-title">
                     <template v-if="isEditingTimerName">
                         <input type="text" v-model="editTimer.name" @blur="updateTimerName" @keydown.enter="updateTimerName" class="timer-name-input">
@@ -277,6 +284,9 @@ function filteredList() {
                     <template v-else>
                         <h2 @dblclick="editName" class="timer-name">{{ timer.name }}</h2>
                     </template>
+                </div>
+                <div>
+                    <input type="number" v-model="dinoLevel" @blur="updateDinoLevel" placeholder="150">
                 </div>
                 <div class="timer-value">
                     <div v-if="isHovering">
@@ -316,9 +326,9 @@ function filteredList() {
                     </div>
                     <div v-if="isHovering" class="add-time">
                         <button @click="addTime(1)" class="add-time-button">+1</button>
-                    <button @click="addTime(5)" class="add-time-button">+5</button>
-                    <button @click="addTime(15)" class="add-time-button">+15</button>
-                    <span>mins</span>
+                        <button @click="addTime(5)" class="add-time-button">+5</button>
+                        <button @click="addTime(15)" class="add-time-button">+15</button>
+                        <span>mins</span>
                 </div>
 
             <transition name="fadeHeight" mode="out-in">
@@ -334,6 +344,8 @@ function filteredList() {
                 </div>
             </transition>
 
+                <a @click="toggleSettings(timer._id)" class="toggleButton">
+                    <span class="material-symbols-outlined">settings</span></a>
                 <a @click="deleteTimer(timer._id)" class="deleteButton">&#9932;</a>
 
                 </div>
@@ -383,6 +395,13 @@ function filteredList() {
     color: white;
 }
 
+.toggleButton {
+    position: absolute;
+    top: 10px;
+    right: 35px;
+    cursor: pointer;
+}
+
 .deleteButton {
     position: absolute;
     top: 10px;
@@ -398,9 +417,11 @@ button {
     margin: 0.5em;
 }
 input[type=number] {
-    font-size: 24px;
+    font-size: 1em;
+    padding: .5em 0.6em;
     /* width: 100px; */
-    width: 55px;
+    width: 65px;
+    /* width: 55px; */
     /* background-color: black;
     color: lime;
     border: 2px solid lime; */
