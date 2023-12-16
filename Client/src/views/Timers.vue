@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia';
 import StopwatchTimer from '../components/Timers/StopwatchTimer.vue';
 import CountdownTimer from '../components/Timers/CountdownTimer.vue';
@@ -9,7 +10,8 @@ const { fetchTimers } = useTimerStore()
 const { addTimer, deleteTimer } = useTimerStore()
 
 const { allTimers, allStopwatchTimers, allCountDownTimers } = storeToRefs(useTimerStore())
-
+const activeButton = ref('both')
+const displayMethod = ref('grid')
 
 async function close(timerId) {
     await deleteTimer(timerId)
@@ -36,20 +38,21 @@ async function add(type) {
     <div>
         <h2>Timers</h2>
         
-        <!-- <div class="timer-container">
-            <div class="stopwatches">
-                <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer" @close="close"/>
-                <button class="add-timer-button" @click="add('stopWatch')">+</button>
-            </div>
-            
-            
-            <div class="countdowns">
-                <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id"  :timer="timer" @close="close"/>
-                <button class="add-timer-button" @click="add('countDown')">+</button>
-            </div>
-        </div> -->
+        <div class="timer-filter-buttons">
+            <button @click="activeButton = 'stopwatches'" :class="{'active-button': activeButton == 'stopwatches'}">Stopwatches</button>
+            <button @click="activeButton = 'countdowns'" :class="{'active-button': activeButton == 'countdowns'}">Countdowns</button>
+            <button @click="activeButton = 'both'" :class="{'active-button': activeButton == 'both'}">Both</button>
+        </div>
 
-        <div class="timer-grid">
+        <div class="timer-grid" v-if="activeButton == 'stopwatches'">
+            <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer" @close="close"/>
+        </div>
+        
+        <div class="timer-grid" v-if="activeButton == 'countdowns'">
+            <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id"  :timer="timer" @close="close"/>
+        </div>
+
+        <div class="timer-grid" v-if="activeButton == 'both'">
                 <div v-for="timer in allTimers" :key="timer._id" >
                     <template v-if="timer.type == 'stopWatch'">
                         <StopwatchTimer :timer="timer" @close="close"/>
@@ -61,8 +64,17 @@ async function add(type) {
                 <!-- <StopwatchTimer v-for="timer in allTimers" :key="timer._id" :timer="timer" @close="close"/>
                 <CountdownTimer v-for="timer in allTimers" :key="timer._id" :timer="timer" @close="close"/> -->
         </div>
-            <button class="add-timer-button" @click="add('stopWatch')">+</button>
-            <button class="add-timer-button" @click="add('countDown')">+</button>
+
+        <div class="add-button-container">
+            <button class="add-timer-button" @click="add('stopWatch')" v-if="activeButton != 'countdowns'">Add Stopwatch</button>
+            <button class="add-timer-button" @click="add('countDown')" v-if="activeButton != 'stopwatches'">Add Countdown</button>
+        </div>
+
+        <div class="timer-display-buttons">
+            <button>Column</button>
+            <button>Two-Column</button>
+            <button>Grid</button>
+        </div>
 
     </div>
 </template>
@@ -71,8 +83,8 @@ async function add(type) {
 .timer-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(5, .5fr);
-    gap: .5em;
+    grid-template-rows: repeat(auto, .5fr);
+    gap: 1em;
 }
 
 /* @media screen and (min-width:480px) {
@@ -84,24 +96,44 @@ async function add(type) {
     }
 } */
 
+.timer-filter-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.timer-filter-buttons button {
+    margin: 1em;
+    width: 8em;
+    color: white;
+    background-color: black;
+    outline: 1px solid lime;
+    cursor: pointer;
+}
+
+.timer-filter-buttons button:hover {
+    background: rgba(0, 255, 0, 0.25)
+}
+
+.timer-filter-buttons .active-button {
+    /* background: rgba(0, 255, 0, 0.25); */
+    background: rgba(4, 30, 39, 0.9);
+    border-style: none;
+    border: 2px solid lime;
+}
+
 h2{
     text-align: center;
     color: white;
     font-size: 36px;
 }
 
-.timer-container {
-    display: flex;
-    flex-direction: row;
-    align-content: start;
-    gap: 20px;
-}
-
 .stopwatches {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     width: 50%;
+    gap: 1em;
 }
 
 .countdowns {
@@ -109,11 +141,11 @@ h2{
     flex-direction: column;
     align-items: center;
     width: 50%;
+    gap: 1em;
 }
 
 .add-timer-button {
     /* width: 100%; */
-    width: 50px;
     display: block;
     background: transparent;
     border: 1px solid lime;
@@ -125,5 +157,21 @@ h2{
 
 .add-timer-button:hover {
     background: rgba(0, 255, 0, 0.25)
+}
+
+.add-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.timer-display-buttons {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 1em;
+}
+
+.timer-display-buttons button {
+    margin: .25em;
 }
 </style>

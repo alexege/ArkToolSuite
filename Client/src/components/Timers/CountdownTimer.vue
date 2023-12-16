@@ -286,7 +286,7 @@ function filteredList() {
                     </template>
                 </div>
                 <div>
-                    <input type="number" v-model="dinoLevel" @blur="updateDinoLevel" placeholder="150">
+                    <input type="number" v-model="dinoLevel" @blur="updateDinoLevel" placeholder="150" step="5" min="5" max="500">
                 </div>
                 <div class="timer-value">
                     <div v-if="isHovering">
@@ -364,7 +364,7 @@ function filteredList() {
 
 .timer {
     font-family: 'Share Tech Mono', sans-serif;
-    margin: .5em; 
+    /* margin: .5em;  */
     border-radius: 10px; 
     text-align: center; 
     position: relative;

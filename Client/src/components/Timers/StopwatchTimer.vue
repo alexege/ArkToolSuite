@@ -116,14 +116,14 @@ async function updateTimerName() {
      flex-direction: column;
 	 flex: 0 1 auto;
 	 align-items: center;
-     text-align: center;
+     /* text-align: center; */
+     justify-content: center;
 	 /* color: #c8c8c8; */
      color: lime;
      outline: 1px solid lime;
      background-color: #041e27de;
-     /* margin: 15px; */
-     margin: .5em; 
      width: 100%;
+     height: 100%;
 }
 
 #clock h2 {

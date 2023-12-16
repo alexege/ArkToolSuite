@@ -23,7 +23,7 @@ export const useTimerStore = defineStore({
     },
     
     allStopwatchTimers: (state) => {
-      return state.timers.filter(timer => timer.type== 'stopWatch')
+      return state.timers.filter(timer => timer.type == 'stopWatch')
     },
 
     activeTimer: (state) => {
