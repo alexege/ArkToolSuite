@@ -15,6 +15,7 @@ db.timer = require("./timer.model");
 db.refreshToken = require("./refreshToken.model");
 db.todo = require("./todo.model");
 db.map = require("./map.model");
+db.point = require("./point.model");
 
 db.ROLES = ["user", "admin", "moderator"];
 

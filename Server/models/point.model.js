@@ -12,7 +12,7 @@ const Point = mongoose.model(
         mapY: Number,
         map: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'map'
+            ref: 'Map'
         },
     },
     { timestamps: true})

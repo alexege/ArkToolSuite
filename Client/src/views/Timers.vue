@@ -11,7 +11,12 @@ const { addTimer, deleteTimer } = useTimerStore()
 
 const { allTimers, allStopwatchTimers, allCountDownTimers } = storeToRefs(useTimerStore())
 const activeButton = ref('both')
-const displayMethod = ref('grid')
+const displayMethod = ref('show-grid')
+
+async function changeStyle(style) {
+    console.log("Changing view method to : ", style)
+    displayMethod.value = style
+}
 
 async function close(timerId) {
     await deleteTimer(timerId)
@@ -44,25 +49,39 @@ async function add(type) {
             <button @click="activeButton = 'both'" :class="{'active-button': activeButton == 'both'}">Both</button>
         </div>
 
-        <div class="timer-grid" v-if="activeButton == 'stopwatches'">
+        <!-- Stopwatches -->
+        <div class="timer-grid" :class="displayMethod" v-if="activeButton == 'stopwatches'">
             <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer" @close="close"/>
         </div>
         
-        <div class="timer-grid" v-if="activeButton == 'countdowns'">
+        <!-- Countdown Timers -->
+        <div class="timer-grid" :class="displayMethod" v-if="activeButton == 'countdowns'">
             <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id"  :timer="timer" @close="close"/>
         </div>
 
-        <div class="timer-grid" v-if="activeButton == 'both'">
-                <div v-for="timer in allTimers" :key="timer._id" >
-                    <template v-if="timer.type == 'stopWatch'">
-                        <StopwatchTimer :timer="timer" @close="close"/>
-                    </template>
-                    <template v-if="timer.type == 'countDown'">
-                        <CountdownTimer :timer="timer" @close="close"/>
-                    </template>
+        <!-- Both -->
+        <div v-if="activeButton == 'both'">
+            <template v-if="displayMethod == 'show-two-column'">
+                <div class="two-columns">
+                    <div class="show-two-column">
+                        <StopwatchTimer v-for="timer in allStopwatchTimers" :key="timer._id" :timer="timer" @close="close"/>
+                    </div>
+                    <div class="show-two-column">
+                        <CountdownTimer v-for="timer in allCountDownTimers" :key="timer._id"  :timer="timer" @close="close"/>
+                    </div>
                 </div>
-                <!-- <StopwatchTimer v-for="timer in allTimers" :key="timer._id" :timer="timer" @close="close"/>
-                <CountdownTimer v-for="timer in allTimers" :key="timer._id" :timer="timer" @close="close"/> -->
+
+            </template>
+            
+            <template v-else>
+                <div :class="displayMethod">
+                    <div v-for="timer in allTimers" :key="timer._id">
+                        <StopwatchTimer v-if="timer.type == 'stopWatch'" :timer="timer" @close="close"/>
+                        <CountdownTimer v-if="timer.type == 'countDown'" :timer="timer" @close="close"/>
+                    </div>
+                </div>
+            </template>
+                
         </div>
 
         <div class="add-button-container">
@@ -71,9 +90,9 @@ async function add(type) {
         </div>
 
         <div class="timer-display-buttons">
-            <button>Column</button>
-            <button>Two-Column</button>
-            <button>Grid</button>
+            <button class="style-button" :class="{ 'active-style' : displayMethod == 'show-column'}" @click="changeStyle('show-column')">Column</button>
+            <button class="style-button" :class="{ 'active-style' : displayMethod == 'show-two-column'}" @click="changeStyle('show-two-column')">Two-Column</button>
+            <button class="style-button" :class="{ 'active-style' : displayMethod == 'show-grid'}" @click="changeStyle('show-grid')">Grid</button>
         </div>
 
     </div>
@@ -173,5 +192,60 @@ h2{
 
 .timer-display-buttons button {
     margin: .25em;
+}
+
+.show-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.two-columns {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1em;
+}
+
+.show-two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+    /* width: 100%; */
+    /* margin: 0 auto; */
+    /* gap: 1em; */
+    /* margin: 0 1em; */
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+}
+
+.show-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(auto, .5fr);
+    gap: 1em;
+}
+
+.style-button {
+    background-color: black;
+    border: 1px solid lime;
+    color: white;
+    cursor: pointer;
+}
+
+.style-button:hover {
+    background-color: rgba(4, 30, 39, 0.9);
+}
+
+.active-style {
+    color: lime;
+    border: 2px solid lime;
 }
 </style>

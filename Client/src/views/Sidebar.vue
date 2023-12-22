@@ -126,11 +126,11 @@ aside {
 		margin-bottom: 1rem;
 
 		img {
-			width: 4rem;
+			width: 3rem;
 			background-color: white;
 			border-radius: 50%;
-			margin: .25em;
-			padding: 10px;
+			// margin: .25em;
+			padding: 5px;
 		}
 	}
 
