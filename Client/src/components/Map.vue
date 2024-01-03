@@ -1,9 +1,9 @@
 <template>
         <div>
             <h2 class="map-name">{{ props.map.title }}</h2>
-            <h3>{{ props.map._id }}</h3>
+            <!-- <h3>{{ props.map._id }}</h3> -->
             <div class="map-container">
-                <div class="map-view" @mousemove="getLiveMousePos($event)" @dblclick.prevent="addAPoint($event, props.map._id)">
+                <div class="map-view" @mousemove="getLiveMousePos($event)" @dblclick.prevent="onDoubleClick()"> <!--@dblclick.prevent="addAPoint($event, props.map._id)"-->
                     <span class="coord-tooltip" :style="[{'left':`${tooltipX}px`},{'top':`${tooltipY}px`}]">{{ currentMouseY }},{{ currentMouseX }}</span>
                     <span class="crosshair-x" :style="[{'top':`${crosshairX}px`}]">{{ currentMouseX }}</span>
                     <span class="crosshair-y" :style="[{'left':`${crosshairY}px`}]">{{ currentMouseY }}</span>            
@@ -12,12 +12,36 @@
                         <span @click="selectPoint(point)" class="point" :style="[{top : `${point.y - 5}px`}, {left : `${point.x - 5}px`}]"></span>
                     </span>
                 </div>
+
+                <Popup v-if="popupTriggers.buttonTrigger" :TogglePopup="() => TogglePopup('buttonTrigger')" class="point-popup">
+                    <h2 style="color: black;">Add a New Point</h2>
+                    <input type="text" v-model="newPoint.title">
+                    <div class="coord-input-boxes">
+                        <input type="number" class="coord-input" placeholder="X" v-model="crosshairX">
+                        <input type="number" class="coord-input" placeholder="Y" v-model="crosshairY">
+                        <input type="hidden" class="coord-input" placeholder="X" v-model="tooltipX">
+                        <input type="hidden" class="coord-input" placeholder="Y" v-model="toolTipY">
+                    </div>
+                    <select>
+                        <option value=""><span style="width: 5px; height:5px; background-color: red;"></span>Enemy Tribe</option>
+                        <option value="">Ally Tribe</option>
+                        <option value="">Rare Resource</option>
+                        <option value="">Obelisk</option>
+                    </select>
+                    <textarea name="" id="" cols="30" rows="10" placeholder="Use this area to describe the point..."></textarea>
+                    <button @click.prevent="addAPoint($event, props.map._id)">Add Point</button>
+                </Popup>
+                
+                <button @click="() => TogglePopup('buttonTrigger')">Open Popup</button>
+
                 <div class="map-sidebar-container">
                     MapID: {{  props.map._id }}
 
                     <br>
 
-                    selectedPoint: [ {{ selectedPointX }} , {{ selectedPointY }} ]
+                    selectedPoint: {{ selectedPointTitle }}
+                    <br/>
+                    [ {{ selectedPointX }} , {{ selectedPointY }} ]
 
                     <br>
 
@@ -30,17 +54,32 @@
                     </div>
 
                     <span v-for="point in props.map.points" :key="point._id">
-                        {{ point.x}}, {{  point.y }} <button @click="deleteAPoint(point._id)">Delete</button>
+                        {{ point._id.slice(-3) }} {{ point.x}}, {{  point.y }} <button @click="deleteAPoint(point._id)">Delete</button>
                     </span>
+
+                    <div style="position: absolute;" :style="[{'left':`${selectedPointMapX}px`},{'top':`${selectedPointMapY}px`}]">
+                        {{ selectedPointMapX }}, {{ selectedPointMapY}}
+                    </div>
                     
                 </div>
-
-                <button @click="deleteMap(props.map._id)">Delete</button>
+                
+                <button @click="deleteMap(props.map._id)" class="delete-button">x</button>
             </div>
 
         </div>
     </template>
     <script setup>
+    import Popup from '../components/Popup.vue'
+
+    const TogglePopup = (trigger) => {
+        popupTriggers.value[trigger] = !popupTriggers.value[trigger]
+    }
+
+    const popupTriggers = ref({
+        buttonTrigger: false,
+        timedTrigger: false
+    })
+
     import { ref } from 'vue'
 
     // Sidebar Content
@@ -74,22 +113,42 @@
     //     console.log("mapID:", id);
     // }
 
+    const newPoint = ref({
+        color: 'red',
+        title: 'New Point',
+        category: 'Enemy',
+        x: crosshairY.value,
+        y: crosshairX.value,
+        mapX: tooltipX.value,
+        mapY: tooltipY.value, // These might neeed reversing
+    })
+
     // import { usePointStore } from '../stores/point.store'
     import { useMapStore } from '../stores/map.store'
     // const { addPoint } = usePointStore()
     // const { deletePoint } = usePointStore()
     const { deleteMap, deletePointFromMap, addPoint, deletePoint } = useMapStore()
 
+    function onDoubleClick() {
+        TogglePopup('buttonTrigger')
+    }
+
     async function addAPoint(e, id) {
+        // TogglePopup('buttonTrigger')
         console.log("pageX", e.pageX)
         console.log("pageY", e.pageY)
         console.log("mapID: ", id)
-        const point = {
-            mapX: e.clientX,
-            mapY: e.clientY,
-            x: crosshairY.value, //Why are these reversed?
-            y: crosshairX.value
-        }
+        // const point = {
+        //     color: 'red',
+        //     title: 'title',
+        //     mapX: e.clientX,
+        //     mapY: e.clientY,
+        //     x: crosshairY.value, //Why are these reversed?
+        //     y: crosshairX.value,
+
+        // }
+
+        let point = newPoint.value
 
         console.log("--point--: ", point)
 
@@ -103,21 +162,27 @@
     }
 
     async function deleteAPoint(pointId) {
-        console.log(`pointId: ${pointId} \n mapId: ${props.map._id}`)
+        console.log(`Deleting point: ${pointId}`)
         await deletePoint(pointId)
-        .then((res) => {
+        .then(() => {
             deletePointFromMap(props.map._id, pointId)
         })
     }
 
+    const selectedPointTitle = ref()
     const selectedPointX = ref(0)
     const selectedPointY = ref(0)
-    const selectedPointTitle = ref()
+
+    const selectedPointMapX = ref(0)
+    const selectedPointMapY = ref(0)
 
     async function selectPoint(point) {
         selectedPointTitle.value = point._id
         selectedPointX.value = point.x
         selectedPointY.value = point.y
+
+        selectedPointMapX.value = point.mapX
+        selectedPointMapY.value = point.mapY
     }
 
     </script>
@@ -186,8 +251,28 @@
         display: flex;
     }
 
-    .coord-input {
-        width: 50%;
+    .coord-input-boxes {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
     }
+
+    .coord-input {
+        width: 25%;
+    }
+
+    .delete-button {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .point-popup {
+        color: black;
+        /* display: flex;
+        flex-direction: column; */
+    }
+
     </style>
     

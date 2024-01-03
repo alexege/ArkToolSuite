@@ -37,12 +37,10 @@ export const useMapStore = defineStore('map', {
         },
 
         async deletePointFromMap(mapId, pointId) {
-            console.log("Deleting a point from the map store")
             await axios.delete(`${API_URL}/map/deletePointFromMap/${mapId}/${pointId}`)
             let map = this.allMaps.filter(map => map._id === mapId)[0]
-            let index = map.points.findIndex(map => map.point === pointId)
+            let index = map.points.findIndex(point => point._id === pointId)
             map.points.splice(index, 1)
-            console.log("The map was found: ", map)
         },
 
         async fetchPoints() {

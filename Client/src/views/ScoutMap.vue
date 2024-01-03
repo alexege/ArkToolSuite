@@ -7,12 +7,6 @@
                 <img :src="map.url" alt="" width="200" height="200">
             </pre>
         </div>
-        <div class="add-map">
-            <input type="text" placeholder="Name" v-model="newMap.mapName">
-            <input type="text" placeholder="Url" v-model="newMap.mapUrl">
-            <input type="text" placeholder="bgUrl" v-model="newMap.mapBgUrl">
-            <button @click="addAMap()">Add Map</button>
-        </div>
         <div class="map-selection">
             <div class="map" v-for="map in allMaps" :key="map._id">
                 {{ map.title }}
@@ -20,13 +14,48 @@
             </div>
         </div>
         <div class="map-display">
-            <Map v-for="map in allMaps" :key="map.name" :map="map" />
+            <Map v-for="map in allMaps" :key="map.name" :map="map" class="map-wrapper"/>
         </div>
+
+        <Popup v-if="popupTriggers.buttonTrigger" :TogglePopup="() => TogglePopup('buttonTrigger')">
+            <Label>Map Name:</Label>
+            <input type="text" placeholder="Name" v-model="newMap.mapName">
+            <br>
+            <Label>Map Url:</Label>
+            <input type="text" placeholder="Url" v-model="newMap.mapUrl">
+            <br>
+            <Label>Map BG-Url:</Label>
+            <input type="text" placeholder="bgUrl" v-model="newMap.mapBgUrl">
+            <br>
+            <button @click="addAMap()">Add Map</button>
+        </Popup>
+
+        <button @click="addANewMap">Add Map</button>
+        
     </div>
 </template>
 <script setup>
 import Map from '../components/Map.vue'
 import { ref, onMounted, computed } from 'vue'
+
+import Popup from '../components/Popup.vue';
+
+const TogglePopup = (trigger) => {
+    popupTriggers.value[trigger] = !popupTriggers.value[trigger]
+}
+
+const popupTriggers = ref({
+    buttonTrigger: false,
+    // timedTrigger: false //This is not used as we don't need a timed-popup
+    // Check out tutorial for how to implement this: https://www.youtube.com/watch?v=HorXomQrOi8
+})
+
+const addANewMap = () => {
+    newMap.value.mapName = ''
+    newMap.value.mapUrl = ''
+    newMap.value.mapBgUrl = ''
+    TogglePopup('buttonTrigger')
+}
 
 // const allMaps = ref(['Island', 'Scorched Earth', 'Aberration', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Extinction', 'Lost Island', 'Genesis I', 'Genesis II', 'The Center', 'Fjordur'])
 
@@ -45,6 +74,7 @@ const newMap = ref({
 })
 
 function addAMap() {
+    TogglePopup('buttonTrigger')
     mapStore.addMap(newMap.value)
 }
 
@@ -74,6 +104,11 @@ onMounted(() => {
 h2 {
     text-align: center;
 }
+
+.map-wrapper {
+    padding: 1em;
+}
+
 .map-selection {
     display: flex;
     overflow: auto;
@@ -93,7 +128,7 @@ h2 {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
+    /*height: 100%;*/
     background-color: rgb(61, 56, 56);
 }
 </style>
