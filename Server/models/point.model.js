@@ -6,6 +6,7 @@ const Point = mongoose.model(
         color: String,
         title: String,
         category: String,
+        description: String,
         x: Number,
         y: Number,
         mapX: Number,

@@ -18,10 +18,14 @@ exports.addPoint = (req, res) => {
     console.log("y:", req.body.y)
 
     const point = new Point({
-        mapX: req.body.mapX,
-        mapY: req.body.mapY,
-        x: req.body.x,
-        y: req.body.y
+        color: req.body.point.color,
+        title: req.body.point.title,
+        category: req.body.point.category,
+        description: req.body.point.description,
+        x: req.body.point.x,
+        y: req.body.point.y,
+        mapX: req.body.point.mapX,
+        mapY: req.body.point.mapY
     })
 
     point.save()
