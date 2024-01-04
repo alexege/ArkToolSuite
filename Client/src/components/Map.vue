@@ -9,19 +9,32 @@
                     <span class="crosshair-y" :style="[{'left':`${crosshairX}px`}]">{{ currentMouseY }}</span>            
 
                     <span v-for="point in props.map.points" :key="point._id">
-                        <span @click="selectPoint(point)" class="point" :style="[{top : `${point.y - 5}px`}, {left : `${point.x - 5}px`}]"></span>
+                        <span @click="selectPoint(point)" class="point" :style="[{background : `${point.color}`},{top : `${point.y - 5}px`}, {left : `${point.x - 5}px`}]"></span>
                     </span>
                 </div>
 
                 <Popup v-if="popupTriggers.buttonTrigger" :TogglePopup="() => TogglePopup('buttonTrigger')" class="point-popup">
                     <h2 style="color: black;">Add a New Point</h2>
                     <input type="text" v-model="newPoint.title" placeholder="Point Title">
-                    <input type="color" v-model="newPoint.color">
+                    <!-- <input type="color" v-model="newPoint.color"> -->
+
+                    <div class="color-picker-container">
+                        <span class="color-picker-color" :style="{background: `${selectedColor}`}"></span>
+                        <div id="color-picker">
+                            <div class="wrapper-dropdown">
+                                <span @click="toggleDropdown()" v-html="selector"></span>
+                                <ul class="dropdown" v-show="active">
+                                    <li v-for="color in colors" :key="color._id" @click="setColor(color.hex, color.name)"><span :style="{background: color.hex}"></span> {{color.name}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="coord-input-boxes">
                         <input type="number" class="coord-input" placeholder="X" v-model="crosshairX">
                         <input type="number" class="coord-input" placeholder="Y" v-model="crosshairY">
                         <input type="hidden" class="coord-input" placeholder="X" v-model="tooltipX">
-                        <input type="hidden" class="coord-input" placeholder="Y" v-model="toolTipY">
+                        <input type="hidden" class="coord-input" placeholder="Y" v-model="tooltipY">
                     </div>
                     <select v-model="newPoint.category">
                         <option value="Enemy">Enemy Tribe</option>
@@ -54,6 +67,8 @@
 
                     </div>
 
+                    <pre style="font-size: 12px;">{{ props.map.points }}</pre>
+
                     <span v-for="point in props.map.points" :key="point._id">
                         {{ point._id.slice(-3) }} {{ point.x}}, {{  point.y }} <button @click="deleteAPoint(point._id)">Delete</button>
                     </span>
@@ -81,7 +96,7 @@
         timedTrigger: false
     })
 
-    import { ref } from 'vue'
+    import { ref, computed } from 'vue'
 
     // Sidebar Content
     // const w = Math.floor(e.pageX - e.currentTarget.offsetLeft / e.currentTarget.offsetWidth * 100);
@@ -115,7 +130,7 @@
     // }
 
     const newPoint = ref({
-        color: 'red',
+        color: '#FFFFFF',
         title: '',
         category: 'Enemy',
         description: null,
@@ -125,6 +140,50 @@
         mapY: currentMouseY,
     })
 
+    const colors = [
+        {
+            name: 'Enemy',
+            hex: '#FF0000'
+        },
+        {
+            name: 'Ally',
+            hex: '#00FFFF'
+        },
+        {
+            name: 'POI',
+            hex: '#FFFF00'
+        },
+        {
+            name: 'Tames',
+            hex: '#00FF00'
+        },
+        {
+            name: 'Caves',
+            hex: '#0000FF'
+        }
+    ]
+    const active = ref(false)
+    const selectedColor = ref('')
+    const selectedColorName = ref('')
+
+    const selector = computed(() => {
+        if(!selectedColor.value) {
+            return 'Point Type'
+        } else {
+            return '<span style="background: ' + selectedColor.value + '"></span> ' + selectedColorName.value
+        }
+    })
+
+    const setColor = (color, colorName) => {
+        selectedColor.value = color
+        selectedColorName.value = colorName
+        active.value = false
+    }
+
+    const toggleDropdown = () => {
+        active.value = !active.value
+    }
+
     // import { usePointStore } from '../stores/point.store'
     import { useMapStore } from '../stores/map.store'
     // const { addPoint } = usePointStore()
@@ -132,9 +191,9 @@
     const { deleteMap, deletePointFromMap, addPoint, deletePoint } = useMapStore()
 
     async function addAPoint(e, id) {
-        
+        console.log("the selected color is: ", selectedColor.value)
         const point = {
-            color: newPoint.value.color,
+            color: selectedColor.value,
             title: newPoint.value.title,
             category: newPoint.value.category,
             description: newPoint.value.description,
@@ -146,13 +205,21 @@
 
         const data = {
             mapId: id,
-            point: newPoint.value
+            point: point
         }
 
         // await addPoint(point, id)
         await addPoint(data)
         .then((res) => {
             TogglePopup('buttonTrigger')
+            newPoint.value.color = ''
+            newPoint.value.title = ''
+            newPoint.value.category = ''
+            newPoint.value.description = ''
+            newPoint.value.x = 0
+            newPoint.value.y = 0
+            newPoint.value.mapX = 0
+            newPoint.value.mapY = 0
             console.log("Adding point: ", res)
         })
         .catch((err) => {
@@ -191,7 +258,6 @@
         position: absolute;
         width: 10px;
         height: 10px;
-        background-color: red;
         border-radius: 50%;
     }
 
@@ -272,6 +338,84 @@
         /* display: flex;
         flex-direction: column; */
     }
+
+    /* Color Picker */
+
+    .color-picker-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .color-picker-color {
+        width: 24px;
+        height: 24px;
+        margin: .25em;
+    }
+
+    .wrapper-dropdown {
+    position: relative;
+    width: 200px;
+    background: #FFF;
+    color: #2e2e2e;
+    outline: none;
+    cursor: pointer;
+}
+.wrapper-dropdown > span {
+	width: 100%;
+	display: block;
+	border: 1px solid #ababab;
+	padding: 5px;
+}
+.wrapper-dropdown > span > span {
+  padding: 0 12px;
+  margin-right: 5px;
+}
+.wrapper-dropdown > span:after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    right: 16px;
+    top: calc(50% + 4px);
+    margin-top: -6px;
+	  border-width: 6px 6px 0 6px;
+    border-style: solid;
+	  border-color: #2e2e2e transparent;
+}
+
+.wrapper-dropdown .dropdown {
+    position: absolute;
+	  z-index: 10;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    font-weight: normal;
+	  list-style-type: none;
+	  padding-left: 0;
+	  margin: 0;
+	  border: 1px solid #ababab;
+	  border-top: 0;
+}
+
+.wrapper-dropdown .dropdown li {
+    display: block;
+    text-decoration: none;
+    color: #2e2e2e;
+	  padding: 5px;
+	  cursor: pointer;
+}
+
+.wrapper-dropdown .dropdown li > span {
+  padding: 0 12px;
+  margin-right: 5px;
+}
+
+.wrapper-dropdown .dropdown li:hover {
+    background: #eee;
+	  cursor: pointer;
+}
 
     </style>
     
