@@ -1,3 +1,5 @@
+//Has this been replaced with Auth.store.js????
+
 import { defineStore } from 'pinia'
 import axios from "axios"
 import tokenService from '../services/token.service';
@@ -29,7 +31,6 @@ actions: {
         try {
             await axios.post(`${API_URL}/auth/signin`, loginData)
             .then((response) => {
-                
                 //Update pinia state
                 this.user = response.data
 

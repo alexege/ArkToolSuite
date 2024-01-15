@@ -47,9 +47,8 @@
       </li>
     </ul>
     </div>
-    <!-- <ul v-for="todo in todoList" :key="todo._id" class="list">
-      <li class="item" v-if="todo"></li>
-    </ul> -->
+
+    <!-- <pre>User: {{ userStore.user }}</pre> -->
 
     <div class="list" v-for="todo, idx in sortedProperties" :key="todo._id">
       <div class="item" v-if="todo">
@@ -59,22 +58,24 @@
           <li class="label category">{{ todo.category }}</li>
           <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
           <li class="label priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
-          <li class="label assignee">{{ todo.assignee?.username }}</li>
+          <li class="label author">{{ todo.author?.username || 'Author'}}</li>
           <li class="label action">
             <span @click.stop="toggleComp(todo)">&#10004;</span>
             <span @click="delTodo(todo._id)" class="x">&#10060;</span>
           </li>
         </ul>
+
+        <Comments :comments="todo.comments"/>
+
+        <div>
+          <input type="text" v-model="todoComment.body">
+          <button @click="addAComment(todo._id)">Add</button>
+        </div>
+
       </div>
-      <!-- <div>
-        <input type="textarea">
-        <button @click="addComment(todo)">Comment</button>
-      </div> -->
     </div>
 
-    <h2>Completed</h2>
-    <!-- <pre>{{ todoList}}</pre> -->
-    <!-- Completed Items -->
+    <!-- <h2>Completed</h2>
     <ul class="todo-labels">
       <li class="label idx">idx</li>
       <li class="label title" @click.prevent="sortCompleted('title')">
@@ -114,12 +115,8 @@
       </li>
       <li class="label action">
         Completed
-        <!-- <div v-if="sortByCompleted === 'completed'">
-          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
-          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
-        </div> -->
       </li>
-    </ul>
+    </ul> -->
     <div class="list" v-for="todo, idx in sortedCompletedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
@@ -128,10 +125,13 @@
           <li class="category">{{ todo.category }}</li>
           <li class="created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
           <li class="priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
-          <li class="assignee">{{ todo.assignee?.username }}</li>
+          <li class="author">{{ todo.author?.username || 'Author' }}</li>
           <li class="action">
             <span @click.stop="toggleComp(todo)">&#10004;</span>
             <span @click="delTodo(todo._id)" class="x">&#10060;</span>
+          </li>
+          <li>
+              {{ todo.comments }}
           </li>
         </ul>
       </div>
@@ -141,12 +141,36 @@
   </template>
   
   <script setup>
+
+  //Import current logged in user
+  import { useUserStore } from '../../stores/user.store'
+  const { fetchUsers } = useUserStore()
+  const userStore = useUserStore()
+  fetchUsers()
+  
+  import Comments from '../Todo/Comments.vue'
   import { useTodoListStore } from "../../stores/todo.store.js";
   import { storeToRefs } from "pinia";
   import { ref, computed } from 'vue'
   const todoListStore = useTodoListStore();
   const { todoList, allTodos, completedItems } = storeToRefs(useTodoListStore());
-  const { toggleCompleted, deleteTodo } = useTodoListStore();
+  const { toggleCompleted, deleteTodo, addComment } = useTodoListStore();
+
+  const todoComment = ref({
+    title: null,
+    body: null,
+    category: null,
+    priority: 'Low',
+    completed: false,
+    author: 'Author',
+    comments: []
+  })
+
+  const addAComment = (todoId) => {
+    console.log("Adding a comment", todoId)
+    console.log("Adding a comment", todoComment.value)
+    addComment(todoId, todoComment.value)
+  }
 
   function toggleComp(todo) {
     toggleCompleted(todo)

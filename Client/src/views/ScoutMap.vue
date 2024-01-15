@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="scout-map-container">
         <h2>Scout Map</h2>
         <div>
             <pre v-for="map in maps" :key="map._id">
@@ -30,8 +30,8 @@
             <button @click="addAMap()">Add Map</button>
         </Popup>
 
-        <button @click="addANewMap">Add Map</button>
-        
+        <button @click="addANewMap" class="add-map-button">Add Map</button>
+
     </div>
 </template>
 <script setup>
@@ -105,6 +105,22 @@ h2 {
     text-align: center;
 }
 
+.scout-map-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-map-button {
+    text-align: center;
+    margin: 0 auto;
+    padding: 1em;
+    background-color: black;
+    color: white;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .map-wrapper {
     padding: 1em;
 }
@@ -129,6 +145,6 @@ h2 {
     justify-content: center;
     width: 100%;
     /*height: 100%;*/
-    background-color: rgb(61, 56, 56);
+    /* background-color: rgb(61, 56, 56); */
 }
 </style>

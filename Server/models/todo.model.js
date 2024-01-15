@@ -7,7 +7,7 @@ const Todo = mongoose.model(
         category: String,
         priority: String,
         completed: Boolean,
-        assignee: {
+        author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },

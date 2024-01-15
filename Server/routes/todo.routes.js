@@ -17,4 +17,7 @@ module.exports = (app) => {
     app.patch("/api/todo/update/:id", controller.update);
 
     app.delete("/api/todo/delete/:id", controller.delete);
+
+    //Comments
+     app.post("/api/todo/addTodo/:todoId", controller.addComment);
 }

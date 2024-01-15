@@ -34,7 +34,8 @@ const props = defineProps(['TogglePopup'])
     align-items: center;
     display: flex;
     flex-direction: column;
-    background: #FFF;
+    /* background: #FFF; */
+    background: rgba(11, 155, 212, 0.458);
     padding: 32px;
     position: relative;
 }

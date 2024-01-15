@@ -1,7 +1,6 @@
 <template>
         <div>
             <h2 class="map-name">{{ props.map.title }}</h2>
-            <!-- <h3>{{ props.map._id }}</h3> -->
             <div class="map-container">
                 <div class="map-view" @mousemove="getLiveMousePos($event)" @dblclick.prevent="() => TogglePopup('buttonTrigger')"> <!--@dblclick.prevent="addAPoint($event, props.map._id)"-->
                     <span class="coord-tooltip" :style="[{'left':`${tooltipX}px`},{'top':`${tooltipY}px`}]">{{ currentMouseX }},{{ currentMouseY }}</span>
@@ -10,25 +9,20 @@
 
                     <span v-for="point in props.map.points" :key="point._id">
                         <span @click="selectPoint(point)" class="point" :style="[{background : `${point.color}`},{top : `${point.y - 5}px`}, {left : `${point.x - 5}px`}]"></span>
+                        <span style="position:absolute" :style="[{top : `${point.y + 5}px`}, {left : `${point.x + 5}px`}]">
+                                <span v-if="showCoords">({{ point.mapX }},{{ point.mapY }})</span><br />
+                                <span v-if="showTitle">{{ point.title }}</span><br />
+                                <span v-if="showId">{{ point._id }}</span><br />
+                                <span v-if="showColor">{{ point.color }}</span><br />
+                                <span v-if="showCategory">{{ point.category }}</span><br />
+                                <span v-if="showDescription">{{ point.description }}</span><br />
+                        </span>
                     </span>
                 </div>
 
                 <Popup v-if="popupTriggers.buttonTrigger" :TogglePopup="() => TogglePopup('buttonTrigger')" class="point-popup">
                     <h2 style="color: black;">Add a New Point</h2>
                     <input type="text" v-model="newPoint.title" placeholder="Point Title">
-                    <!-- <input type="color" v-model="newPoint.color"> -->
-
-                    <div class="color-picker-container">
-                        <span class="color-picker-color" :style="{background: `${selectedColor}`}"></span>
-                        <div id="color-picker">
-                            <div class="wrapper-dropdown">
-                                <span @click="toggleDropdown()" v-html="selector"></span>
-                                <ul class="dropdown" v-show="active">
-                                    <li v-for="color in colors" :key="color._id" @click="setColor(color.hex, color.name)"><span :style="{background: color.hex}"></span> {{color.name}}</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="coord-input-boxes">
                         <input type="number" class="coord-input" placeholder="X" v-model="crosshairX">
@@ -36,41 +30,55 @@
                         <input type="hidden" class="coord-input" placeholder="X" v-model="tooltipX">
                         <input type="hidden" class="coord-input" placeholder="Y" v-model="tooltipY">
                     </div>
-                    <select v-model="newPoint.category">
-                        <option value="Enemy">Enemy Tribe</option>
-                        <option value="Ally">Ally Tribe</option>
-                        <option value="Resource">Rare Resource</option>
-                        <option value="Obelisk">Obelisk</option>
-                    </select>
+
+                    <div class="category-container">
+                        <span class="category-color" :style="{background:`${newPointColor}`}"></span>
+                        <select v-model="newPoint.category">
+                            <option v-for="option in pointTypes" :key="option" :value="option.name">{{ option.name }}</option>
+                        </select>
+                    </div>
                     <textarea name="" id="" cols="30" rows="10" placeholder="Use this area to describe the point..." v-model="newPoint.description"></textarea>
                     <button @click.prevent="addAPoint($event, props.map._id)">Add Point</button>
                 </Popup>
-                
-                <!-- <button @click="() => TogglePopup('buttonTrigger')">Open Popup</button> -->
 
                 <div class="map-sidebar-container">
-                    MapID: {{  props.map._id }}
 
-                    <br>
+                    <div>
+                        Controls
+                        <br />
+                        <label><input type="checkbox" v-model="showTitle">Show Title</label>
+                        <br />
+                        <label><input type="checkbox" v-model="showCoords">Show Coordinates</label>
+                        <br />
+                        <label><input type="checkbox" v-model="showId">showId</label>
+                        <br />
+                        <label><input type="checkbox" v-model="showColor">showColor</label>
+                        <br />
+                        <label><input type="checkbox" v-model="showCategory">showCategory</label>
+                        <br />
+                        <label><input type="checkbox" v-model="showDescription">showDescription</label>
+                        <br />
+                    </div>
 
-                    selectedPoint: {{ selectedPointTitle }}
-                    <br/>
-                    [ {{ selectedPointX }} , {{ selectedPointY }} ]
+                    Point: {{ selectedPointTitle }}
+                    Coords: [{{ selectedPointX }},{{ selectedPointY }}]
+                    Category: {{ selectedPointCategory }}
+                    Description: {{ selectedPointDescription }}
 
-                    <br>
-
-                    This is the sidebar
+                    <!-- This is the sidebar
                     <div class="map-sidebar">
                         <input type="number" class="coord-input" v-model="crosshairY">
                         <input type="number" class="coord-input" v-model="crosshairX">
                         <button @click.prevent="addPoint">Add</button>
 
-                    </div>
+                    </div> -->
 
-                    <pre style="font-size: 12px;">{{ props.map.points }}</pre>
-
-                    <span v-for="point in props.map.points" :key="point._id">
-                        {{ point._id.slice(-3) }} {{ point.x}}, {{  point.y }} <button @click="deleteAPoint(point._id)">Delete</button>
+                    <span v-for="point in props.map.points" :key="point._id" class="point-overview">
+                        <div :style="{ background: `${point.color}`}" style="width:15px;height:15px; border-radius:50%;"></div>
+                        {{  point.title }} [{{ point.mapX}},{{  point.mapY }}]
+                        
+                        <button @click="editAPoint(point._id)">Edit</button>
+                        <button @click="deleteAPoint(point._id)">Delete</button>
                     </span>
 
                     <div style="position: absolute;" :style="[{'left':`${selectedPointMapX}px`},{'top':`${selectedPointMapY}px`}]">
@@ -129,18 +137,7 @@
     //     console.log("mapID:", id);
     // }
 
-    const newPoint = ref({
-        color: '#FFFFFF',
-        title: '',
-        category: 'Enemy',
-        description: null,
-        x: crosshairX,
-        y: crosshairY,
-        mapX: currentMouseX,
-        mapY: currentMouseY,
-    })
-
-    const colors = [
+    const pointTypes = [
         {
             name: 'Enemy',
             hex: '#FF0000'
@@ -162,38 +159,39 @@
             hex: '#0000FF'
         }
     ]
-    const active = ref(false)
-    const selectedColor = ref('')
-    const selectedColorName = ref('')
 
-    const selector = computed(() => {
-        if(!selectedColor.value) {
-            return 'Point Type'
-        } else {
-            return '<span style="background: ' + selectedColor.value + '"></span> ' + selectedColorName.value
+    const newPointColor = computed(() => {
+        if (newPoint.value && newPoint.value.category) {
+            console.log("category:", newPoint.value.category)
+            let indexOfColor = pointTypes.findIndex(point => point.name === newPoint.value.category)
+            console.log("index of newPointColor:", indexOfColor)
+            return pointTypes[indexOfColor].hex
         }
     })
 
-    const setColor = (color, colorName) => {
-        selectedColor.value = color
-        selectedColorName.value = colorName
-        active.value = false
-    }
+    const newPoint = ref({
+        color: '#FFFFFF',
+        title: '',
+        category: 'Enemy',
+        description: null,
+        x: crosshairX,
+        y: crosshairY,
+        mapX: currentMouseX,
+        mapY: currentMouseY,
+    })
 
-    const toggleDropdown = () => {
-        active.value = !active.value
-    }
-
-    // import { usePointStore } from '../stores/point.store'
     import { useMapStore } from '../stores/map.store'
-    // const { addPoint } = usePointStore()
-    // const { deletePoint } = usePointStore()
     const { deleteMap, deletePointFromMap, addPoint, deletePoint } = useMapStore()
 
     async function addAPoint(e, id) {
-        console.log("the selected color is: ", selectedColor.value)
+        // console.log("the selected color is: ", pointTypes[newPoint.value.category].hex)
+
+        let pointColorIndex = pointTypes.findIndex(point => point.name === newPoint.value.category)
+        let pointColor = pointTypes[pointColorIndex].hex
+        console.log("Point color is: ", pointColor)
+
         const point = {
-            color: selectedColor.value,
+            color: pointColor,
             title: newPoint.value.title,
             category: newPoint.value.category,
             description: newPoint.value.description,
@@ -214,7 +212,7 @@
             TogglePopup('buttonTrigger')
             newPoint.value.color = ''
             newPoint.value.title = ''
-            newPoint.value.category = ''
+            newPoint.value.category = 'Enemy'
             newPoint.value.description = ''
             newPoint.value.x = 0
             newPoint.value.y = 0
@@ -235,6 +233,7 @@
         })
     }
 
+    const selectedPointId = ref()
     const selectedPointTitle = ref()
     const selectedPointX = ref(0)
     const selectedPointY = ref(0)
@@ -242,23 +241,58 @@
     const selectedPointMapX = ref(0)
     const selectedPointMapY = ref(0)
 
+    const selectedPointColor = ref('')
+    const selectedPointCategory = ref('')
+    const selectedPointDescription = ref('')
+
     async function selectPoint(point) {
-        selectedPointTitle.value = point._id
+        selectedPointId.value = point._id
+        selectedPointTitle.value = point.title
         selectedPointX.value = point.x
         selectedPointY.value = point.y
 
         selectedPointMapX.value = point.mapX
         selectedPointMapY.value = point.mapY
+
+        selectedPointColor.value = point.color
+        selectedPointCategory.value = point.category
+        selectedPointDescription.value = point.description
     }
+
+    // Custom View
+
+    const showId = ref(false)
+    const showCoords = ref(false)
+    const showTitle = ref(false)
+    const showColor = ref(false)
+    const showCategory = ref(false)
+    const showDescription = ref(false)
 
     </script>
     <style scoped>
+
+    .category-container {
+        display: flex;
+    }
+
+    .category-color {
+        width: 2em;
+        height: 2em;
+        background: red;
+    }
 
     .point {
         position: absolute;
         width: 10px;
         height: 10px;
         border-radius: 50%;
+    }
+
+    .point-overview {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .map-container {
@@ -352,70 +386,5 @@
         height: 24px;
         margin: .25em;
     }
-
-    .wrapper-dropdown {
-    position: relative;
-    width: 200px;
-    background: #FFF;
-    color: #2e2e2e;
-    outline: none;
-    cursor: pointer;
-}
-.wrapper-dropdown > span {
-	width: 100%;
-	display: block;
-	border: 1px solid #ababab;
-	padding: 5px;
-}
-.wrapper-dropdown > span > span {
-  padding: 0 12px;
-  margin-right: 5px;
-}
-.wrapper-dropdown > span:after {
-    content: "";
-    width: 0;
-    height: 0;
-    position: absolute;
-    right: 16px;
-    top: calc(50% + 4px);
-    margin-top: -6px;
-	  border-width: 6px 6px 0 6px;
-    border-style: solid;
-	  border-color: #2e2e2e transparent;
-}
-
-.wrapper-dropdown .dropdown {
-    position: absolute;
-	  z-index: 10;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #fff;
-    font-weight: normal;
-	  list-style-type: none;
-	  padding-left: 0;
-	  margin: 0;
-	  border: 1px solid #ababab;
-	  border-top: 0;
-}
-
-.wrapper-dropdown .dropdown li {
-    display: block;
-    text-decoration: none;
-    color: #2e2e2e;
-	  padding: 5px;
-	  cursor: pointer;
-}
-
-.wrapper-dropdown .dropdown li > span {
-  padding: 0 12px;
-  margin-right: 5px;
-}
-
-.wrapper-dropdown .dropdown li:hover {
-    background: #eee;
-	  cursor: pointer;
-}
-
     </style>
     

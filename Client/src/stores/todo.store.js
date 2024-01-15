@@ -32,7 +32,8 @@ export const useTodoListStore = defineStore('todoList', {
     },
 
     async addTodo(item) {
-      if(item.assignee){
+      console.log("adding a todo item")
+      if(item.author){ //Only post if an author is found/exists
         const todoItem = await axios.post(`${API_URL}/todo/addTodo`, item)
         await this.todoList.push(todoItem.data)
       }
@@ -53,6 +54,15 @@ export const useTodoListStore = defineStore('todoList', {
         if (todoItem) {
           todoItem.completed = !todoItem.completed;
         }
+      },
+
+      async addComment(todoId, comment) {
+        let newComment = await axios.post(`${API_URL}/todo/addTodo/${todoId}`, comment) 
+        await console.log(newComment)
+        // const todoItem = await axios.post(`${API_URL}/todo/addTodo`, item)
+        // await this.todoList.push(todoItem.data)
+
+        //Find The comment, Add a comment to it in pinia
       },
   },
 })

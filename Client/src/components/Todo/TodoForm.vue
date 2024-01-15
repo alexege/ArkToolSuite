@@ -21,14 +21,14 @@
       </div>
       <div class="assignee">
         <select name="" id="" v-model="todoItem.assignee" class="assignee-input">
-          <option value="Assignee" disabled>Asignee</option>
+          <option value="Assignee" disabled>Author</option>
           <option :value="user._id" v-for="user in allUsers" :key="user.id">{{ user.username }}</option>
         </select>
       </div>
       <div class="actions">
         <button>Add</button>
       </div>
-    </form>
+    </form> 
   </template>
   
 <script setup>
@@ -38,6 +38,7 @@ import { storeToRefs } from 'pinia'
 import { ref } from "vue";
 
     const todoStore = useTodoListStore()
+    const userStore = useUserStore()
     const { fetchTodos } = useTodoListStore()
     
     const { allUsers } = storeToRefs(useUserStore())
@@ -61,27 +62,36 @@ import { ref } from "vue";
       category: 'breeding',
       priority: 'Low',
       completed: false,
-      assignee: null,
+      author: null,
       comments: []
     })
 
     function addTodoItem() {
+      let author = null;
+      if (!todoItem.value.author) {
+        author = userStore.user
+        console.log("No author found, setting one")
+        todoItem.value.author = useUserStore.user
+        console.log("userStore.user: ", userStore.user)
 
-      if (!todoItem.value.assignee) {
-        todoItem.value.assignee = useUserStore?.user?.username
+        console.log("Todoitem: ", todoItem.value.author)
       }
+      console.log("Todoitem: ", author)
 
       const item = {
         title: todoItem.value.title,
         category: todoItem.value.category,
         priority: todoItem.value.priority,
         completed: todoItem.value.completed,
-        assignee: todoItem.value.assignee || null,
+        author: author || null,
         comments: []
       }
+
+      console.log("The final item is: ", item);
       
       todoStore.addTodo(item)
       todoItem.value.title = ''
+      console.log("-----------------------")
     }
 </script>
 <style scoped>
@@ -144,7 +154,6 @@ import { ref } from "vue";
 }
 
 .actions button {
-  color: white;
   border: 1px solid white;
   padding: 5px;
   width: 100%;

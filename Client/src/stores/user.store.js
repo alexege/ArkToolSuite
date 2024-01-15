@@ -17,19 +17,15 @@ export const useUserStore = defineStore({
     actions: {
 
         getActiveUser(user) {
-            console.log("user:", user.value.uid);
-            console.log("users:", this.users)
-            let uid = user.value.uid;
-            console.log("uid:", uid);
-            if (user.value.uid) {
+            let uid = user.value._id;
+            if (user.value._id) {
                 if (Array.isArray(this.users)) {
-                    return this.users.filter(user => user._id == uid)[0]
+                    this.user = this.users.filter(user => user._id == uid)[0]
                 }
             }
         },
 
         async register(signUpData, username, password) {
-            console.log("::::::::::::::registering from user.store::::::::::", signUpData);
 
             let data = {
                 signUpData,
@@ -40,11 +36,12 @@ export const useUserStore = defineStore({
             try {
                 await axios.post(`${API_URL}/users/signup`, data)
                 .then((response) => {
-                    console.log("register response:", response);
                     this.user = response.data.user
-                    // this.users.push(response.data)
                     this.users.push(response.data.user)
                     this.router.push('/')
+                })
+                .catch((e) => {
+                    console.log("error: ", e)
                 })
     
             } catch (e) {
@@ -53,7 +50,6 @@ export const useUserStore = defineStore({
         },
 
         async fetchUsers() {
-            // this.users = { loading: true };
             try {
                 const response = await axios.get(`${API_URL}/users/all`);
                 this.users = response.data

@@ -1,5 +1,5 @@
 import {
-  GoogleAuthProvider,
+    GoogleAuthProvider,
     createUserWithEmailAndPassword,
     onAuthStateChanged,
     signInWithEmailAndPassword,
@@ -12,42 +12,37 @@ import {
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { useUserStore } from './user.store';
-//   import { useNotesStore } from './NotesStore';
  
   export const useAuthStore = defineStore('authStore', () => {
     const user = ref({});
     const router = useRouter();
     const userStore = useUserStore()
-    // const notesStore = useNotesStore();
+
     const init = () => {
-      console.log("authStore.init")
+      console.log("[AuthStore] - init");
       onAuthStateChanged(auth, (userDetails) => {
         if (userDetails) {
-          const uid = userDetails.uid;
-          user.value = { email: userDetails.email, uid };
-
-          //Set userStore's user value to the active user in AuthStore
-          userStore.user = userStore.getActiveUser(user)
-          // router.push({ name: 'notes' });
-        //   notesStore.getNotes();
+          const _id = userDetails.uid;
+          user.value = { email: userDetails.email, _id };
+          userStore.getActiveUser(user)
         } else {
           user.value = {};
           router.replace({ name: 'auth' });
-        //   notesStore.clearNotes();
         }
       });
     };
+
     const registerUser = (credentials) => {
-    const userStore = useUserStore()
-      console.log("credentials:", credentials)
+      
+      console.log("[AuthStore] - registerUser");
+      const userStore = useUserStore()
       createUserWithEmailAndPassword(auth, credentials.email, credentials.password)
         .then(userCredential => {
 
           if(userCredential.user.uid){
             userStore.register(userCredential.user, credentials.username, credentials.password)
-            .then((res) => {
-              console.log("Just registered. Now loggign in")
-              loginUser(credentials)
+            .then(() => {
+              // loginUser(credentials)
             })
             .catch((error) => {
               console.log("Error registering user: ", error);
@@ -80,11 +75,15 @@ import {
     }
   
     const loginUser = (credentials) => {
+      console.log("[AuthStore] - loginUser - credentials:", credentials);
+
+      //Perform Firebase login
       signInWithEmailAndPassword(auth, credentials.email, credentials.password)
         .then((userCredential) => {
+          
           // Signed in
           const user = userCredential.user;
-          console.log("user:", user);
+          console.log("[AuthStore] - loginUser - User: ", user)
           router.push("/")
           // ...
         })
@@ -101,6 +100,7 @@ import {
         })
         .catch((error) => {
           // An error happened.
+          console.log("error: ", error)
         });
     };
   
