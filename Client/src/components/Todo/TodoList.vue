@@ -1,3 +1,128 @@
+<script setup>
+
+  import { ref, computed } from 'vue'
+  import { storeToRefs } from "pinia";
+  import { useUserStore } from '../../stores/user.store'
+  import { useTodoStore } from "../../stores/todo.store.js";
+  import Comments from '../Todo/Comments.vue'
+  
+  //Import current logged in user
+  const { fetchUsers } = useUserStore()
+  const todoStore = useTodoStore();
+  const { allTodos } = storeToRefs(useTodoStore());
+  const { toggleCompleted, deleteTodo, addComment } = useTodoStore();
+
+  fetchUsers()
+
+  const todoComment = ref({
+    title: null,
+    body: null,
+    category: null,
+    priority: 'Low',
+    completed: false,
+    author: 'Author',
+    comments: []
+  })
+
+  const addAComment = (todoId) => {
+    addComment(todoId, todoComment.value)
+  }
+
+  function toggleComp(todo) {
+    toggleCompleted(todo)
+  }
+
+  function delTodo(id) {
+    deleteTodo(id)
+  }
+
+  // Sort order
+  const sortBy = ref('')
+  var sortDirection = ref(1)
+
+  function sort(type) {
+    if(sortBy.value != type) sortDirection.value = 1
+    sortBy.value = type
+    sortDirection.value *= -1
+  }
+
+  function sortMethods(type, direction) {
+    return direction === 1
+        ? (a, b) => (b[type] > a[type] ? -1 : a[type] > b[type] ? 1 : 0)
+        : (a, b) => (a[type] > b[type] ? -1 : b[type] > a[type] ? 1 : 0);
+  }
+
+  var sortedProperties = computed(() => {
+    if(sortDirection.value){
+      const direction = sortDirection.value
+      const type = sortBy.value
+
+      if(Array.isArray(todoStore.allTodos)){
+        let copy = [...todoStore.allTodos]
+
+        if(type == 'priority'){
+          var priorityOrder = { 'High':0, 'Medium':1, 'Low':2}
+          if(sortDirection.value === 1){
+            return copy.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+          } else {
+            return copy.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority])
+          }
+        }
+
+        // if(type == 'assignee'){
+        //   return copy.sort((a, b) => a.assignee.username - b.assignee.username)
+        // }
+
+          //Generic Sort Selection
+          return copy.sort(sortMethods(type, direction))
+        }
+      }
+      return todoStore.allTodos
+  })
+
+  //Sort Completed Items
+  var sortByCompleted = ref('')
+  var sortDirectionCompleted = ref(1)
+
+  function sortCompleted(type) {
+    if(sortByCompleted.value != type) sortDirectionCompleted.value = 1
+    sortByCompleted.value = type
+    sortDirectionCompleted.value *= -1
+  }
+
+  var sortedCompletedProperties = computed(() => {
+    if(sortDirectionCompleted.value){
+      const direction = sortDirectionCompleted.value
+      const type = sortByCompleted.value
+
+      if(Array.isArray(todoStore.completedItems)){
+        let copy = [...todoStore.completedItems]
+
+        if(type == 'priority'){
+          var priorityOrder = { 'High':0, 'Medium':1, 'Low':2}
+          if(sortDirectionCompleted.value === 1){
+            return copy.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+          } else {
+            return copy.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority])
+          }
+        }
+
+          //Generic Sort Selection
+          return copy.sort(sortMethods(type, direction))
+        }
+      }
+      return todoStore.completedItems
+  })
+
+  var completed = computed(() => {
+    if(Array.isArray(allTodos)){
+      return allTodos.filter((todo) => todo.completed)
+    }
+    return allTodos
+  })
+
+  </script>
+
 <template>
   <div>
     <div>
@@ -31,6 +156,13 @@
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
+      <li class="label priority" @click.prevent="sort('author')">
+        Author
+        <div v-if="sortBy === 'author'">
+          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
+          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
+        </div>
+      </li>
       <li class="label assignee" @click.prevent="sort('assignee')">
         Assignee
         <div v-if="sortBy === 'assignee'">
@@ -40,13 +172,13 @@
       </li>
       <li class="label action">
         Completed
-        <!-- <div v-if="sortBy === 'completed'">
-          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
-          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
-        </div> -->
       </li>
     </ul>
     </div>
+
+    <!-- <div v-for="todo in sortedProperties" :key="todo._id">
+      <pre>{{ todo }}</pre>
+    </div> -->
 
     <!-- <pre>User: {{ userStore.user }}</pre> -->
 
@@ -75,7 +207,8 @@
       </div>
     </div>
 
-    <!-- <h2>Completed</h2>
+    <div>
+    <h2>Completed</h2>
     <ul class="todo-labels">
       <li class="label idx">idx</li>
       <li class="label title" @click.prevent="sortCompleted('title')">
@@ -106,6 +239,13 @@
           <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
         </div>
       </li>
+      <li class="label priority" @click.prevent="sort('author')">
+        Author
+        <div v-if="sortBy === 'author'">
+          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
+          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
+        </div>
+      </li>
       <li class="label assignee" @click.prevent="sortCompleted('assignee')">
         Assignee
         <div v-if="sortByCompleted === 'assignee'">
@@ -116,160 +256,34 @@
       <li class="label action">
         Completed
       </li>
-    </ul> -->
+    </ul>
     <div class="list" v-for="todo, idx in sortedCompletedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
-          <li class="idx">{{  idx + 1 }}</li>
-          <li class="title" :class="{ completed: todo.completed }">{{ todo.title }}</li>
-          <li class="category">{{ todo.category }}</li>
-          <li class="created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
-          <li class="priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
-          <li class="author">{{ todo.author?.username || 'Author' }}</li>
-          <li class="action">
+          <li class="label idx">{{ idx + 1 }}</li>
+          <li class="label title" :class="{ completed: todo.completed }">{{ todo.title }}</li>
+          <li class="label category">{{ todo.category }}</li>
+          <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
+          <li class="label priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
+          <li class="label author">{{ todo.author?.username || 'Author'}}</li>
+          <li class="label action">
             <span @click.stop="toggleComp(todo)">&#10004;</span>
             <span @click="delTodo(todo._id)" class="x">&#10060;</span>
           </li>
-          <li>
-              {{ todo.comments }}
-          </li>
         </ul>
+
+        <Comments :comments="todo.comments"/>
+
+        <div>
+          <input type="text" v-model="todoComment.body">
+          <button @click="addAComment(todo._id)">Add</button>
+        </div>
       </div>
     </div>
-
+    </div>
   </div>
   </template>
-  
-  <script setup>
-
-  //Import current logged in user
-  import { useUserStore } from '../../stores/user.store'
-  const { fetchUsers } = useUserStore()
-  const userStore = useUserStore()
-  fetchUsers()
-  
-  import Comments from '../Todo/Comments.vue'
-  import { useTodoListStore } from "../../stores/todo.store.js";
-  import { storeToRefs } from "pinia";
-  import { ref, computed } from 'vue'
-  const todoListStore = useTodoListStore();
-  const { todoList, allTodos, completedItems } = storeToRefs(useTodoListStore());
-  const { toggleCompleted, deleteTodo, addComment } = useTodoListStore();
-
-  const todoComment = ref({
-    title: null,
-    body: null,
-    category: null,
-    priority: 'Low',
-    completed: false,
-    author: 'Author',
-    comments: []
-  })
-
-  const addAComment = (todoId) => {
-    console.log("Adding a comment", todoId)
-    console.log("Adding a comment", todoComment.value)
-    addComment(todoId, todoComment.value)
-  }
-
-  function toggleComp(todo) {
-    toggleCompleted(todo)
-  }
-
-  function delTodo(id) {
-    deleteTodo(id)
-  }
-
-  // Sort order
-  const sortBy = ref('')
-  var sortDirection = ref(1)
-
-  function sort(type) {
-    if(sortBy.value != type) sortDirection.value = 1
-    sortBy.value = type
-    sortDirection.value *= -1
-  }
-
-  function sortMethods(type, direction) {
-    return direction === 1
-        ? (a, b) => (b[type] > a[type] ? -1 : a[type] > b[type] ? 1 : 0)
-        : (a, b) => (a[type] > b[type] ? -1 : b[type] > a[type] ? 1 : 0);
-  }
-
-  var sortedProperties = computed(() => {
-    if(sortDirection.value){
-      const direction = sortDirection.value
-      const type = sortBy.value
-
-      console.log(`direction:${direction}\ntype:${type}`)
-
-      // console.log(`direction:${direction}, type:${type}`)
-      if(Array.isArray(todoListStore.allTodos)){
-        let copy = [...todoListStore.allTodos]
-
-        if(type == 'priority'){
-          var priorityOrder = { 'High':0, 'Medium':1, 'Low':2}
-          if(sortDirection.value === 1){
-            return copy.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
-          } else {
-            return copy.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority])
-          }
-        }
-
-        // if(type == 'assignee'){
-        //   return copy.sort((a, b) => a.assignee.username - b.assignee.username)
-        // }
-
-          //Generic Sort Selection
-          return copy.sort(sortMethods(type, direction))
-        }
-      }
-      return todoListStore.allTodos
-  })
-
-  //Sort Completed Items
-  var sortByCompleted = ref('')
-  var sortDirectionCompleted = ref(1)
-
-  function sortCompleted(type) {
-    if(sortByCompleted.value != type) sortDirectionCompleted.value = 1
-    sortByCompleted.value = type
-    sortDirectionCompleted.value *= -1
-  }
-
-  var sortedCompletedProperties = computed(() => {
-    if(sortDirectionCompleted.value){
-      const direction = sortDirectionCompleted.value
-      const type = sortByCompleted.value
-
-      if(Array.isArray(todoListStore.completedItems)){
-        let copy = [...todoListStore.completedItems]
-
-        if(type == 'priority'){
-          var priorityOrder = { 'High':0, 'Medium':1, 'Low':2}
-          if(sortDirectionCompleted.value === 1){
-            return copy.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
-          } else {
-            return copy.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority])
-          }
-        }
-
-          //Generic Sort Selection
-          return copy.sort(sortMethods(type, direction))
-        }
-      }
-      return todoListStore.completedItems
-  })
-
-  var completed = computed(() => {
-    if(Array.isArray(allTodos)){
-      return allTodos.filter((todo) => todo.completed)
-    }
-    return allTodos
-  })
-
-  </script>
-  
+    
   <style scoped>
 
   .low {

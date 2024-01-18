@@ -1,6 +1,6 @@
 import './assets/main.css'
 
-import { createApp, markRaw } from 'vue'
+import { createApp, markRaw, watch } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
@@ -12,6 +12,18 @@ const pinia = createPinia()
 pinia.use(({ store }) => {
     store.router = markRaw(router)
 })
+
+// //Save state to localstorage - Likely a vulnerability and needs to be redone 
+// if (localStorage.getItem("state")) {
+//     pinia.state.value = JSON.parse(localStorage.getItem("state"));
+// }
+
+// watch(
+//     pinia.state,
+//     (state) => {
+//         localStorage.setItem("state", JSON.stringify(state))
+// }, { deep: true }
+// )
 
 const app = createApp(App)
 

@@ -1,3 +1,58 @@
+<script setup>
+import { useUserStore } from '../../stores/user.store';
+import { useTodoStore } from '../../stores/todo.store'
+import { storeToRefs } from 'pinia'
+import { ref } from "vue";
+
+    const todoStore = useTodoStore()
+    const userStore = useUserStore()
+    
+    const { allUsers } = storeToRefs(useUserStore())
+    const { fetchUsers } = useUserStore()
+    const { fetchTodos } = useTodoStore()
+    
+    fetchUsers()
+    fetchTodos()
+
+    const categories = [
+      "Breeding",
+      "Taming",
+      "Pvp",
+      "Farming",
+      "Artifacts",
+      "Scouting"
+    ]
+
+    //Set default values
+    const todoItem = ref({
+      title: null,
+      category: 'breeding',
+      priority: 'Low',
+      completed: false,
+      author: null,
+      comments: []
+    })
+
+    function addTodoItem() {
+      let author = null;
+      if (!todoItem.value.author) {
+        author = userStore.user
+        todoItem.value.author = useUserStore.user
+      }
+
+      const item = {
+        title: todoItem.value.title,
+        category: todoItem.value.category,
+        priority: todoItem.value.priority,
+        completed: todoItem.value.completed,
+        author: author || null,
+        comments: []
+      }
+      
+      todoStore.addTodo(item)
+      todoItem.value.title = ''
+    }
+</script>
 <template>
     <form @submit.prevent="addTodoItem()" class="headers-form">
       <div class="idx"></div>
@@ -30,70 +85,6 @@
       </div>
     </form> 
   </template>
-  
-<script setup>
-import { useTodoListStore } from '../../stores/todo.store'
-import { useUserStore } from '../../stores/user.store';
-import { storeToRefs } from 'pinia'
-import { ref } from "vue";
-
-    const todoStore = useTodoListStore()
-    const userStore = useUserStore()
-    const { fetchTodos } = useTodoListStore()
-    
-    const { allUsers } = storeToRefs(useUserStore())
-    const { fetchUsers } = useUserStore()
-
-    fetchUsers()
-    fetchTodos()
-
-    const categories = [
-      "Breeding",
-      "Taming",
-      "Pvp",
-      "Farming",
-      "Artifacts",
-      "Scouting"
-    ]
-
-    //Set default values
-    const todoItem = ref({
-      title: null,
-      category: 'breeding',
-      priority: 'Low',
-      completed: false,
-      author: null,
-      comments: []
-    })
-
-    function addTodoItem() {
-      let author = null;
-      if (!todoItem.value.author) {
-        author = userStore.user
-        console.log("No author found, setting one")
-        todoItem.value.author = useUserStore.user
-        console.log("userStore.user: ", userStore.user)
-
-        console.log("Todoitem: ", todoItem.value.author)
-      }
-      console.log("Todoitem: ", author)
-
-      const item = {
-        title: todoItem.value.title,
-        category: todoItem.value.category,
-        priority: todoItem.value.priority,
-        completed: todoItem.value.completed,
-        author: author || null,
-        comments: []
-      }
-
-      console.log("The final item is: ", item);
-      
-      todoStore.addTodo(item)
-      todoItem.value.title = ''
-      console.log("-----------------------")
-    }
-</script>
 <style scoped>
 
 .headers-form {

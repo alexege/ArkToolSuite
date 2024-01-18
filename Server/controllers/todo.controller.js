@@ -5,14 +5,14 @@ const Comment = db.comment;
 
 // Retrieve all Todos from the database.
 exports.findAllTodos = (req, res) => {
-  Todo.find()
-  .populate("author")
+  Todo.find().populate("author")
   // .sort([["gridPosition", "ascending"]])
   .then((todos) => {
-    res.send(todos);
+    console.log(":::::::::::::::::::::::todos:", todos)
+    res.status(200).send(todos);
   })
-  .catch(err => {
-    console.log(err);
+  .catch((e) => {
+    console.log("error:", e);
   })
   
   // .sort([["createdAt", "descending"]])
@@ -65,7 +65,7 @@ exports.addTodo = (req, res) => {
 };
 
 // Find a single Todo with an id
-exports.findOne = (req, res) => {
+exports.findById = (req, res) => {
   Todo.findOne({ _id: req.params.id })
   .then((todo) => {
     res.send({ todo });
@@ -77,7 +77,7 @@ exports.findOne = (req, res) => {
 };
 
 // Update a Todo by the id in the request
-exports.update = (req, res) => {
+exports.updateTodo = (req, res) => {
 
   let updateData = {
     completed: !req.body.completed
@@ -96,7 +96,7 @@ exports.update = (req, res) => {
 };
 
 // Delete a Todo with the specified id in the request
-exports.delete = (req, res) => {
+exports.deleteTodo = (req, res) => {
   Todo.deleteOne({ _id: req.params.id })
   .then(() => {
     res.status(200).send({ message: "Todo deleted"});
@@ -108,7 +108,7 @@ exports.delete = (req, res) => {
 };
 
 // Delete all Todos from the database.
-exports.deleteAll = (req, res) => {
+exports.deleteTodos = (req, res) => {
   
 };
 

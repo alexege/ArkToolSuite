@@ -20,7 +20,12 @@ export const useUserStore = defineStore({
             let uid = user.value._id;
             if (user.value._id) {
                 if (Array.isArray(this.users)) {
-                    this.user = this.users.filter(user => user._id == uid)[0]
+                    let index = this.users.findIndex(user => user._id == uid)
+                    if (index !== -1) {
+                        this.user = this.users[index]
+                    } else {
+                        console.log("User not found in user store")
+                    }
                 }
             }
         },
@@ -66,5 +71,15 @@ export const useUserStore = defineStore({
                 this.user = { error };
             }
         }
-    }
+    },
+
+    // if (localStorage.getItem("user")) {
+    //     user.value = JSON.parse(localStorage.getItem("user"))
+    // }
+
+    // watch(user,
+    //     (userVal) => {
+    //         localStorage.setItem("user", JSON.stringify(userVal))
+    // }, { deep: true }
+    // )
 })
