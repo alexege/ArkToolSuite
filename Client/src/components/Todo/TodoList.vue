@@ -14,15 +14,18 @@
 
   fetchUsers()
 
+  console.log("freshly fetced user data: ", useUserStore.user)
   const todoComment = ref({
     title: null,
     body: null,
     category: null,
     priority: 'Low',
     completed: false,
-    author: 'Author',
+    author: useUserStore.user ? useUserStore.user : 'Author',
     comments: []
   })
+  console.log("User:", useUserStore.user);
+  console.log("the todoComment is: ", todoComment.value);
 
   const addAComment = (todoId) => {
     addComment(todoId, todoComment.value)

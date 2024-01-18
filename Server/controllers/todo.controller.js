@@ -118,16 +118,16 @@ exports.addComment = (req, res) => {
   console.log("addComment req.params:", req.params)
 
   const comment = new Comment ({
-    title: req.body.title,
+    // title: req.body.title,
     body: req.body.body,
-    category: req.body.category,
-    priority: req.body.priority,
-    completed: req.body.completed,
+    // category: req.body.category,
+    // priority: req.body.priority,
+    // completed: req.body.completed,
     author: req.body.author || 'authorName'
   })
 
   //Find the Todo this comment belongs to and add it
-  Todo.findOne({ _id: req.params.todoId })
+  Todo.findOne({ _id: req.params.id })
   .then((todo) => {
     console.log("new todo found? ", todo)
 

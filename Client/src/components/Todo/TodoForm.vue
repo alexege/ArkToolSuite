@@ -1,57 +1,51 @@
 <script setup>
-import { useUserStore } from '../../stores/user.store';
-import { useTodoStore } from '../../stores/todo.store'
-import { storeToRefs } from 'pinia'
-import { ref } from "vue";
+  import { useUserStore } from '../../stores/user.store';
+  import { useTodoStore } from '../../stores/todo.store'
+  import { storeToRefs } from 'pinia'
+  import { ref } from "vue";
 
-    const todoStore = useTodoStore()
-    const userStore = useUserStore()
+  const todoStore = useTodoStore()
     
-    const { allUsers } = storeToRefs(useUserStore())
-    const { fetchUsers } = useUserStore()
-    const { fetchTodos } = useTodoStore()
+  const { allUsers } = storeToRefs(useUserStore())
+  const { fetchUsers } = useUserStore()
+  const { fetchTodos } = useTodoStore()
     
-    fetchUsers()
-    fetchTodos()
+  fetchUsers()
+  fetchTodos()
 
-    const categories = [
-      "Breeding",
-      "Taming",
-      "Pvp",
-      "Farming",
-      "Artifacts",
-      "Scouting"
-    ]
+  const categories = [
+    "Breeding",
+    "Taming",
+    "Pvp",
+    "Farming",
+    "Artifacts",
+    "Scouting"
+  ]
 
-    //Set default values
-    const todoItem = ref({
-      title: null,
-      category: 'breeding',
-      priority: 'Low',
-      completed: false,
-      author: null,
+  //Set default values
+  const todoItem = ref({
+    title: null,
+    category: 'Breeding',
+    priority: 'Low',
+    completed: false,
+    author: useUserStore.user ? useUserStore.user : 'Author',
+    comments: []
+  })
+
+  function addTodoItem() {
+
+    const item = {
+      title: todoItem.value.title,
+      category: todoItem.value.category,
+      priority: todoItem.value.priority,
+      completed: todoItem.value.completed,
+      author: todoItem.value.author || null,
       comments: []
-    })
-
-    function addTodoItem() {
-      let author = null;
-      if (!todoItem.value.author) {
-        author = userStore.user
-        todoItem.value.author = useUserStore.user
-      }
-
-      const item = {
-        title: todoItem.value.title,
-        category: todoItem.value.category,
-        priority: todoItem.value.priority,
-        completed: todoItem.value.completed,
-        author: author || null,
-        comments: []
-      }
-      
-      todoStore.addTodo(item)
-      todoItem.value.title = ''
     }
+    
+    todoStore.addTodo(item)
+    todoItem.value.title = ''
+  }
 </script>
 <template>
     <form @submit.prevent="addTodoItem()" class="headers-form">
@@ -74,9 +68,8 @@ import { ref } from "vue";
           <option value="High">High</option>
         </select>
       </div>
-      <div class="assignee">
-        <select name="" id="" v-model="todoItem.assignee" class="assignee-input">
-          <option value="Assignee" disabled>Author</option>
+      <div class="author">
+        <select name="" id="" v-model="todoItem.author" class="author-input">
           <option :value="user._id" v-for="user in allUsers" :key="user.id">{{ user.username }}</option>
         </select>
       </div>
@@ -130,12 +123,12 @@ import { ref } from "vue";
   width: 100%;
 }
 
-.assignee {
+.author {
   display: flex;
   flex: .5 1 0%;
 }
 
-.assignee-input {
+.author-input {
   width: 100%;
 }
 

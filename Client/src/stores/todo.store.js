@@ -143,13 +143,14 @@ export const useTodoStore = defineStore('todoList', {
         }
       },
 
-      async addComment(todoId, comment) {
-        let newComment = await axios.post(`${API_URL}/todo/addTodo/${todoId}`, comment) 
-        await console.log(newComment)
-        // const todoItem = await axios.post(`${API_URL}/todo/addTodo`, item)
-        // await this.todoList.push(todoItem.data)
-
-        //Find The comment, Add a comment to it in pinia
+      async addComment(id, comment) {
+        const response = await axios.post(`${API_URL}/todo/addComment/${id}`, comment) 
+        
+        //Update State Values
+        let todo = this.todoList.find((todo) => todo._id === id)
+        if (todo) {
+          todo.comments.push(response.data)
+        }
       },
   },
 })

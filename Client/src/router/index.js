@@ -125,7 +125,6 @@ const getCurrentUser = () => {
 router.beforeEach(async(to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)){
       if (await getCurrentUser()) {
-        console.log("successfully gathered user");
           next()
       } else {
           alert("You do not have access to this page!\nPlease login to continue!")
