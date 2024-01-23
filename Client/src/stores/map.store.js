@@ -54,25 +54,6 @@ export const useMapStore = defineStore('map', {
         },
 
         async addPoint(data) {
-            // console.log("-data-: ", data)
-            // console.log("-point-: ", data.point)
-            // console.log("-color-: ", data.point.color)
-            // console.log("mapId:", data.mapId)
-            // console.log("mapX:", data.point.mapX)
-            // console.log("mapY:", data.point.mapY)
-            // console.log("x:", data.point.x)
-            // console.log("y:", data.point.y)
-
-            // console.log(`coords:${coords.x}, ${coords.y}`)
-            // console.log(`mapId:${mapId}`)
-           
-            // let newPoint = {
-            //     mapId: data.mapId,
-            //     mapX: data.coords.mapX,
-            //     mapY: data.coords.mapY,
-            //     x: data.coords.x,
-            //     y: data.coords.y
-            // }
 
             let map = this.allMaps.filter(map => map._id === data.mapId)[0]
             console.log("map found:", map)
@@ -84,22 +65,6 @@ export const useMapStore = defineStore('map', {
             console.log("point: ", point)
             await map.points.push(point.data)
         },
-        
-        // async addPoint(coords, mapId ) {
-        //     console.log(`coords:${coords.x}, ${coords.y}`)
-        //     console.log(`mapId:${mapId}`)
-        //     let data = {
-        //         mapId: mapId,
-        //         mapX: coords.mapX,
-        //         mapY: coords.mapY,
-        //         x: coords.x,
-        //         y: coords.y
-        //     }
-
-        //     let map = this.allMaps.filter(map => map._id === mapId)[0]
-        //     let point = await axios.post(`${API_URL}/point/addPoint`, data)
-        //     await map.points.push(point.data)
-        // },
 
         async deletePoint(id) {
             
@@ -107,9 +72,5 @@ export const useMapStore = defineStore('map', {
             let index = this.points.findIndex(point => point._id === id)
             this.points.splice(index, 1)
         }
-
-
-
-
     }
 })

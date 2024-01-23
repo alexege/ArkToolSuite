@@ -13,9 +13,6 @@ exports.findAllPoints = (req, res) => {
 }
 
 exports.addPoint = (req, res) => {
-    console.log("addPoint - req.body: ", req.body)
-    console.log("x:", req.body.x)
-    console.log("y:", req.body.y)
 
     const point = new Point({
         color: req.body.point.color,

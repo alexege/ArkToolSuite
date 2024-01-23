@@ -13,7 +13,19 @@ const User = mongoose.model(
                 ref: "Role"
             }
         ],
-        img: String
+        img: String,
+        comments: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Comment"
+            }
+        ],
+        todos: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Todo"
+            }
+        ],
     },
     { timestamps: true})
 );

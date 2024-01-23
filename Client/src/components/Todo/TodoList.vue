@@ -7,28 +7,25 @@
   import Comments from '../Todo/Comments.vue'
   
   //Import current logged in user
+  const userStore = useUserStore()
   const { fetchUsers } = useUserStore()
   const todoStore = useTodoStore();
   const { allTodos } = storeToRefs(useTodoStore());
   const { toggleCompleted, deleteTodo, addComment } = useTodoStore();
 
+  // const allTodo = computed(() => { return useTodoStore().todoList.filter((todo) => todo.completed == false)})
+
   fetchUsers()
 
-  console.log("freshly fetced user data: ", useUserStore.user)
-  const todoComment = ref({
-    title: null,
+  const comment = ref({
     body: null,
-    category: null,
-    priority: 'Low',
-    completed: false,
-    author: useUserStore.user ? useUserStore.user : 'Author',
+    author: userStore.user ? userStore.user._id : null,
     comments: []
   })
-  console.log("User:", useUserStore.user);
-  console.log("the todoComment is: ", todoComment.value);
 
   const addAComment = (todoId) => {
-    addComment(todoId, todoComment.value)
+    console.log("addAComment - todolist", comment.value)
+    addComment(todoId, comment.value)
   }
 
   function toggleComp(todo) {
@@ -56,6 +53,7 @@
   }
 
   var sortedProperties = computed(() => {
+    console.log("allTodos: ", todoStore.allTodos)
     if(sortDirection.value){
       const direction = sortDirection.value
       const type = sortBy.value
@@ -81,6 +79,7 @@
         }
       }
       return todoStore.allTodos
+      // return []
   })
 
   //Sort Completed Items
@@ -184,6 +183,7 @@
     </div> -->
 
     <!-- <pre>User: {{ userStore.user }}</pre> -->
+    <!-- <pre>Todos: {{ todoStore.todos }}</pre> -->
 
     <div class="list" v-for="todo, idx in sortedProperties" :key="todo._id">
       <div class="item" v-if="todo">
@@ -193,7 +193,7 @@
           <li class="label category">{{ todo.category }}</li>
           <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
           <li class="label priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
-          <li class="label author">{{ todo.author?.username || 'Author'}}</li>
+          <li class="label author">{{ todo.author ? todo.author.username : null}}</li>
           <li class="label action">
             <span @click.stop="toggleComp(todo)">&#10004;</span>
             <span @click="delTodo(todo._id)" class="x">&#10060;</span>
@@ -203,7 +203,7 @@
         <Comments :comments="todo.comments"/>
 
         <div>
-          <input type="text" v-model="todoComment.body">
+          <input type="text" v-model="comment.body">
           <button @click="addAComment(todo._id)">Add</button>
         </div>
 
@@ -278,7 +278,7 @@
         <Comments :comments="todo.comments"/>
 
         <div>
-          <input type="text" v-model="todoComment.body">
+          <input type="text" v-model="comment.body">
           <button @click="addAComment(todo._id)">Add</button>
         </div>
       </div>

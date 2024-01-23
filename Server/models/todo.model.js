@@ -9,7 +9,7 @@ const Todo = mongoose.model(
         completed: Boolean,
         author: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: "User"
         },
         comments: [{
             type: mongoose.Schema.Types.ObjectId,

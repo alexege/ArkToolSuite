@@ -89,67 +89,79 @@ import axios from "axios"
 
 const API_URL = 'http://localhost:8080/api'
 
-export const useTodoStore = defineStore('todoList', {
+export const useTodoStore = defineStore('todos', {
   state: () => ({
-    todoList: [],
+    todos: [],
     id: 0,
   }),
   getters: {
     allTodos: (state) => {
-      if(Array.isArray(state.todoList)) return state.todoList.filter((item) => item.completed == false); //This seems to omit the value of author for some reason
-      return state.todoList;
+      // if(Array.isArray(state.todos)) return state.todos.filter((item) => item.completed == false); //This seems to omit the value of author for some reason
+      return state.todos;
     },
 
-    completedItems: (state) => {
-      if(Array.isArray(state.todoList)) return state.todoList.filter((item) => item.completed == true);
-    }
+    // completedItems: (state) => {
+    //   if(Array.isArray(state.todos)) return state.todos.filter((item) => item.completed == true);
+    // },
+
+    // getTodoComments: (state) => {
+    //   return state.comments.filter((post) => post._id === todo._id)
+    // }
   },
   actions: {
 
     async fetchTodos() {
+      // this.todos = { loading: true }
       try {
-        this.todoList = { loading: true }
-        const response = await axios.get(`${API_URL}/todo/all`);
-        console.log("FetchTodosReturns: ", response.data)
-        this.todoList = response.data
-
+        await axios.get(`${API_URL}/todo/all`)
+        .then((res) => {
+          this.todos = res.data
+        })
       } catch (error) {
-          this.todoList = { error };
+        console.log("error:", error)
+          // this.todos = { error };
+      }
+    },
+
+    async getById(id) {
+      this.todo = { loading: true }
+      try {
+        this.todo = await axios.get(`${API_URL}/todo/${id}`)
+      } catch (error) {
+        this.todo = { error }
       }
     },
 
     async addTodo(item) {
-      console.log("adding a todo item")
-      if(item.author){ //Only post if an author is found/exists
         const todoItem = await axios.post(`${API_URL}/todo/addTodo`, item)
-        await this.todoList.push(todoItem.data)
-      }
+        await this.todos.push(todoItem.data)
     },
 
     async deleteTodo(todoId) {
         await axios.delete(`${API_URL}/todo/${todoId}`)
-        let index = this.todoList.findIndex(todo => todo._id === todoId)
-        this.todoList.splice(index, 1)
-        // this.todoList = this.todoList.filter((object) => {
+        let index = this.todos.findIndex(todo => todo._id === todoId)
+        this.todos.splice(index, 1)
+        // this.todos = this.todos.filter((object) => {
         //   return object.id !== todoId
         // })
       },
 
     async toggleCompleted(todo) {
       await axios.patch(`${API_URL}/todo/update/${todo._id}`, { completed: todo.completed })
-        const todoItem = this.todoList.find((obj) => obj._id === todo._id);
+        const todoItem = this.todos.find((obj) => obj._id === todo._id);
         if (todoItem) {
           todoItem.completed = !todoItem.completed;
         }
       },
 
       async addComment(id, comment) {
+        console.log("addComment - todo.store", comment)
         const response = await axios.post(`${API_URL}/todo/addComment/${id}`, comment) 
         
         //Update State Values
-        let todo = this.todoList.find((todo) => todo._id === id)
+        let todo = this.todos.find((todo) => todo._id === id)
         if (todo) {
-          todo.comments.push(response.data)
+          await todo.comments.push(response.data)
         }
       },
   },

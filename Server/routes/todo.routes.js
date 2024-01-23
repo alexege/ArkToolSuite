@@ -20,7 +20,7 @@ module.exports = (app) => {
     app.delete("/api/todo/:id", controller.deleteTodo);
     
     //Comments
-     app.post("/api/todo/addComment/:id", controller.addComment);
+    app.post("/api/todo/addComment/:id", controller.addComment);
 }
 
 // const controller = require("../controllers/todo.controller");

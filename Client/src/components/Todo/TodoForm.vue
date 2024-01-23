@@ -28,7 +28,7 @@
     category: 'Breeding',
     priority: 'Low',
     completed: false,
-    author: useUserStore.user ? useUserStore.user : 'Author',
+    author: useUserStore.user ? useUserStore.user._id : null,
     comments: []
   })
 

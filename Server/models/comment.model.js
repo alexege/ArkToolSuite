@@ -5,13 +5,16 @@ const Comment = mongoose.model(
     new mongoose.Schema({
         author: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Author'
+            ref: "User"
         },
-        title: String,
         body: String,
-        comments: []
+        comments: [],
+        todo: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Todo'
+        }
     },
     { timestamps: true})
 )
-
+//Added todo? Needed?
 module.exports = Comment;
