@@ -21,9 +21,9 @@ exports.getById = (req, res) => {
 }
 
 exports.signup = (req, result) => {
-
     const user = new User({
-      _id: req.body.signUpData.uid,
+      // _id: req.body.signUpData.uid.slice(0, 24),
+      authId: req.body.signUpData.uid,
       username: req.body.username,
       email: req.body.signUpData.email,
       password: bcrypt.hashSync(req.body.password, 8),

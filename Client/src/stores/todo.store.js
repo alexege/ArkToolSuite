@@ -154,14 +154,34 @@ export const useTodoStore = defineStore('todos', {
         }
       },
 
-      async addComment(id, comment) {
+      async addComment(id, comment, commentId) {
+        console.log("commentId:", commentId)
         console.log("addComment - todo.store", comment)
-        const response = await axios.post(`${API_URL}/todo/addComment/${id}`, comment) 
+
+        let data = {
+          comment,
+          commentId
+        }
+
+        const response = await axios.post(`${API_URL}/todo/addComment/${id}`, data) 
         
         //Update State Values
-        let todo = this.todos.find((todo) => todo._id === id)
-        if (todo) {
-          await todo.comments.push(response.data)
+
+        if (!commentId) {
+          let todo = this.todos.find((todo) => todo._id === id)
+          if (todo) {
+            await todo.comments.push(response.data)
+          }
+        } else {
+          console.log("commentId exists!")
+          // let currentComment = await todo.comments.find((comment) => comment._id === commentId)
+
+          // if (currentComment) {
+          //   await comment.comments.push(currentComment)
+          // }
+
+          //Update Store
+
         }
       },
   },

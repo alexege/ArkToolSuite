@@ -19,13 +19,14 @@
 
   const comment = ref({
     body: null,
-    author: userStore.user ? userStore.user._id : null,
-    comments: []
+    author: userStore.user ? userStore.user : null,
+    // comments: []
   })
 
   const addAComment = (todoId) => {
     console.log("addAComment - todolist", comment.value)
-    addComment(todoId, comment.value)
+    let commentId = null
+    addComment(todoId, comment.value, commentId)
   }
 
   function toggleComp(todo) {
@@ -53,7 +54,6 @@
   }
 
   var sortedProperties = computed(() => {
-    console.log("allTodos: ", todoStore.allTodos)
     if(sortDirection.value){
       const direction = sortDirection.value
       const type = sortBy.value
@@ -188,7 +188,7 @@
     <div class="list" v-for="todo, idx in sortedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
-          <li class="label idx">{{ idx + 1 }}</li>
+          <li class="label idx">{{ idx + 1 }}</li> {{ todo._id }}
           <li class="label title" :class="{ completed: todo.completed }">{{ todo.title }}</li>
           <li class="label category">{{ todo.category }}</li>
           <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
@@ -200,6 +200,8 @@
           </li>
         </ul>
 
+      </div>
+
         <Comments :comments="todo.comments"/>
 
         <div>
@@ -207,7 +209,6 @@
           <button @click="addAComment(todo._id)">Add</button>
         </div>
 
-      </div>
     </div>
 
     <div>
@@ -312,8 +313,8 @@
   }
   
   .list {
-    display: flex;
-    justify-content: center;
+    /* display: flex; */
+    /* justify-content: center; */
   }
   
   .item {

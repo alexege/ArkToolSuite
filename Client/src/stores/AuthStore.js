@@ -22,7 +22,7 @@ import {
       console.log("[AuthStore] - init");
       onAuthStateChanged(auth, (userDetails) => {
         if (userDetails) {
-          const _id = userDetails.uid;
+          const _id = userDetails.uid
           user.value = { email: userDetails.email, _id };
           userStore.getActiveUser(user)
         } else {

@@ -5,6 +5,9 @@
 </script>
 <script setup>
   import { ref, computed } from 'vue'
+  import { useTodoStore } from '../../stores/todo.store'
+import { useUserStore } from '../../stores/user.store'
+
   const showSection = ref(true)
   const newReply = ref()
 
@@ -21,14 +24,22 @@
 
   const viewAddReply = ref(false)
 
-  const addReply = () => {
+  const addReply = (id) => {
     //Post new Reply to Database
+    console.log("id of comment to reply to:", id)
+
+    const reply = {
+      body: newReply.value,
+      author: useUserStore().user
+    }
+
+    let commentId = id
+    useTodoStore().addComment(id, reply, commentId)
+
     viewAddReply.value = false
   }
 
-  const showThisSelection = computed(() => {
-    
-  })
+  var rand = Math.floor(Math.random() * 150)
 </script>
 
 <template>
@@ -44,12 +55,15 @@
       <span class="collapse" @click="toggleComment"></span>
       <div class="comment-author">
           <p>{{ comment.author.name }}</p>
-          <img :src="comment.author.img" alt="">
+          <img :src="`https://i.pravatar.cc/${rand}`" alt="">
+          <!-- <img :src="comment.author.img" alt=""> -->
           <span>{{ comment.createdAt }}</span>
       </div>
       <div class="comment-body">
           <span>{{ comment.title }}</span>
           <span>{{ comment.body }}</span>
+          <span> _id: {{ comment._id }}</span>
+          <span>{{ comment.comments }}</span>
       </div>
     </div>
     <span class="toggleIcon" @click="toggleReplies" v-if="comment.replies && comment.replies.length > 0"><span v-if="comment.replies">({{ comment.replies.length }})</span> {{ showReplies ? '&#9650;' : '&#9660;' }}</span>
@@ -61,7 +75,7 @@
       <div class="add-reply" v-if="viewAddReply">
         <span @click="viewAddReply = false">Cancel</span>
         <textarea v-model="newReply" placeholder="Add a reply"></textarea>
-        <button @click="addReply">Post</button>
+        <button @click="addReply(comment._id)">Post</button>
       </div>
       <div v-else>
         <a @click="viewAddReply = true">reply</a>

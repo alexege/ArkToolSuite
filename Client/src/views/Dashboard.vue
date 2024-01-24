@@ -25,7 +25,13 @@ const activeUser = computed(() => {
 <template>
   <div>
     <div class="container">
-      <pre>User:{{ userStore.user}}</pre><br /><br />
+      <pre>Current User:{{ userStore.user}}</pre><br/>
+      <hr/><br>
+      Users:
+      <p v-for="user in userStore.users" :key="user._id">
+        <pre>{{ user._id }} - {{ user.authId }} - {{ user.email }}</pre>
+      </p><br>
+      <hr/><br>
       <pre>AuthUser:{{ authStore.user }}</pre><br /><br />
       <label for="">All Users:</label>
       <ul>

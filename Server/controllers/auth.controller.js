@@ -48,6 +48,7 @@ exports.signup = (req, result) => {
   };
 
 exports.signin = (req, res) => {
+    console.log("signin ----------------", req.body)
     User.findOne({
         username: req.body.username
     })

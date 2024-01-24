@@ -6,7 +6,9 @@ const Comment = db.comment;
 // Retrieve all Todos from the database.
 exports.findAllTodos = async (req, res) => {
 
-  Todo.find({}).lean().populate('author')
+  Todo.find({}).lean()
+  .populate('author')
+  .populate('comments')
   .then((todos) => {
     res.status(200).send(todos);
   })
@@ -139,235 +141,47 @@ exports.deleteTodos = (req, res) => {
   
 };
 
-exports.addComment = (req, res) => {
+exports.addComment = async (req, res) => {
+  
+  console.log("req.body:", req.body)
+  // console.log("req.params:", req.params)
 
-  User.find({ _id: req.body.author })
-  .then((foundUser) => {
-    console.log("Found User: ", foundUser);
+  user = await User.findById(req.body.comment.author._id)
+  todo = await Todo.findById(req.params.id)
 
-    Todo.findOne({ _id: req.params.id })
-    .then((foundTodo) => {
-      console.log("Found todo: ", foundTodo);
-
-      const newComment = new Comment({
-        author: req.body.author, //foundUser._id,
-        body: req.body.body,
-        comments: [],
-        todo: req.params.id //foundTodo._id
-      })
-
-      newComment.save()
-      .then((comment) => {
-        console.log("Can we see the todo?", foundTodo);
-        foundTodo.comments.push(comment)
-        foundTodo.save()
-        .then((todo) => {
-          console.log("The end todo is: ", todo)
-        })
-        .catch((err) => { console.log("error: ", err)})
-      })
-
-    })
-
+  const comment = new Comment({
+    body: req.body.comment.body,
+    comments: [],
   })
+  
+  comment.author = user._id
+  await comment.save()
+
+  console.log("commentId:", req.body.commentId)
+
+  //For Todos
+  if (!req.body.commentId) {
+    
+    todo.comments.push(comment)
+    await todo.save()
+    user.comments.push(comment)
+    await user.save()
+    await res.status(200).send(comment)
+  
+  } else { 
+    console.log("within a comment")
+
+    let currentComment = await Comment.findById(req.body.commentId)
+    
+    // For Nested Comments
+    currentComment.comments.push({
+      body: req.body.comment.body,
+      comments: []
+    })
+    await currentComment.save()
+    console.log("new new comment:", comment)
+    user.comments.push(comment)
+    await user.save()
+    await res.status(200).send(currentComment)
+  }
 }
-
-  
-  // Todo.findOne({ _id: req.params.id })
-  // .then((todo) => {
-  //   console.log("todo: ", todo)
-
-  //   User.find({ _id: req.body.author })
-  //   .then((user) => {
-  //     console.log("found user is: ", user);
-
-  //     todo.author = user._id
-  //     todo.save()
-
-  //     console.log("comments:", todo.comments);
-  //     console.log("todo:", todo)
-
-  //   })
-
-    
-
-    // const newComment = new Comment({
-    //   body: req.body.body,
-    //   comments: [],
-    //   author: req.body.author
-    //   // comments: req.body.comments
-    // })
-
-    // newComment.save()
-    // console.log("newCOmment: ", newComment);
-
-    // todo.comments.push(newComment)
-    // todo.save()
-    // console.log("todo:", todo)
-
-    // .then((newComment) => {
-      // console.log("new comment: ", newComment)
-
-      // todo.comments.push(newComment)
-      // console.log("todo:", todo)
-      // todo.save()
-    // })
-
-
-
-    //   // console.log("newComment:", newComment)
-  
-    //   // todo.comments.push(newComment)
-    //   // todo.save()
-    //   // .then((todo) => {
-    //     // console.log("Finished todo:", todo)
-    //   // })
-
-    // })
-//   })
-// }
-
-// exports.addComment = (req, res) => {
-
-//   const comment = new Comment ({
-//     body: req.body.body,
-//     comments: req.body.comments,
-//     author: null
-//   })
-//   console.log("author id: ", req.body.author.trim())
-
-//   // console.log("Verdict:", mongoose.Types.ObjectId.isValid(req.body.author))
-
-
-//   User.findOne({ _id: req.body.author })
-//   .then((user) => {
-//     comment.author = user
-//     comment.save()
-//     .then((comment) => {
-//       // console.log("user:", user)
-
-//       //Find the Todo this comment belongs to and add it
-//     Todo.findOne({ _id: req.params.id })
-//     .then((todo) => {
-//       todo.comments.push(comment)
-//       console.log("todo found:", todo)
-//       todo.save(todo)
-//       .then((data) => {
-//         console.log("data:", data)
-//         res.status(200).send(data)
-//       })
-//       .catch((e) => {
-//         console.log("error: ", e)
-//       })
-//     })
-//     .catch((e) => {
-//       console.log("error: ", e)
-//     })
-
-
-//     })
-//   })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // comment.save()
-  // .then((comment) => {
-  //   console.log("Saved the new comment: ", comment)
-    
-  //   //Find the Todo this comment belongs to and add it
-  //   Todo.findOne({ _id: req.params.id })
-  //   .then((todo) => {
-  //     console.log("Found a todo: ", todo)
-  //     todo.comments.push(comment)
-  //     console.log("todo:", todo)
-  //     todo.save(todo)
-  //     .then((data) => {
-  //       res.status(200).send(data)
-  //     })
-  //     .catch((e) => {
-  //       console.log("error: ", e)
-  //     })
-  //   })
-  //   .catch((e) => {
-  //     console.log("error: ", e)
-  //   })
-  // })
-  // .catch((e) => {
-  //   console.log("error: ", e)
-  // })
-// }
-
-  // //Find the Todo this comment belongs to and add it
-  // Todo.findOne({ _id: req.params.id })
-  // .then((todo) => {
-
-  //   // if (req.body.author) {
-  //   //   User.findOne({ _id: req.body.author })
-  //   //   .then((user) => {
-  //   //     console.log("Author found:", user)
-  
-  //   //     todo.author = user
-  //   //     todo.save(todo)
-  //   //     .then((comment) => {
-  //   //       console.log("Saving comment:", comment)
-  //   //     })
-  //   //     .catch((err) => {
-  //   //       console.log("error: ", err)
-  //   //     })
-  //   //   })
-  //   //   .catch((e) => {
-  //   //     console.log("error: ", e)
-  //   //   })
-  //   // }
-
-  //   todo.comments.push(comment)
-  //   todo.save(todo)
-  //   .then(comment => {
-  //     console.log("Saving comment: ", comment)
-  //     res.status(200).send(comment)
-  //   })
-  //   .catch((err) => {
-  //     console.log("error:", err)
-  //   })
-  // })
-  // .catch((err) => {
-  //   console.log("error:", err)
-  // })
-
-  // const todo = new Todo({
-  //   title: req.body.title,
-  //   category: req.body.category,
-  //   priority: req.body.priority,
-  //   completed: req.body.completed
-  // });
-
-  // if(req.body.assignee){
-  //     User.findOne({ _id: req.body.assignee })
-  //     .then((user) => {
-  //       console.log("user found:", user);
-  //         todo.assignee = user
-  //         todo.save(todo)
-  //         .then(item => {
-  //             console.log("saveTodo:", item)
-  //             res.status(200).send(item)
-  //           })
-  //           .catch(err => {
-  //             console.log("err:", err);
-  //           })
-  //     })
-  //     .catch((e) => {
-  //       console.log("error:", e);
-  //     })
-// }
-// };
