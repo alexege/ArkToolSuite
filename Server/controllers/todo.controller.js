@@ -7,8 +7,21 @@ const Comment = db.comment;
 exports.findAllTodos = async (req, res) => {
 
   Todo.find({}).lean()
-  .populate('author')
-  .populate('comments')
+  .populate({
+    path: 'comments',
+    populate: {
+      path: 'comments',
+      model: 'Comment'
+    }
+  })
+  // .populate("author")
+  .populate({
+    path: 'comments',
+    populate: {
+      path: 'author',
+      model: 'User'
+    }
+  })
   .then((todos) => {
     res.status(200).send(todos);
   })
@@ -149,39 +162,80 @@ exports.addComment = async (req, res) => {
   user = await User.findById(req.body.comment.author._id)
   todo = await Todo.findById(req.params.id)
 
-  const comment = new Comment({
-    body: req.body.comment.body,
-    comments: [],
-  })
+  // Create a new Comment
+  var newComment = new Comment(req.body.comment)
   
-  comment.author = user._id
-  await comment.save()
-
-  console.log("commentId:", req.body.commentId)
-
-  //For Todos
-  if (!req.body.commentId) {
-    
-    todo.comments.push(comment)
-    await todo.save()
-    user.comments.push(comment)
-    await user.save()
-    await res.status(200).send(comment)
+  // Add current logged in user as author
+  newComment.author = user._id
+  await newComment.save()
   
-  } else { 
-    console.log("within a comment")
+  let currentComment = await Comment.findById(req.body.commentId)
 
-    let currentComment = await Comment.findById(req.body.commentId)
-    
+  if (req.body.commentId) {
+
+    console.log("attempting to add comment to comment")
+
     // For Nested Comments
-    currentComment.comments.push({
-      body: req.body.comment.body,
-      comments: []
-    })
+    currentComment.comments.push(newComment)
     await currentComment.save()
-    console.log("new new comment:", comment)
-    user.comments.push(comment)
+    
+    user.comments.push(newComment)
     await user.save()
-    await res.status(200).send(currentComment)
-  }
+  
+  } else {
+
+    console.log("attempting to add comment to todo")
+
+    //For Todos
+    todo.comments.push(newComment)
+    await todo.save()
+    user.comments.push(newComment)
+    await user.save()
 }
+await res.status(200).send(newComment)
+}
+
+// exports.addComment = async (req, res) => {
+  
+//   console.log("req.body:", req.body)
+//   // console.log("req.params:", req.params)
+
+//   user = await User.findById(req.body.comment.author._id)
+//   todo = await Todo.findById(req.params.id)
+
+//   const comment = new Comment({
+//     body: req.body.comment.body,
+//     comments: [],
+//   })
+  
+//   comment.author = user._id
+//   await comment.save()
+
+//   console.log("commentId:", req.body.commentId)
+
+//   //For Todos
+//   if (!req.body.commentId) {
+    
+//     todo.comments.push(comment)
+//     await todo.save()
+//     user.comments.push(comment)
+//     await user.save()
+//     await res.status(200).send(comment)
+  
+//   } else { 
+//     console.log("within a comment")
+
+//     let currentComment = await Comment.findById(req.body.commentId)
+    
+//     // For Nested Comments
+//     currentComment.comments.push({
+//       body: req.body.comment.body,
+//       comments: []
+//     })
+//     await currentComment.save()
+//     console.log("new new comment:", comment)
+//     user.comments.push(comment)
+//     await user.save()
+//     await res.status(200).send(currentComment)
+//   }
+// }

@@ -5,6 +5,7 @@
   import { useUserStore } from '../../stores/user.store'
   import { useTodoStore } from "../../stores/todo.store.js";
   import Comments from '../Todo/Comments.vue'
+  import Comment from '../Todo/Comment.vue'
   
   //Import current logged in user
   const userStore = useUserStore()
@@ -202,7 +203,23 @@
 
       </div>
 
-        <Comments :comments="todo.comments"/>
+        <ul v-for="(comment, index) in todo.comments" :key="index" class="comments">
+          <Comment v-bind="{ comment }" :depth="0"/>
+        </ul>
+
+        <!-- <Comments :comments="todo.comments"/> -->
+        <!-- <div v-for="comment in todo.comments" :key="comment._id">
+          <Comments :comments="todo.comments"/>
+        </div> -->
+
+        <!-- <recursive-comment v-for="comment in todo.comments"
+          :key="comment._id"
+          :comment="comment"
+          :toggle="showSection"
+          :isReply="true"
+          :depth="depth + 1"
+        /> -->
+
 
         <div>
           <input type="text" v-model="comment.body">
@@ -211,7 +228,7 @@
 
     </div>
 
-    <div>
+    <div v-if="isCompleted"> <!--Temp disabled-->
     <h2>Completed</h2>
     <ul class="todo-labels">
       <li class="label idx">idx</li>

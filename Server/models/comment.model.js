@@ -8,7 +8,10 @@ const Comment = mongoose.model(
             ref: "User"
         },
         body: String,
-        comments: [],
+        comments: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Comment'
+        }],
         todo: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Todo'
