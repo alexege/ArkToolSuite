@@ -155,6 +155,7 @@ export const useTodoStore = defineStore('todos', {
       },
 
       async addComment(id, comment, commentId) {
+        console.log("todoId:", id)
         console.log("commentId:", commentId)
         console.log("addComment - todo.store", comment)
 
@@ -163,26 +164,35 @@ export const useTodoStore = defineStore('todos', {
           commentId
         }
 
-        const response = await axios.post(`${API_URL}/todo/addComment/${id}`, data) 
-        
+        const newComment = await axios.post(`${API_URL}/todo/addComment/${id}`, data).data
+        console.log("new Comment: ", newComment)
         //Update State Values
+        if (commentId) {
 
-        if (!commentId) {
+          // let currentComment = await todo.comments.find((comment) => comment._id === commentId)
+  
+          // if (currentComment) {
+          //   await comment.comments.push(currentComment)
+          // }
+        } else {
           let todo = this.todos.find((todo) => todo._id === id)
           if (todo) {
             await todo.comments.push(response.data)
           }
-        } else {
-          console.log("commentId exists!")
-          // let currentComment = await todo.comments.find((comment) => comment._id === commentId)
-
-          // if (currentComment) {
-          //   await comment.comments.push(currentComment)
-          // }
-
-          //Update Store
-
+        }
         }
       },
-  },
+
+      async deleteComment(id) {
+        await axios.delete(`${API_URL}/comment/${id}`)
+        // let idx = this.todos.find
+      }
+
+      //     async deleteTodo(id) {
+//       await axios.delete(`${API_URL}/todo/${id}`)
+//       let idx = this.todos.findIndex(todo => todo._id === id)
+//       //Update State values
+//       this.todos.splice(idx, 1)
+//     },
+  // },
 })

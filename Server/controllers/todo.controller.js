@@ -7,30 +7,90 @@ const Comment = db.comment;
 exports.findAllTodos = async (req, res) => {
 
   Todo.find({}).lean()
+  // .populate({
+  //   path: 'comments',
+  //   model: 'Comment',
+  //   populate: {
+  //     path: 'comments',
+  //       populate: {
+  //         path: 'comments',
+  //           populate: {
+  //             path: 'comments',
+  //             populate: {
+  //               path: 'comments'
+  //             }
+  //           }
+  //       }
+  //   }
+  // })
+  // .populate("author")           https://stackoverflow.com/questions/73308388/mongoose-how-to-populate-field-from-recursive-schema
+  
+  //First layer populates the first instance of: <RecursiveComment>
   .populate({
     path: 'comments',
     model: 'Comment',
-    populate: {
-      path: 'comments',
-        populate: {
-          path: 'comments',
-            populate: {
-              path: 'comments',
-              populate: {
-                path: 'comments'
-              }
+      
+    populate: [{
+        path: 'author',
+        model: 'User', //No need to go deeper here (Would be populating inside author)
+      },{
+        path: 'comments',
+        model: 'Comment',
+          
+          populate: [{
+              path: 'author',
+              model: 'User', //No need to go deeper here (Would be populating inside author)
             }
-        }
-    }
+            ,{
+              path: 'comments',
+              model: 'Comment',
+                populate: [{
+                  path: 'author',
+                  model: 'User' //No need to go deeper here (Would be populating inside author)
+                },{
+                  path: 'comments',
+                  model: 'Comment',
+                    populate: [{
+                      path: 'author',
+                      model: 'User' //No need to go deeper here (Would be populating inside author)
+                    },{
+                      path: 'comments',
+                      model: 'Comment',
+                        populate: {
+                          path: 'author',
+                          model: 'User' //No need to go deeper here (Would be populating inside author)
+                        }
+                    }]
+                }]
+            }
+          ]
+      }]
   })
-  // .populate("author")           https://stackoverflow.com/questions/73308388/mongoose-how-to-populate-field-from-recursive-schema
-  .populate({
-    path: 'comments',
-    populate: {
-      path: 'author',
-      model: 'User'
-    }
-  })
+  
+  // .populate({
+  //   path: 'comments',
+  //   model: 'Comment',
+    
+  //   populate: {
+  //     path: 'comments',
+  //     model: 'Comment',
+      
+  //     populate: {
+  //       path: 'author',
+  //       model: 'User',
+        
+  //       populate: {
+  //         path: 'comments',
+  //         model: 'Comment',
+          
+  //         populate: {
+  //           path: 'author',
+  //           model: 'User',
+  //         }
+  //       }
+  //     }
+  //   }
+  // })
   .then((todos) => {
     res.status(200).send(todos);
   })
@@ -202,6 +262,17 @@ exports.addComment = async (req, res) => {
     await user.save()
 }
 await res.status(200).send(newComment)
+}
+
+exports.deleteComment = async (req, res) => {
+  Comment.deleteOne({ _id: req.params.id })
+  .then(() => {
+    res.status(200).send({ message: "Comment deleted"});
+  })
+  .catch(err => {
+    res.status(500).send({ message: err });
+    return;
+  })
 }
 
 // exports.addComment = async (req, res) => {

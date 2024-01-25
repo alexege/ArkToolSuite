@@ -21,6 +21,8 @@ module.exports = (app) => {
     
     //Comments
     app.post("/api/todo/addComment/:id", controller.addComment);
+    
+    app.delete("/api/comment/:id", controller.deleteComment);
 }
 
 // const controller = require("../controllers/todo.controller");
