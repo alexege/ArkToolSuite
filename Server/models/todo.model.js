@@ -1,4 +1,9 @@
 const mongoose = require("mongoose");
+// mongoose.set('debug', true);
+// var autoPopulateChildren = function(next) {
+//     this.populate('comments')
+//     next()
+// }
 
 const Todo = mongoose.model(
     "Todo",
@@ -17,6 +22,8 @@ const Todo = mongoose.model(
         }]
     },
     { timestamps: true})
+    // .pre('find', autoPopulateChildren)
+    // .pre('findOne', autoPopulateChildren)
 )
 
 module.exports = Todo;

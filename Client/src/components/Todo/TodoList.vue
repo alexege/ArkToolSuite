@@ -203,7 +203,7 @@
 
       </div>
 
-        <ul v-for="(comment, index) in todo.comments" :key="index" class="comments">
+        <ul v-for="(comment, index) in todo.comments" :key="index" class="comments-container">
           <Comment v-bind="{ comment }" :depth="0"/>
         </ul>
 
@@ -306,6 +306,9 @@
   </template>
     
   <style scoped>
+  .comments-container {
+    display: flex;
+  }
 
   .low {
     color: green;

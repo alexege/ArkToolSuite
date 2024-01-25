@@ -9,12 +9,21 @@ exports.findAllTodos = async (req, res) => {
   Todo.find({}).lean()
   .populate({
     path: 'comments',
+    model: 'Comment',
     populate: {
       path: 'comments',
-      model: 'Comment'
+        populate: {
+          path: 'comments',
+            populate: {
+              path: 'comments',
+              populate: {
+                path: 'comments'
+              }
+            }
+        }
     }
   })
-  // .populate("author")
+  // .populate("author")           https://stackoverflow.com/questions/73308388/mongoose-how-to-populate-field-from-recursive-schema
   .populate({
     path: 'comments',
     populate: {

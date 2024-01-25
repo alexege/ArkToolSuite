@@ -4,39 +4,96 @@
   };
 </script>
 <script setup>
+  import { useTodoStore } from '../../stores/todo.store'
+  import { useUserStore } from '../../stores/user.store'
+  import { ref } from 'vue'
+
   defineProps(['comment', 'depth'])
+
+  const newComment = ref({
+    body: ''
+  })
+
+  const addAComment = (id) => {
+    const data = {
+      body: newComment.value.body,
+      author: useUserStore().user,
+      // comments: comment.comments,
+    }
+
+    let commentId = id
+    useTodoStore().addComment(id, data, commentId)
+  }
 
 </script>
 <template>
-  <div>
+  <div class="comment-container">
 
-    <div class="author">
-      <img :src="comment.author.img" alt="" class="author-img">
+    <div class="comment" v-if="comment && comment.author">
+      <div class="author">
+        <label>{{ comment.author.username }}</label>
+        <img :src="comment.author.img" alt="" class="author-img">
+        <span>{{ comment.createdAt.slice(-4) }}</span>
+      </div>
+
+      <div class="comment-body">
+        {{ depth }} {{ comment.author.username }} - {{ comment.body }}
+      </div>
+
+      <div class="comment-actions">
+        <button>Edit</button>
+        <button>Delete</button>
+      </div>
     </div>
+        
+        <div class="add-comment">
+          <textarea cols="30" rows="10" placeholder="Add a comment" v-model="newComment.body"></textarea>
+          <button @click="addAComment(comment._id)">Add</button>
+        </div>
 
-      {{ depth }} {{ comment.author.username }} - {{ comment.body }}
-      
-      <!-- <div>
-        <input type="text">
-        <label for="">Add Reply</label>
-        <button>Reply</button>
-      </div> -->
-
-      <ul v-for="(comment, index) in comment.comments" :key="index">
-        <recursive-comment v-bind="{ comment }" 
-          :depth="depth + 1"
-        />
-      </ul>
+        <ul v-for="(comment, index) in comment.comments" :key="index">
+          <recursive-comment v-bind="{ comment }" 
+            :depth="depth + 1"
+          />
+        </ul>
 
   </div>
 </template>
 <style scoped>
-.author {
-
+.comment-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
-
+.comment {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  outline: 1px solid white;
+}
+.comment-body {
+  flex: 4;
+}
+.comment-actions {
+  display: flex;
+  justify-content: space-around;
+  flex: 1;
+}
+.author {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
 .author img {
   width: 50px;
   height: 50px;
+}
+.add-comment {
+  display: flex;
+}
+.add-comment textarea {
+  flex: 3;
+  height: 2em;
 }
 </style>
