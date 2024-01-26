@@ -4,25 +4,28 @@
   };
 </script>
 <script setup>
-  import { useTodoStore } from '../../stores/todo.store'
   import { useUserStore } from '../../stores/user.store'
+  import { useTodoStore } from '../../stores/todo.store'
+  import { useCommentStore } from '../../stores/comment.store'
   import { ref } from 'vue'
 
-  defineProps(['comment', 'depth'])
+  defineProps(['comment', 'depth', 'todoId'])
 
   const newComment = ref({
     body: ''
   })
 
-  const addAComment = (id) => {
+  const addAComment = (id, todoId) => {
     const data = {
       body: newComment.value.body,
       author: useUserStore().user,
       // comments: comment.comments,
     }
+    useTodoStore().addComment(id, data, todoId)
+  }
 
-    let commentId = id
-    useTodoStore().addComment(id, data, commentId)
+  const deleteAComment = (commentId) => {
+    useCommentStore().deleteComment(commentId)
   }
 
 </script>
@@ -37,22 +40,22 @@
       </div>
 
       <div class="comment-body">
-        {{ depth }} {{ comment.author.username }} - {{ comment.body }}
+        {{ depth }} {{ comment.author.username }} - {{ comment.body }} - todoId: {{ todoId }}
       </div>
 
       <div class="comment-actions">
         <button>Edit</button>
-        <button>Delete</button>
+        <button @click="deleteAComment(comment._id)">Delete</button>
       </div>
     </div>
         
         <div class="add-comment">
           <textarea cols="30" rows="10" placeholder="Add a comment" v-model="newComment.body"></textarea>
-          <button @click="addAComment(comment._id)">Add</button>
+          <button @click="addAComment(comment._id, todoId)">Add</button>
         </div>
 
         <ul v-for="(comment, index) in comment.comments" :key="index">
-          <recursive-comment v-bind="{ comment }" 
+          <recursive-comment v-bind="{ comment, todoId}" 
             :depth="depth + 1"
           />
         </ul>

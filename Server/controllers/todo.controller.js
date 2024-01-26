@@ -229,7 +229,8 @@ exports.addComment = async (req, res) => {
   // console.log("req.params:", req.params)
 
   user = await User.findById(req.body.comment.author._id)
-  todo = await Todo.findById(req.params.id)
+  todo = await Todo.findById(req.params.id) //////////////////////// Probably scrwewd up
+  console.log("todo:", todo)
 
   // Create a new Comment
   var newComment = new Comment(req.body.comment)
@@ -238,9 +239,10 @@ exports.addComment = async (req, res) => {
   newComment.author = user._id
   await newComment.save()
   
-  let currentComment = await Comment.findById(req.body.commentId)
+  let currentComment = await Comment.findById(req.body.id)
+  console.log("currentComment:", currentComment)
 
-  if (req.body.commentId) {
+  if (req.body.todoId) {
 
     console.log("attempting to add comment to comment")
 
@@ -265,7 +267,7 @@ await res.status(200).send(newComment)
 }
 
 exports.deleteComment = async (req, res) => {
-  Comment.deleteOne({ _id: req.params.id })
+  Comment.findByIdAndDelete(req.params.id)
   .then(() => {
     res.status(200).send({ message: "Comment deleted"});
   })

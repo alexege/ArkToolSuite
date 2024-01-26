@@ -2,8 +2,10 @@
 
   import { ref, computed } from 'vue'
   import { storeToRefs } from "pinia";
-  import { useUserStore } from '../../stores/user.store'
-  import { useTodoStore } from "../../stores/todo.store.js";
+  import { useUserStore } from "../../stores/user.store"
+  import { useTodoStore } from "../../stores/todo.store"
+  import { useCommentStore } from "../../stores/comment.store"
+  
   import Comments from '../Todo/Comments.vue'
   import Comment from '../Todo/Comment.vue'
   
@@ -12,7 +14,8 @@
   const { fetchUsers } = useUserStore()
   const todoStore = useTodoStore();
   const { allTodos } = storeToRefs(useTodoStore());
-  const { toggleCompleted, deleteTodo, addComment } = useTodoStore();
+  const { toggleCompleted, deleteTodo } = useTodoStore();
+  const { addComment } = useCommentStore()
 
   // const allTodo = computed(() => { return useTodoStore().todoList.filter((todo) => todo.completed == false)})
 
@@ -204,7 +207,7 @@
       </div>
 
         <ul v-for="(comment, index) in todo.comments" :key="index" class="comments-container">
-          <Comment v-bind="{ comment }" :depth="0"/>
+          <Comment v-bind="{ comment }" :depth="0" :todoId="todo._id" />
         </ul>
 
         <!-- <Comments :comments="todo.comments"/> -->
