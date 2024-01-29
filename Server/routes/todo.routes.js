@@ -19,10 +19,10 @@ module.exports = (app) => {
     
     app.delete("/api/todo/:id", controller.deleteTodo);
     
-    //Comments
-    app.post("/api/todo/addComment/:id", controller.addComment);
+    // //Comments
+    // app.post("/api/todo/addComment/:id", controller.addCommentToTodo);
 
-    app.delete("/api/comment/:id", controller.deleteComment);
+    // app.delete("/api/comment/:id", controller.deleteComment);
 }
 
 // const controller = require("../controllers/todo.controller");

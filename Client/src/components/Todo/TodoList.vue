@@ -12,10 +12,10 @@
   //Import current logged in user
   const userStore = useUserStore()
   const { fetchUsers } = useUserStore()
-  const todoStore = useTodoStore();
-  const { allTodos } = storeToRefs(useTodoStore());
-  const { toggleCompleted, deleteTodo } = useTodoStore();
-  const { addComment } = useCommentStore()
+  const todoStore = useTodoStore()
+  const { allTodos } = storeToRefs(useTodoStore())
+  const { toggleCompleted, deleteTodo } = useTodoStore()
+  const { addCommentToTodo } = useCommentStore()
 
   // const allTodo = computed(() => { return useTodoStore().todoList.filter((todo) => todo.completed == false)})
 
@@ -24,13 +24,11 @@
   const comment = ref({
     body: null,
     author: userStore.user ? userStore.user : null,
-    // comments: []
+    comments: []
   })
 
   const addAComment = (todoId) => {
-    console.log("addAComment - todolist", comment.value)
-    let commentId = null
-    addComment(todoId, comment.value, commentId)
+    addCommentToTodo(comment.value, todoId)
   }
 
   function toggleComp(todo) {
@@ -226,12 +224,12 @@
 
         <div>
           <input type="text" v-model="comment.body">
-          <button @click="addAComment(todo._id)">Add</button>
+          <button @click="addAComment(todo._id)">Add todo comment</button>
         </div>
 
     </div>
 
-    <div v-if="isCompleted"> <!--Temp disabled-->
+    <div> <!--v-if="isCompleted" Temp disabled-->
     <h2>Completed</h2>
     <ul class="todo-labels">
       <li class="label idx">idx</li>

@@ -223,48 +223,48 @@ exports.deleteTodos = (req, res) => {
   
 };
 
-exports.addComment = async (req, res) => {
+// exports.addCommentToTodo = async (req, res) => {
   
-  console.log("req.body:", req.body)
-  // console.log("req.params:", req.params)
+//   console.log("req.body:", req.body)
+//   // console.log("req.params:", req.params)
 
-  user = await User.findById(req.body.comment.author._id)
-  todo = await Todo.findById(req.params.id) //////////////////////// Probably scrwewd up
-  console.log("todo:", todo)
+//   user = await User.findById(req.body.comment.author._id)
+//   todo = await Todo.findById(req.params.id) //////////////////////// Probably scrwewd up
+//   console.log("todo:", todo)
 
-  // Create a new Comment
-  var newComment = new Comment(req.body.comment)
+//   // Create a new Comment
+//   var newComment = new Comment(req.body.comment)
   
-  // Add current logged in user as author
-  newComment.author = user._id
-  await newComment.save()
+//   // Add current logged in user as author
+//   newComment.author = user._id
+//   await newComment.save()
   
-  let currentComment = await Comment.findById(req.body.id)
-  console.log("currentComment:", currentComment)
+//   let currentComment = await Comment.findById(req.body.id)
+//   console.log("currentComment:", currentComment)
 
-  if (req.body.todoId) {
+//   // if (req.body.todoId) {
 
-    console.log("attempting to add comment to comment")
+//   //   console.log("attempting to add comment to comment")
 
-    // For Nested Comments
-    currentComment.comments.push(newComment)
-    await currentComment.save()
+//   //   // For Nested Comments
+//   //   currentComment.comments.push(newComment)
+//   //   await currentComment.save()
     
-    user.comments.push(newComment)
-    await user.save()
+//   //   user.comments.push(newComment)
+//   //   await user.save()
   
-  } else {
+//   // } else {
 
-    console.log("attempting to add comment to todo")
+//     console.log("attempting to add comment to todo")
 
-    //For Todos
-    todo.comments.push(newComment)
-    await todo.save()
-    user.comments.push(newComment)
-    await user.save()
-}
-await res.status(200).send(newComment)
-}
+//     //For Todos
+//     todo.comments.push(newComment)
+//     await todo.save()
+//     user.comments.push(newComment)
+//     await user.save()
+// // }
+// await res.status(200).send(newComment)
+// }
 
 exports.deleteComment = async (req, res) => {
   Comment.findByIdAndDelete(req.params.id)

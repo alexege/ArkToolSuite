@@ -140,10 +140,9 @@ export const useTodoStore = defineStore('todos', {
     async deleteTodo(todoId) {
         await axios.delete(`${API_URL}/todo/${todoId}`)
         let index = this.todos.findIndex(todo => todo._id === todoId)
-        this.todos.splice(index, 1)
-        // this.todos = this.todos.filter((object) => {
-        //   return object.id !== todoId
-        // })
+        if (index !== -1) {
+          this.todos.splice(index, 1)
+        }
       },
 
     async toggleCompleted(todo) {
@@ -154,46 +153,38 @@ export const useTodoStore = defineStore('todos', {
         }
       },
 
-      async addComment(id, comment, todoId) {
-        console.log("todoId:", id)
-        console.log("todoId:", todoId)
-        console.log("addComment - todo.store", comment)
+      async addComment(commentId, comment, todoId) {
 
         let data = {
-          id,
+          commentId,
           comment,
           todoId
         }
 
-        const response = await axios.post(`${API_URL}/todo/addComment/${id}`, data)
-        const newComment = await response.data
-        console.log("new Comment: ", newComment)
+        console.log(`addCommentToComments: ${data}`)
+        
         //Update State Values
-        if (todoId) {
+          
+          const response = await axios.post(`${API_URL}/todo/addComment/${todoId}`, data)
+          const newComment = await response.data
+          console.log("new Comment: ", newComment)
 
           const todo = this.todos.find((todo) => todo._id === todoId)
 
-          const currentComment = todo.comments.find((comment) => comment._id === id)
+          const currentComment = todo.comments.find((comment) => comment._id === commentId)
 
           console.log("todo:", todo)
           console.log("currentComment:", currentComment)
+          console.log("newComment:", newComment)
 
-
-          //figure out which todo this is going to be added to. Find the comment that belongs to that todo.
-          //Add the new comment to that todo's comment.
-
+          todo.comments.push(newComment)
+          
           //let currentComment = await todo.comments.find((comment) => comment._id === todoId)
   
           // if (currentComment) {
           //   await comment.comments.push(currentComment)
           // }
-        } else {
-          let todo = this.todos.find((todo) => todo._id === id)
-          console.log("todo found:", todo)
-          if (todo) {
-            await todo.comments.push(newComment)
-          }
-        }
+
         },
 
         async deleteComment(id) {

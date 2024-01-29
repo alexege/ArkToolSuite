@@ -16,16 +16,19 @@
   })
 
   const addAComment = (id, todoId) => {
+    console.log(`Adding a comment: id:${id}, todoId:${todoId}`)
     const data = {
       body: newComment.value.body,
       author: useUserStore().user,
       // comments: comment.comments,
     }
-    useTodoStore().addComment(id, data, todoId)
+    todoId = null
+    useCommentStore().addComment(id, data, todoId)
   }
 
-  const deleteAComment = (commentId) => {
-    useCommentStore().deleteComment(commentId)
+  const deleteAComment = (commentId, todoId) => {
+    console.log(";;;;;;deleteAcomment: ", todoId)
+    useCommentStore().deleteComment(commentId, todoId)
   }
 
 </script>
@@ -45,7 +48,7 @@
 
       <div class="comment-actions">
         <button>Edit</button>
-        <button @click="deleteAComment(comment._id)">Delete</button>
+        <button @click="deleteAComment(comment._id, todoId)">Delete</button>
       </div>
     </div>
         

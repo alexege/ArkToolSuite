@@ -10,6 +10,8 @@ module.exports = (app) => {
     app.get("/api/comment/all", controller.getAllComments)
 
     app.post("/api/comment/", controller.addComment)
+    
+    app.post("/api/comment/:todoId", controller.addCommentToTodo)
 
     app.delete("/api/comment/:id", controller.deleteComment)
 }
