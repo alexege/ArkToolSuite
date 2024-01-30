@@ -6,7 +6,9 @@ const Comment = db.comment;
 
 exports.getAllComments = async (req, res) => {
     try {
-        const comments = await Comment.find().populate('author')
+        const comments = await Comment.find()
+        .populate('comments')
+        .populate('author')
         res.status(200).send(comments)
     } catch (error) {
         console.error(error)
@@ -88,7 +90,7 @@ exports.addComment = async (req, res) => {
 
         let currentComment = await Comment.findById(req.body.commentId)
         currentComment.comments.push(savedComment)
-        res.status(201).json({ message: 'Comment added successfully', comment: savedComment })
+        res.status(201).send(savedComment)
 
     } catch (error) {
         console.error(error)

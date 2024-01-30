@@ -25,7 +25,7 @@ export const useCommentStore = defineStore('comment', {
 
     async fetchComments() {
       try {
-        const response = await this.axios.get(`${API_URL}/comment/all`)
+        const response = await axios.get(`${API_URL}/comment/all`)
         this.setComments(response.data)
       } catch(error) {
         console.error(error)
@@ -33,41 +33,47 @@ export const useCommentStore = defineStore('comment', {
     },
 
     async addCommentToTodo(comment, todoId) {
+      console.log(`[comment.store] - addCommentToTodo - comment: ${comment} , todoId: ${todoId}`)
       
       const response = await axios.post(`${API_URL}/comment/${todoId}`, comment)
       const newComment = response.data
-
-      // let author = 
-      // newComment.author = 
-
-      // console.log("newComment: ", newComment)
-
-      //Can i update the todo from here?
-      // const todoStore = useTodoStore()
-      
       const todo = await useTodoStore().todos.find(todo => todo._id === todoId)
-      console.log("todo:", todo)
-
-      // this.comments.push(newComment)
       
       if (todo) {
         await todo.comments.push(newComment)
         this.comments.push(newComment)
       }
-
     },
 
     async addComment(commentId, comment, todoId) {
+      console.log(`[comment.store] - addComment - commentId: ${commentId} , comment: ${comment} , todoId: ${todoId}`)
 
-      console.log("Attempting to add a comment")
+
       let data = { commentId, comment, todoId }
-      console.log("data:", data)
       const response = await axios.post(`${API_URL}/comment`, data)
-      console.log("response: ", response)
       const newComment = response.data
-      console.log("new comment: ", newComment)
 
-      await this.comments.push(newComment)
+      console.log("this.comments:", this.comments)
+      
+      //Do we want the comments in pina to be nested or flat??
+
+      const currentComment = this.comments.find((comment) => comment._id === commentId)
+      console.log("currentComment: ", currentComment)
+      currentComment.comments.push(newComment)
+      this.comments.push(newComment)
+
+      ////Should we choose to keep things nested, try this:
+      // let storeComment = await this.comments.find(comment => comment._id === commentId)
+      // if (storeComment) {
+      //   storeComment.push(newComment)
+      // }
+      
+      // const todo = await useTodoStore().todos.find(todo => todo._id === todoId)
+
+      // if (todo) {
+        
+      // }
+      // await this.comments.push(newComment)
 
       // const currentComment = this.comments.find((comment) => comment._id === commentId)
       // currentComment.comments.push(newComment)
@@ -81,21 +87,22 @@ export const useCommentStore = defineStore('comment', {
     },
 
     async deleteComment(commentId, todoId) {
+      console.log(`[comment.store] - deleteComment - commentId: ${commentId} , todoId: ${todoId}`)
       
-      const response = await useTodoStore().todos.find(todo => todo._id === todoId)
-      // let todo = response.data
+      const todo = await useTodoStore().todos.find(todo => todo._id === todoId)
 
-      // let commentIndex = todo.comments.findIndex(comment => comment._id === commentId)
-      // if (commentIndex !== -1) {
-      //   todo.comments.splice(commentIndex, 1)
-      // }
+      let commentIndex = todo.comments.findIndex(comment => comment._id === commentId)
+      if (commentIndex !== -1) {
+        todo.comments.splice(commentIndex, 1)
+        this.comments = this.comments.filter(comment => comment._id !== commentId)
+      }
 
-      await axios.delete(`${API_URL}/comment/${commentId}`)
-      console.log("commentId:", commentId)
+      axios.delete(`${API_URL}/comment/${commentId}`)
       let index = this.comments.findIndex(comment => comment._id === commentId)
-      console.log("index:", index)
       if (index !== -1) {
         this.comments.splice(index, 1)
+      } else {
+        console.log("Comment not found in todo!")
       }
     }
   }

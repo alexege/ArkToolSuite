@@ -9,6 +9,8 @@
   import { useCommentStore } from '../../stores/comment.store'
   import { ref } from 'vue'
 
+  const commentStore = useCommentStore()
+
   defineProps(['comment', 'depth', 'todoId'])
 
   const newComment = ref({
@@ -27,8 +29,8 @@
   }
 
   const deleteAComment = (commentId, todoId) => {
-    console.log(";;;;;;deleteAcomment: ", todoId)
-    useCommentStore().deleteComment(commentId, todoId)
+    console.log(`[Comment.vue] - deleteAComment: commentId: ${commentId} , todoId: ${todoId}`)
+    commentStore.deleteComment(commentId, todoId)
   }
 
 </script>

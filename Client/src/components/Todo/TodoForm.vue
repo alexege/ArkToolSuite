@@ -1,6 +1,7 @@
 <script setup>
-  import { useUserStore } from '../../stores/user.store';
+  import { useUserStore } from '../../stores/user.store'
   import { useTodoStore } from '../../stores/todo.store'
+  import { useCommentStore } from '../../stores/comment.store'
   import { storeToRefs } from 'pinia'
   import { ref } from "vue";
 
@@ -9,9 +10,11 @@
   const { allUsers } = storeToRefs(useUserStore())
   const { fetchUsers } = useUserStore()
   const { fetchTodos } = useTodoStore()
+  const { fetchComments } = useCommentStore()
     
   fetchUsers()
   fetchTodos()
+  fetchComments()
 
   const categories = [
     "Breeding",

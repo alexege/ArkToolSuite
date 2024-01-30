@@ -29,6 +29,7 @@
 
   const addAComment = (todoId) => {
     addCommentToTodo(comment.value, todoId)
+    comment.value.body = null
   }
 
   function toggleComp(todo) {
