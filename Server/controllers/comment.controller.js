@@ -90,6 +90,11 @@ exports.addComment = async (req, res) => {
 
         let currentComment = await Comment.findById(req.body.commentId)
         currentComment.comments.push(savedComment)
+        currentComment.save()
+
+        // const todoStore = useTodoStore()
+        // todoStore.fetchTodos()
+        
         res.status(201).send(savedComment)
 
     } catch (error) {

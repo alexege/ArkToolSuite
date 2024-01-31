@@ -56,7 +56,10 @@
         : (a, b) => (a[type] > b[type] ? -1 : b[type] > a[type] ? 1 : 0);
   }
 
+  // const { allTodos } = storeToRefs(todoStore)
+
   var sortedProperties = computed(() => {
+    console.log("updating sortedProperties")
     if(sortDirection.value){
       const direction = sortDirection.value
       const type = sortBy.value

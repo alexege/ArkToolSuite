@@ -5,7 +5,6 @@
 </script>
 <script setup>
   import { useUserStore } from '../../stores/user.store'
-  import { useTodoStore } from '../../stores/todo.store'
   import { useCommentStore } from '../../stores/comment.store'
   import { ref } from 'vue'
 
@@ -24,8 +23,7 @@
       author: useUserStore().user,
       // comments: comment.comments,
     }
-    todoId = null
-    useCommentStore().addComment(id, data, todoId)
+    commentStore.addComment(id, data, todoId)
   }
 
   const deleteAComment = (commentId, todoId) => {
@@ -36,16 +34,17 @@
 </script>
 <template>
   <div class="comment-container">
-
+    
     <div class="comment" v-if="comment && comment.author">
       <div class="author">
         <label>{{ comment.author.username }}</label>
         <img :src="comment.author.img" alt="" class="author-img">
         <span>{{ comment.createdAt.slice(-4) }}</span>
+        <span>ID: {{ comment._id.slice(-5)}} </span>
       </div>
-
+      
       <div class="comment-body">
-        {{ depth }} {{ comment.author.username }} - {{ comment.body }} - todoId: {{ todoId }}
+        Depth: [{{ depth }}] {{ comment.author.username }} - {{ comment.body }} - todoId: {{ todoId }}
       </div>
 
       <div class="comment-actions">
