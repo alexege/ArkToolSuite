@@ -307,6 +307,9 @@
       </div>
     </div>
     </div>
+
+    <pre>{{ todoStore.todos }}</pre>
+
   </div>
   </template>
     

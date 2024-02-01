@@ -3,7 +3,6 @@ import axios from "axios"
 import { useTodoStore } from '../stores/todo.store'
 import { useUserStore } from '../stores/user.store'
 
-
 // const todoStore = useTodoStore()
 const API_URL = 'http://localhost:8080/api'
 
@@ -88,7 +87,8 @@ export const useCommentStore = defineStore('comment', {
       
     },
 
-    async deleteComment(commentId, todoId) {
+    async deleteComment(commentId, depth, parentId, todoId) {
+      console.log("depth:", depth)
       console.log(`[comment.store] - deleteComment - commentId: ${commentId} , todoId: ${todoId}`)
       
       const todo = await useTodoStore().todos.find(todo => todo._id === todoId)
@@ -100,6 +100,28 @@ export const useCommentStore = defineStore('comment', {
       this.comments = this.comments.filter(comment => comment._id !== commentId)
 
       axios.delete(`${API_URL}/comment/${commentId}`)
+
+      if (depth == 1) {
+        let todoCommentIndex = todo.comments.findIndex(comment => comment._id === commentId)
+        console.log(`todoCommentIndex: ${todoCommentIndex}`)
+        if (todoCommentIndex !== -1){
+          todo.comments.splice(todoCommentIndex, 1)
+        }
+      } else {
+
+        let commentIndex = this.comments.findIndex(comment => comment._id === commentId)
+        console.log("commentIndex: ", commentIndex)
+        if (commentIndex !== -1) {
+          this.comments.splice(commentIndex, 1)
+          // todo.comments = todo.comments.find(comment => comment)
+          // todo.comments = [...todo.comments]
+
+          let cmt = this.comments.find(comment => comment._id === parentId)
+          console.log("cmt:", cmt)
+          cmt.comments = []
+
+        }
+      }
 
       // console.log("comments: ", this.comments)
 

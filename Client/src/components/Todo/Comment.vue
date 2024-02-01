@@ -10,7 +10,7 @@
 
   const commentStore = useCommentStore()
 
-  defineProps(['comment', 'depth', 'todoId'])
+  defineProps(['comment', 'depth', 'todoId', 'parentId'])
 
   const newComment = ref({
     body: ''
@@ -26,9 +26,9 @@
     commentStore.addComment(id, data, todoId)
   }
 
-  const deleteAComment = (commentId, todoId) => {
+  const deleteAComment = (commentId, depth, parentId, todoId) => {
     console.log(`[Comment.vue] - deleteAComment: commentId: ${commentId} , todoId: ${todoId}`)
-    commentStore.deleteComment(commentId, todoId)
+    commentStore.deleteComment(commentId, depth, parentId, todoId)
   }
 
 </script>
@@ -47,9 +47,11 @@
         Depth: [{{ depth }}] {{ comment.author.username }} - {{ comment.body }} - todoId: {{ todoId }}
       </div>
 
+      Parent: {{ parentId?.slice(-5) }}
+
       <div class="comment-actions">
         <button>Edit</button>
-        <button @click="deleteAComment(comment._id, todoId)">Delete</button>
+        <button @click="deleteAComment(comment._id, depth, parentId, todoId)">Delete</button>
       </div>
     </div>
         
@@ -61,6 +63,7 @@
         <ul v-for="(comment, index) in comment.comments" :key="index">
           <recursive-comment v-bind="{ comment, todoId}" 
             :depth="depth + 1"
+            :parentId="this.comment._id"
           />
         </ul>
 
