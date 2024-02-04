@@ -308,7 +308,7 @@
     </div>
     </div>
 
-    <pre>{{ todoStore.todos }}</pre>
+    <!-- <pre>{{ todoStore.todos }}</pre> -->
 
   </div>
   </template>
