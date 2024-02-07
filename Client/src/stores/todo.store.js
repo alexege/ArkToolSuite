@@ -1,17 +1,22 @@
 import { defineStore } from 'pinia'
 import axios from "axios"
+import { useUserStore } from '../stores/user.store'
 
 const API_URL = 'http://localhost:8080/api'
 
 export const useTodoStore = defineStore('todos', {
   state: () => ({
     todos: [],
-    id: 0,
+    comments: [],
+    // id: 0,
   }),
   getters: {
     allTodos: (state) => {
-      // if(Array.isArray(state.todos)) return state.todos.filter((item) => item.completed == false); //This seems to omit the value of author for some reason
+      if(Array.isArray(state.todos)) return state.todos.filter((item) => item.completed == false); //This seems to omit the value of author for some reason
       return state.todos;
+    },
+    allComments: (state) => {
+      return state.comments;
     }
   },
   actions: {
@@ -19,7 +24,7 @@ export const useTodoStore = defineStore('todos', {
     async fetchTodos() {
       // this.todos = { loading: true }
       try {
-        await axios.get(`${API_URL}/todo/all`)
+        await axios.get(`${API_URL}/todo/allTodos`)
         .then((res) => {
           this.todos = res.data
         })
@@ -59,45 +64,102 @@ export const useTodoStore = defineStore('todos', {
         }
       },
 
-      async addComment(commentId, comment, todoId) {
+      //Comments
 
-        let data = {
-          commentId,
-          comment,
-          todoId
+      async fetchComments() {
+        try {
+          const response = await axios.get(`${API_URL}/comment/allComments`)
+          this.comments.push(response.data)
+        } catch(error) {
+          console.error(error)
+        }
+      },
+  
+      async addCommentToTodo(comment, todoId) {
+        console.log(`[comment.store] - addCommentToTodo - comment: ${comment} , todoId: ${todoId}`)
+        
+        const response = await axios.post(`${API_URL}/comment/todo/${todoId}`, comment)
+        const newComment = response.data
+        const todo = await this.todos.find(todo => todo._id === todoId)
+        
+        this.comments.push(newComment)
+        if (todo) {
+          await todo.comments.push(newComment)
+        }
+      },
+  
+      async addCommentToComment(commentId, comment, todoId) {
+        console.log(`[comment.store] - addCommentToComment - commentId: ${commentId} , comment: ${comment} , todoId: ${todoId}`)
+  
+        let data = { commentId, comment, todoId }
+        const response = await axios.post(`${API_URL}/comment/${commentId}`, data)
+        const newComment = response.data
+        console.log("new comment is: ", newComment)
+  
+        newComment.author = useUserStore().user
+        this.comments.push(newComment)
+
+        let currentComment = this.comments.find(comment => comment._id === commentId)
+
+        if (currentComment) {
+          currentComment.comments.push(newComment)
         }
 
-        //Update State Values
-          
-          const response = await axios.post(`${API_URL}/todo/addComment/${todoId}`, data)
-          const newComment = await response.data
-          console.log("new Comment: ", newComment)
-
-          const todo = this.todos.find((todo) => todo._id === todoId)
-
-          const currentComment = todo.comments.find((comment) => comment._id === commentId)
-
-          console.log("todo:", todo)
-          console.log("currentComment:", currentComment)
-          console.log("newComment:", newComment)
-
-          todo.comments.push(newComment)
-          
-          //let currentComment = await todo.comments.find((comment) => comment._id === todoId)
+        this.todos = useTodoStore().fetchTodos()
+      },
   
-          // if (currentComment) {
-          //   await comment.comments.push(currentComment)
-          // }
+      async deleteComment(commentId, depth, parentId, todoId) {
+        console.log("comments:", this.comments[0])
+        console.log("commentId: ", commentId)
+        let commentIndex = this.comments[0].findIndex(comment => comment._id === commentId)
+        console.log("index:", commentIndex)
 
-        },
-
-        async deleteComment(id) {
-          await axios.delete(`${API_URL}/comment/${id}`)
-  
-          // const index = this.comments.
-  
-          // let idx = this.todos.find
+        if (commentIndex !== -1) {
+          this.comments[0].splice(commentIndex, 1)
         }
+        this.comments = useTodoStore().fetchComments()
+        this.todos = [...this.todos]
+      }
+
+      // async deleteComment(commentId, depth, parentId, todoId) {
+      //   console.log("depth:", depth)
+      //   console.log(`[comment.store] - deleteComment - commentId: ${commentId} , todoId: ${todoId}`)
+        
+      //   const todo = await useTodoStore().todos.find(todo => todo._id === todoId)
+  
+      //   let commentIndex = todo.comments.findIndex(comment => comment._id === commentId)
+      //   if (commentIndex !== -1) {
+      //     todo.comments.splice(commentIndex, 1)
+      //   }
+      //   this.comments = this.comments.filter(comment => comment._id !== commentId)
+  
+      //   axios.delete(`${API_URL}/comment/${commentId}`)
+  
+      //   if (depth == 1) {
+      //     let todoCommentIndex = todo.comments.findIndex(comment => comment._id === commentId)
+      //     console.log(`todoCommentIndex: ${todoCommentIndex}`)
+      //     if (todoCommentIndex !== -1){
+      //       todo.comments.splice(todoCommentIndex, 1)
+      //     }
+      //   } else {
+  
+      //     let commentIndex = this.comments.findIndex(comment => comment._id === commentId)
+      //     console.log("commentIndex: ", commentIndex)
+      //     if (commentIndex !== -1) {
+      //       this.comments.splice(commentIndex, 1)
+      //       // todo.comments = todo.comments.find(comment => comment)
+      //       // todo.comments = [...todo.comments]
+  
+      //       let cmt = this.comments.find(comment => comment._id === parentId)
+      //       console.log("cmt:", cmt)
+      //       cmt.comments = []
+  
+      //     }
+      //   }
+      // }
+
+      
+      
 
       },
 

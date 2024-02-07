@@ -10,7 +10,7 @@ module.exports = function(app) {
     next();
   });
 
-  app.get("/api/users/all", controller.allUsers);
+  app.get("/api/users/allUsers", controller.allUsers);
   app.get("/api/users/:id", controller.getById);
   app.post("/api/users/signup", [verifySignUp.checkDuplicateUsernameOrEmail, verifySignUp.checkRolesExisted], controller.signup);
 };

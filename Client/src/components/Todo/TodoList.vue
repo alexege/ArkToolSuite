@@ -4,7 +4,6 @@
   import { storeToRefs } from "pinia";
   import { useUserStore } from "../../stores/user.store"
   import { useTodoStore } from "../../stores/todo.store"
-  import { useCommentStore } from "../../stores/comment.store"
   
   import Comments from '../Todo/Comments.vue'
   import Comment from '../Todo/Comment.vue'
@@ -15,11 +14,12 @@
   const todoStore = useTodoStore()
   const { allTodos } = storeToRefs(useTodoStore())
   const { toggleCompleted, deleteTodo } = useTodoStore()
-  const { addCommentToTodo } = useCommentStore()
+  const { fetchComments, addCommentToTodo, addCommentToComment } = useTodoStore()
 
   // const allTodo = computed(() => { return useTodoStore().todoList.filter((todo) => todo.completed == false)})
 
   fetchUsers()
+  fetchComments()
 
   const comment = ref({
     body: null,
@@ -27,9 +27,13 @@
     comments: []
   })
 
-  const addAComment = (todoId) => {
+  const addACommentToTodo = (todoId) => {
     addCommentToTodo(comment.value, todoId)
     comment.value.body = null
+  }
+
+  const addACommentToComment = () => {
+    addCommentToComment(comment.value, todoId)
   }
 
   function toggleComp(todo) {
@@ -228,7 +232,7 @@
 
         <div>
           <input type="text" v-model="comment.body">
-          <button @click="addAComment(todo._id)">Add todo comment</button>
+          <button @click="addACommentToTodo(todo._id)">Add comment to Todo</button>
         </div>
 
     </div>
@@ -302,13 +306,17 @@
 
         <div>
           <input type="text" v-model="comment.body">
-          <button @click="addAComment(todo._id)">Add</button>
+          <button @click="addACommentToComment(todo._id)">Add</button>
         </div>
       </div>
     </div>
     </div>
 
     <!-- <pre>{{ todoStore.todos }}</pre> -->
+    <!-- <div v-for="(comment, idx) in todoStore.comments" :key="comment">
+      <pre>{{idx}} {{ comment }}</pre>
+
+    </div> -->
 
   </div>
   </template>

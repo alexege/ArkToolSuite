@@ -7,11 +7,11 @@ module.exports = (app) => {
         );
         next();
     });
-    app.get("/api/comment/all", controller.getAllComments)
+    app.get("/api/comment/allComments", controller.getAllComments)
 
-    app.post("/api/comment/", controller.addComment)
+    app.post("/api/comment/:commentId", controller.addCommentToComment)
     
-    app.post("/api/comment/:todoId", controller.addCommentToTodo)
+    app.post("/api/comment/todo/:todoId", controller.addCommentToTodo)
 
     app.delete("/api/comment/:id", controller.deleteComment)
 }

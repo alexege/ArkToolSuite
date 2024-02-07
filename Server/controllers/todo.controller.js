@@ -7,22 +7,7 @@ const Comment = db.comment;
 exports.findAllTodos = async (req, res) => {
 
   Todo.find({}).lean()
-  // .populate({
-  //   path: 'comments',
-  //   model: 'Comment',
-  //   populate: {
-  //     path: 'comments',
-  //       populate: {
-  //         path: 'comments',
-  //           populate: {
-  //             path: 'comments',
-  //             populate: {
-  //               path: 'comments'
-  //             }
-  //           }
-  //       }
-  //   }
-  // })
+  // .populate("comments")
   // .populate("author")           https://stackoverflow.com/questions/73308388/mongoose-how-to-populate-field-from-recursive-schema
   
   //First layer populates the first instance of: <RecursiveComment>
@@ -66,31 +51,6 @@ exports.findAllTodos = async (req, res) => {
           ]
       }]
   })
-  
-  // .populate({
-  //   path: 'comments',
-  //   model: 'Comment',
-    
-  //   populate: {
-  //     path: 'comments',
-  //     model: 'Comment',
-      
-  //     populate: {
-  //       path: 'author',
-  //       model: 'User',
-        
-  //       populate: {
-  //         path: 'comments',
-  //         model: 'Comment',
-          
-  //         populate: {
-  //           path: 'author',
-  //           model: 'User',
-  //         }
-  //       }
-  //     }
-  //   }
-  // })
   .then((todos) => {
     res.status(200).send(todos);
   })
@@ -119,64 +79,6 @@ exports.addTodo = (req, res) => {
     })
   })
 };
-
-// // Create and Save a new Todo
-// exports.addTodo = (req, res) => {
-//   console.log("req.body.author:", req.body.author)
-
-//     const todo = new Todo({
-//       title: req.body.title,
-//       category: req.body.category,
-//       priority: req.body.priority,
-//       completed: req.body.completed,
-//       author: req.body.author
-//     });
-
-//     //https://teamtreehouse.com/community/how-to-assign-a-user-a-post-with-mongoose-and-express
-
-//     if(req.body.author){
-//         User.findOne({ _id: req.body.author })
-//         .then((user) => {
-//           console.log("user found:", user);
-
-//           user.todos.push(todo)
-//           user.save()
-//           .then((data) => {
-//             console.log("save data:", data);
-
-//             todo.author = user._id
-//             console.log("the new todo is: ", todo)
-//             todo.save(todo)
-//             .then(item => {
-//                 console.log("saveTodo:", item)
-//                 res.status(200).send(item)
-//               })
-//               .catch(err => {
-//                 console.log("err:", err);
-//               })
-
-//           })
-//         })
-//         .catch((e) => {
-//           console.log("error:", e);
-//         })
-//   }
-
-//   // const todo = new Todo({
-//   //   title: req.body.title,
-//   //   url: req.body.url,
-//   //   description: req.body.description,
-//   //   // gridPosition: count + 1
-//   // });
-
-//   // todo.save(todo)
-//   // .then(data => {
-//   //   res.send(data)
-//   // })
-//   // .catch(err => {
-//   //   console.log("err:", err);
-//   // })
-// };
 
 // Find a single Todo with an id
 exports.findById = (req, res) => {
@@ -223,49 +125,6 @@ exports.deleteTodos = (req, res) => {
   
 };
 
-// exports.addCommentToTodo = async (req, res) => {
-  
-//   console.log("req.body:", req.body)
-//   // console.log("req.params:", req.params)
-
-//   user = await User.findById(req.body.comment.author._id)
-//   todo = await Todo.findById(req.params.id) //////////////////////// Probably scrwewd up
-//   console.log("todo:", todo)
-
-//   // Create a new Comment
-//   var newComment = new Comment(req.body.comment)
-  
-//   // Add current logged in user as author
-//   newComment.author = user._id
-//   await newComment.save()
-  
-//   let currentComment = await Comment.findById(req.body.id)
-//   console.log("currentComment:", currentComment)
-
-//   // if (req.body.todoId) {
-
-//   //   console.log("attempting to add comment to comment")
-
-//   //   // For Nested Comments
-//   //   currentComment.comments.push(newComment)
-//   //   await currentComment.save()
-    
-//   //   user.comments.push(newComment)
-//   //   await user.save()
-  
-//   // } else {
-
-//     console.log("attempting to add comment to todo")
-
-//     //For Todos
-//     todo.comments.push(newComment)
-//     await todo.save()
-//     user.comments.push(newComment)
-//     await user.save()
-// // }
-// await res.status(200).send(newComment)
-// }
-
 exports.deleteComment = async (req, res) => {
   Comment.findByIdAndDelete(req.params.id)
   .then(() => {
@@ -277,47 +136,41 @@ exports.deleteComment = async (req, res) => {
   })
 }
 
+// // Comments 
+
 // exports.addComment = async (req, res) => {
+//   console.log("add Comment To Todo")
+//   try {
+//       console.log("addCommentToTodo - req.body: ", req.body)
+//       console.log("params:", req.params)
+
+//       const newComment = new Comment(req.body)
+//       const savedComment = await newComment.save()
+//       console.log("new Comment:", savedComment)
+
+//       const todoId = req.params.todoId
+
+//       if(todoId) {
+//           //Add comment to Todo
+//           if (!mongoose.Types.ObjectId.isValid(todoId)) {
+//               return res.status(400).json({ message: 'Invalid post ID' })
+//           }
   
-//   console.log("req.body:", req.body)
-//   // console.log("req.params:", req.params)
-
-//   user = await User.findById(req.body.comment.author._id)
-//   todo = await Todo.findById(req.params.id)
-
-//   const comment = new Comment({
-//     body: req.body.comment.body,
-//     comments: [],
-//   })
+//           const todo = await Todo.findById(todoId)
   
-//   comment.author = user._id
-//   await comment.save()
-
-//   console.log("commentId:", req.body.commentId)
-
-//   //For Todos
-//   if (!req.body.commentId) {
-    
-//     todo.comments.push(comment)
-//     await todo.save()
-//     user.comments.push(comment)
-//     await user.save()
-//     await res.status(200).send(comment)
+//           if (!todo) {
+//               return res.status(404).json({ message: 'Post not found' })
+//           }
   
-//   } else { 
-//     console.log("within a comment")
+//           todo.comments.push(savedComment._id)
+//           await todo.save()
 
-//     let currentComment = await Comment.findById(req.body.commentId)
-    
-//     // For Nested Comments
-//     currentComment.comments.push({
-//       body: req.body.comment.body,
-//       comments: []
-//     })
-//     await currentComment.save()
-//     console.log("new new comment:", comment)
-//     user.comments.push(comment)
-//     await user.save()
-//     await res.status(200).send(currentComment)
+//           // res.status(201).json({ message: 'Comment added successfully', comment: savedComment })
+//           res.status(201).send(savedComment)
+//       }
+
+//   } catch (error) {
+//       console.error(error)
+//       res.status(500).json({ message: 'Internal Server Error' })
 //   }
 // }

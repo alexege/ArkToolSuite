@@ -5,10 +5,10 @@
 </script>
 <script setup>
   import { useUserStore } from '../../stores/user.store'
-  import { useCommentStore } from '../../stores/comment.store'
+  import { useTodoStore } from '../../stores/todo.store'
   import { ref } from 'vue'
 
-  const commentStore = useCommentStore()
+  const todoStore = useTodoStore()
 
   defineProps(['comment', 'depth', 'todoId', 'parentId'])
 
@@ -16,19 +16,19 @@
     body: ''
   })
 
-  const addAComment = (id, todoId) => {
-    console.log(`Adding a comment: id:${id}, todoId:${todoId}`)
+  const addAComment = (commentId, todoId) => {
+    console.log(`Adding a comment: id:${commentId}, todoId:${todoId}`)
     const data = {
       body: newComment.value.body,
       author: useUserStore().user,
       // comments: comment.comments,
     }
-    commentStore.addComment(id, data, todoId)
+    todoStore.addCommentToComment(commentId, data, todoId)
   }
 
   const deleteAComment = (commentId, depth, parentId, todoId) => {
     console.log(`[Comment.vue] - deleteAComment: commentId: ${commentId} , todoId: ${todoId}`)
-    commentStore.deleteComment(commentId, depth, parentId, todoId)
+    todoStore.deleteComment(commentId, depth, parentId, todoId)
   }
 
 </script>

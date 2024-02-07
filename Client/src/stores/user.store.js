@@ -69,7 +69,7 @@ export const useUserStore = defineStore({
 
         async fetchUsers() {
             try {
-                const response = await axios.get(`${API_URL}/users/all`);
+                const response = await axios.get(`${API_URL}/users/allUsers`);
                 this.users = response.data
 
             } catch (error) {

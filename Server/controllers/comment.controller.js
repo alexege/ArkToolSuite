@@ -24,18 +24,14 @@ exports.getAllComments = async (req, res) => {
     // })
 }
 
-//Can probably delte
-// exports.findById = async (req, res) => {
-//     console.log("--------------------finding by id--------------------------", req.params)
-//     Comment.findOne({ _id: req.params.id })
-//     .then((comment) => {
-//         res.send({ comment })
-//     })
-//     .catch((error) => {
-//         console.error(error)
-//         res.status(500).send({ message: error })
-//     })
-// }
+exports.getComment = async (req, res) => {
+    console.log("Getting comment by id: ", req.params)
+    try {
+        Comment.findById(req.params.commentId)
+    } catch(error) {
+        console.error(error)
+    }
+}
 
 exports.addCommentToTodo = async (req, res) => {
     console.log("add Comment To Todo")
@@ -74,9 +70,9 @@ exports.addCommentToTodo = async (req, res) => {
     }
 }
 
-exports.addComment = async (req, res) => {
-    // console.log("addComment req.body: ", req.body)
-    // console.log("addComment req.params: ", req.params)
+exports.addCommentToComment = async (req, res) => {
+    console.log("addComment req.body: ", req.body.comment)
+    console.log("addComment req.params: ", req.params)
     try {
     
         const { commentId, comment, author } = req.body
@@ -88,14 +84,20 @@ exports.addComment = async (req, res) => {
 
         const todoId = req.params.todoId
 
-        let currentComment = await Comment.findById(req.body.commentId)
-        currentComment.comments.push(savedComment)
-        currentComment.save()
+        if (req.body.commentId) {
+            let currentComment = await Comment.findById(req.body.commentId)
+            console.log("CurrentComment:", req.body.commentId)
+            currentComment.comments.push(savedComment)
+            currentComment.save()
+    
+            // const todoStore = useTodoStore()
+            // todoStore.fetchTodos()
+            
+            res.status(201).send(savedComment)
+        } else {
+            console.log("Attempting to add a comment to a todo")
+        }
 
-        // const todoStore = useTodoStore()
-        // todoStore.fetchTodos()
-        
-        res.status(201).send(savedComment)
 
     } catch (error) {
         console.error(error)

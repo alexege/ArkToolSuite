@@ -10,11 +10,9 @@
   const { allUsers } = storeToRefs(useUserStore())
   const { fetchUsers } = useUserStore()
   const { fetchTodos } = useTodoStore()
-  const { fetchComments } = useCommentStore()
     
   fetchUsers()
   fetchTodos()
-  fetchComments()
 
   const categories = [
     "Breeding",
