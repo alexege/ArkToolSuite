@@ -69,7 +69,7 @@ export const useTodoStore = defineStore('todos', {
       async fetchComments() {
         try {
           const response = await axios.get(`${API_URL}/comment/allComments`)
-          this.comments.push(response.data)
+          this.comments = response.data
         } catch(error) {
           console.error(error)
         }
@@ -109,16 +109,35 @@ export const useTodoStore = defineStore('todos', {
       },
   
       async deleteComment(commentId, depth, parentId, todoId) {
+
+        console.log(`parentId: ${parentId}`)
+
+        if(commentId) {
+          console.log("CommentIddddd:", commentId)
+          let baseComment = this.comments.find(comment => comment._id === parentId)
+          console.log("baseComment:", baseComment)
+          let idx = baseComment.comments.findIndex(comment => comment._id === commentId)
+          console.log("idx: ", idx)
+          let updatedComment = baseComment.comments.splice(idx, 1)
+          console.log("updatedComment:", updatedComment)
+
+          axios.delete(`${API_URL}/comment/${commentId}`)
+          
+          this.todos = [...this.todos]
+
+        }
+
+        console.log("comments:", this.comments)
         console.log("comments:", this.comments[0])
         console.log("commentId: ", commentId)
-        let commentIndex = this.comments[0].findIndex(comment => comment._id === commentId)
+        let commentIndex = this.comments.findIndex(comment => comment._id === commentId)
         console.log("index:", commentIndex)
 
         if (commentIndex !== -1) {
-          this.comments[0].splice(commentIndex, 1)
+          this.comments.splice(commentIndex, 1)
         }
-        this.comments = useTodoStore().fetchComments()
-        this.todos = [...this.todos]
+        // this.comments = useTodoStore().fetchComments()
+        // this.todos = [...this.todos]
       }
 
       // async deleteComment(commentId, depth, parentId, todoId) {
