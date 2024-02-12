@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from "axios"
 import { useUserStore } from '../stores/user.store'
+import { isReactive } from 'vue'
 
 const API_URL = 'http://localhost:8080/api'
 
@@ -26,6 +27,8 @@ export const useTodoStore = defineStore('todos', {
       try {
         await axios.get(`${API_URL}/todo/allTodos`)
         .then((res) => {
+          console.log("Todos:", this.todos)
+          console.log("Fetching todos:", res.data)
           this.todos = res.data
         })
       } catch (error) {
@@ -94,7 +97,6 @@ export const useTodoStore = defineStore('todos', {
         let data = { commentId, comment, todoId }
         const response = await axios.post(`${API_URL}/comment/${commentId}`, data)
         const newComment = response.data
-        console.log("new comment is: ", newComment)
   
         newComment.author = useUserStore().user
         this.comments.push(newComment)
@@ -111,27 +113,29 @@ export const useTodoStore = defineStore('todos', {
       async deleteComment(commentId, depth, parentId, todoId) {
 
         console.log(`parentId: ${parentId}`)
+        console.log(`commentId: ${commentId}`)
 
-        if(commentId) {
-          console.log("CommentIddddd:", commentId)
+        if(parentId) {
           let baseComment = this.comments.find(comment => comment._id === parentId)
-          console.log("baseComment:", baseComment)
           let idx = baseComment.comments.findIndex(comment => comment._id === commentId)
-          console.log("idx: ", idx)
           let updatedComment = baseComment.comments.splice(idx, 1)
-          console.log("updatedComment:", updatedComment)
+          let res = await axios.delete(`${API_URL}/comment/${commentId}`)
+          console.log("delte res:", res)
 
-          axios.delete(`${API_URL}/comment/${commentId}`)
-          
-          this.todos = [...this.todos]
+          this.fetchTodos()
+          // this.todos = [...this.todos]
 
+        } else {
+          console.log("No comment id found. Getting rid of todo instead.")
+          let baseTodo = this.todos.find(todo => todo._id === todoId)
+          let idx = baseTodo.comments.findIndex(comment => comment._id === commentId)
+          let updatedTodo = baseTodo.comments.splice(idx, 1)
+          let res = await axios.delete(`${API_URL}/comment/${commentId}`)
+
+          this.fetchTodos()
         }
 
-        console.log("comments:", this.comments)
-        console.log("comments:", this.comments[0])
-        console.log("commentId: ", commentId)
         let commentIndex = this.comments.findIndex(comment => comment._id === commentId)
-        console.log("index:", commentIndex)
 
         if (commentIndex !== -1) {
           this.comments.splice(commentIndex, 1)

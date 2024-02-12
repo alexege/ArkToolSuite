@@ -63,7 +63,6 @@
   // const { allTodos } = storeToRefs(todoStore)
 
   var sortedProperties = computed(() => {
-    console.log("updating sortedProperties")
     if(sortDirection.value){
       const direction = sortDirection.value
       const type = sortBy.value
