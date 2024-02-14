@@ -34,38 +34,37 @@
 </script>
 <template>
   <div class="comment-container">
-    
+
     <div class="comment" v-if="comment && comment.author">
       <div class="author">
         <label>{{ comment.author.username }}</label>
         <img :src="comment.author.img" alt="" class="author-img">
         <span>{{ comment.createdAt.slice(-4) }}</span>
-        <span>ID: {{ comment._id.slice(-5)}} </span>
-      </div>
-      
-      <div class="comment-body">
-        Depth: [{{ depth }}] {{ comment.author.username }} - {{ comment.body }} - todoId: {{ todoId.slice(-5) }}
+        <span>ID: {{ comment._id.slice(-5) }} </span>
       </div>
 
-      {{ parentId ? "Parent Comment ID: " + parentId.slice(-5) : "Parent Todo ID: " + todoId.slice(-5) }}
+      <div class="comment-body" style="background-color: rgba(255, 255, 255, 0.25)">
+        <span>{{ comment.body }}</span>
+        <span>
+          Depth:{{ depth }}, Author:{{ comment.author.username }}, TodoId: {{ todoId.slice(-5) }}, ParentTodoId:
+          {{ parentId ? "Parent Comment ID: " + parentId.slice(-5) : "Parent Todo ID: " + todoId.slice(-5) }}
+        </span>
+      </div>
 
       <div class="comment-actions">
         <button>Edit</button>
         <button @click="deleteAComment(comment._id, depth, parentId, todoId)">Delete</button>
       </div>
     </div>
-        
-        <div class="add-comment" v-if="depth < 4">
-          <textarea cols="30" rows="10" placeholder="Add a comment" v-model="newComment.body"></textarea>
-          <button @click="addAComment(comment._id, todoId)">Add</button>
-        </div>
 
-        <ul v-for="(comment, index) in comment.comments" :key="index">
-          <recursive-comment v-bind="{ comment, todoId}" 
-            :depth="depth + 1"
-            :parentId="this.comment._id"
-          />
-        </ul>
+    <div class="add-comment" v-if="depth < 4">
+      <textarea cols="30" rows="10" placeholder="Add a comment" v-model="newComment.body"></textarea>
+      <button @click="addAComment(comment._id, todoId)">Add</button>
+    </div>
+
+    <ul v-for="(comment, index) in comment.comments" :key="index">
+      <recursive-comment v-bind="{ comment, todoId }" :depth="depth + 1" :parentId="this.comment._id" />
+    </ul>
 
   </div>
 </template>
@@ -82,6 +81,8 @@
   outline: 1px solid white;
 }
 .comment-body {
+  display: flex;
+  flex-direction: column;
   flex: 4;
 }
 .comment-actions {

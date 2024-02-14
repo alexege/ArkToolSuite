@@ -11,7 +11,7 @@
   const todoStore = useTodoStore()
   const { allTodos } = storeToRefs(useTodoStore())
   const { toggleCompleted, deleteTodo } = useTodoStore()
-  const { fetchComments, addCommentToTodo, addCommentToComment } = useTodoStore()
+  const { fetchComments, addCommentToTodo } = useTodoStore()
 
   fetchUsers()
   fetchComments()
@@ -25,10 +25,6 @@
   const addACommentToTodo = (todoId) => {
     addCommentToTodo(comment.value, todoId)
     comment.value.body = null
-  }
-
-  const addACommentToComment = () => {
-    addCommentToComment(comment.value, todoId)
   }
 
   function toggleComp(todo) {
@@ -54,8 +50,6 @@
         ? (a, b) => (b[type] > a[type] ? -1 : a[type] > b[type] ? 1 : 0)
         : (a, b) => (a[type] > b[type] ? -1 : b[type] > a[type] ? 1 : 0);
   }
-
-  // const { allTodos } = storeToRefs(todoStore)
 
   var sortedProperties = computed(() => {
     if(sortDirection.value){
@@ -127,6 +121,17 @@
     return allTodos
   })
 
+  var isEditingTodo = ref(false)
+  function editTodo() {
+    isEditingTodo.value = !isEditingTodo.value
+    console.log("Toggling Todo Edit")
+  }
+
+  function updateTodo(todo) {
+    console.log("updating todo: ", todo)
+    isEditingTodo.value = false
+  }
+
   </script>
 
 <template>
@@ -185,12 +190,18 @@
     <div class="list" v-for="todo, idx in sortedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
-          <li class="label idx">{{ idx + 1 }}</li> {{ todo._id.slice(-3) }}
-          <li class="label title" :class="{ completed: todo.completed }">{{ todo.title }}</li>
+          <li class="label idx">{{ idx + 1 }}</li> idx: {{ todo._id.slice(-3) }}, 
+          
+          <li class="label title" v-if="isEditingTodo">
+            <input type="text" v-model="todo.title" @blur="updateTodo(todo)">
+          </li>
+          <li v-else class="label title" :class="{ completed: todo.completed }" @dblclick="editTodo(todo)">{{ todo.title }}</li>
+          
           <li class="label category">{{ todo.category }}</li>
           <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
           <li class="label priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
           <li class="label author">{{ todo.author ? todo.author.username : null}}</li>
+          <li class="label assignee">{{ todo.assignee ? todo.assignee : "Assignee" }}</li>
           <li class="label action">
             <span @click.stop="toggleComp(todo)">&#10004;</span>
             <span @click="delTodo(todo._id)" class="x">&#10060;</span>
@@ -207,8 +218,8 @@
           <textarea cols="30" rows="10" placeholder="Add a Comment" v-model="comment.body"></textarea>
           <button @click="addACommentToTodo(todo._id)">Add</button>
         </div>
-
     </div>
+
   </div>
   </template>
     

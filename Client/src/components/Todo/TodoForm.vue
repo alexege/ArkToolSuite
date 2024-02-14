@@ -59,36 +59,36 @@
   }
 </script>
 <template>
-    <form @submit.prevent="addTodoItem()" class="headers-form">
-      <div class="idx"></div>
-      <div class="title">
-        <input v-model="todoItem.title" type="text" class="title-input" placeholder="Todo Title"/>
-      </div>
-      <div class="category">
-        <select name="" id="" v-model="todoItem.category" class="category-input">
-          <option :value="category" v-for="category in categories" :key="category">{{ category }}</option>
-        </select>
-      </div>
-      <div class="createdAt">
-        Created
-      </div>
-      <div class="priority">
-        <select name="" id="" v-model="todoItem.priority" class="priority-input">
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
-      </div>
-      <div class="author">
-        <select name="" id="" v-model="todoItem.author" class="author-input">
-          <option v-for="user in allUsers" :value="user._id" :key="user.id">{{ user.username }}</option>
-        </select>
-      </div>
-      <div class="actions">
-        <button>Add</button>
-      </div>
-    </form> 
-  </template>
+  <form @submit.prevent="addTodoItem()" class="headers-form">
+    <div class="idx"></div>
+    <div class="title">
+      <input v-model="todoItem.title" type="text" class="title-input" placeholder="Todo Title" />
+    </div>
+    <div class="category">
+      <select name="" id="" v-model="todoItem.category" class="category-input">
+        <option :value="category" v-for="category in categories" :key="category">{{ category }}</option>
+      </select>
+    </div>
+    <div class="createdAt">
+      Created
+    </div>
+    <div class="priority">
+      <select name="" id="" v-model="todoItem.priority" class="priority-input">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+    </div>
+    <div class="author">
+      <select name="" id="" v-model="todoItem.author" class="author-input">
+        <option v-for="user in allUsers" :value="user._id" :key="user.id">{{ user.username }}</option>
+      </select>
+    </div>
+    <div class="actions">
+      <button>Add</button>
+    </div>
+  </form>
+</template>
 <style scoped>
 
 .headers-form {
