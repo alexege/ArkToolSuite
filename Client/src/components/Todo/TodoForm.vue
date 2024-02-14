@@ -1,4 +1,5 @@
 <script setup>
+  import { useAuthStore } from '../../stores/AuthStore'
   import { useUserStore } from '../../stores/user.store'
   import { useTodoStore } from '../../stores/todo.store'
   import { useCommentStore } from '../../stores/comment.store'
@@ -16,9 +17,10 @@
 
   const activeUser = ref()
   onMounted(() => {
-    activeUser.value = useUserStore().allUsers[0]._id
-    console.log("activeUser is: ", activeUser.value)
-    todoItem.value.author = activeUser.value
+    // activeUser.value = useUserStore().allUsers[0]._id
+    activeUser.value = useUserStore().allUsers.find(user => user.authId === useAuthStore().user._id)
+    console.log("activeUser is: ", activeUser.value._id)
+    todoItem.value.author = activeUser.value._id
   })
 
   const categories = [
@@ -47,7 +49,7 @@
       category: todoItem.value.category,
       priority: todoItem.value.priority,
       completed: todoItem.value.completed,
-      author: activeUser.value ? activeUser.value : todoItem.value.author || null,
+      author: todoItem.value.author ? todoItem.value.author : null,
       comments: []
     }
     
