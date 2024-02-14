@@ -19,7 +19,6 @@
   onMounted(() => {
     // activeUser.value = useUserStore().allUsers[0]._id
     activeUser.value = useUserStore().allUsers.find(user => user.authId === useAuthStore().user._id)
-    console.log("activeUser is: ", activeUser.value._id)
     todoItem.value.author = activeUser.value._id
   })
 
@@ -39,6 +38,7 @@
     priority: 'Low',
     completed: false,
     author: useUserStore.user ? useUserStore.user._id : null,
+    assignee: activeUser.value,
     comments: []
   })
 
@@ -50,6 +50,7 @@
       priority: todoItem.value.priority,
       completed: todoItem.value.completed,
       author: todoItem.value.author ? todoItem.value.author : null,
+      assignee: todoItem.value.assignee,
       comments: []
     }
     

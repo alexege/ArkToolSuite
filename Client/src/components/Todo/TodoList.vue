@@ -4,19 +4,14 @@
   import { storeToRefs } from "pinia";
   import { useUserStore } from "../../stores/user.store"
   import { useTodoStore } from "../../stores/todo.store"
-  
-  import Comments from '../Todo/Comments.vue'
   import Comment from '../Todo/Comment.vue'
   
-  //Import current logged in user
   const userStore = useUserStore()
   const { fetchUsers } = useUserStore()
   const todoStore = useTodoStore()
   const { allTodos } = storeToRefs(useTodoStore())
   const { toggleCompleted, deleteTodo } = useTodoStore()
   const { fetchComments, addCommentToTodo, addCommentToComment } = useTodoStore()
-
-  // const allTodo = computed(() => { return useTodoStore().todoList.filter((todo) => todo.completed == false)})
 
   fetchUsers()
   fetchComments()
@@ -187,13 +182,6 @@
     </ul>
     </div>
 
-    <!-- <div v-for="todo in sortedProperties" :key="todo._id">
-      <pre>{{ todo }}</pre>
-    </div> -->
-
-    <!-- <pre>User: {{ userStore.user }}</pre> -->
-    <!-- <pre>Todos: {{ todoStore.todos }}</pre> -->
-
     <div class="list" v-for="todo, idx in sortedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
@@ -214,109 +202,13 @@
         <ul v-for="(comment, index) in todo.comments" :key="index" class="comments-container">
           <Comment v-bind="{ comment }" :depth="0" :todoId="todo._id" />
         </ul>
-
-        <!-- <Comments :comments="todo.comments"/> -->
-        <!-- <div v-for="comment in todo.comments" :key="comment._id">
-          <Comments :comments="todo.comments"/>
-        </div> -->
-
-        <!-- <recursive-comment v-for="comment in todo.comments"
-          :key="comment._id"
-          :comment="comment"
-          :toggle="showSection"
-          :isReply="true"
-          :depth="depth + 1"
-        /> -->
-
-
-        <div>
-          <input type="text" v-model="comment.body">
-          <button @click="addACommentToTodo(todo._id)">Add comment to Todo</button>
+        
+        <div class="add-comment">
+          <textarea cols="30" rows="10" placeholder="Add a Comment" v-model="comment.body"></textarea>
+          <button @click="addACommentToTodo(todo._id)">Add</button>
         </div>
 
     </div>
-
-    <div> <!--v-if="isCompleted" Temp disabled-->
-    <h2>Completed</h2>
-    <ul class="todo-labels">
-      <li class="label idx">idx</li>
-      <li class="label title" @click.prevent="sortCompleted('title')">
-        Task Title
-        <div v-if="sortByCompleted === 'title'">
-          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
-          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
-        </div>
-      </li>
-      <li class="label category" @click.prevent="sortCompleted('category')">
-        Category
-        <div v-if="sortByCompleted === 'category'">
-          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
-          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
-        </div>
-      </li>
-      <li class="label created-at" @click.prevent="sortCompleted('createdAt')">
-        Created
-        <div v-if="sortByCompleted === 'createdAt'">
-          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
-          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
-        </div>
-      </li>
-      <li class="label priority" @click.prevent="sortCompleted('priority')">
-        Priority
-        <div v-if="sortByCompleted === 'priority'">
-          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
-          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
-        </div>
-      </li>
-      <li class="label priority" @click.prevent="sort('author')">
-        Author
-        <div v-if="sortBy === 'author'">
-          <span v-if="sortDirection === 1" class="material-symbols-outlined">arrow_drop_up</span>
-          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
-        </div>
-      </li>
-      <li class="label assignee" @click.prevent="sortCompleted('assignee')">
-        Assignee
-        <div v-if="sortByCompleted === 'assignee'">
-          <span v-if="sortDirectionCompleted === 1" class="material-symbols-outlined">arrow_drop_up</span>
-          <span class="material-symbols-outlined" v-else>arrow_drop_down</span>
-        </div>
-      </li>
-      <li class="label action">
-        Completed
-      </li>
-    </ul>
-    <div class="list" v-for="todo, idx in sortedCompletedProperties" :key="todo._id">
-      <div class="item" v-if="todo">
-        <ul class="todo-items">
-          <li class="label idx">{{ idx + 1 }}</li>
-          <li class="label title" :class="{ completed: todo.completed }">{{ todo.title }}</li>
-          <li class="label category">{{ todo.category }}</li>
-          <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>
-          <li class="label priority" :class="todo.priority?.toLowerCase()">{{ todo.priority }}</li>
-          <li class="label author">{{ todo.author?.username || 'Author'}}</li>
-          <li class="label action">
-            <span @click.stop="toggleComp(todo)">&#10004;</span>
-            <span @click="delTodo(todo._id)" class="x">&#10060;</span>
-          </li>
-        </ul>
-
-        <Comments :comments="todo.comments"/>
-
-        <div>
-          <input type="text" v-model="comment.body">
-          <button @click="addACommentToComment(todo._id)">Add</button>
-        </div>
-      </div>
-    </div>
-    </div>
-
-    <!-- <pre>{{ todoStore.todos }}</pre> -->
-    <!-- <div v-for="(comment, idx) in todoStore.comments" :key="comment">
-      <pre>{{idx}} {{ comment }}</pre>
-
-    </div> -->
-
   </div>
   </template>
     
@@ -350,6 +242,10 @@
   .list {
     /* display: flex; */
     /* justify-content: center; */
+    outline: 1px solid cyan;
+    margin: 20px 0;
+    box-shadow: 2px 2px 6px cyan;
+    background-color: rgba(8, 28, 36, 0.5)
   }
   
   .item {
@@ -420,5 +316,13 @@
 .action {
   display: flex;
   flex: .5 1 0%;
+}
+
+.add-comment {
+  display: flex;
+}
+.add-comment textarea {
+  flex: 3;
+  height: 2em;
 }
   </style>

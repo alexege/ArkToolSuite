@@ -44,10 +44,10 @@
       </div>
       
       <div class="comment-body">
-        Depth: [{{ depth }}] {{ comment.author.username }} - {{ comment.body }} - todoId: {{ todoId }}
+        Depth: [{{ depth }}] {{ comment.author.username }} - {{ comment.body }} - todoId: {{ todoId.slice(-5) }}
       </div>
 
-      Parent: {{ parentId?.slice(-5) }}
+      {{ parentId ? "Parent Comment ID: " + parentId.slice(-5) : "Parent Todo ID: " + todoId.slice(-5) }}
 
       <div class="comment-actions">
         <button>Edit</button>
