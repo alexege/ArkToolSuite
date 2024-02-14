@@ -5,6 +5,7 @@
   import { useUserStore } from "../../stores/user.store"
   import { useTodoStore } from "../../stores/todo.store"
   import Comment from '../Todo/Comment.vue'
+  import Todo from '../Todo/Todo.vue'
   
   const userStore = useUserStore()
   const { fetchUsers } = useUserStore()
@@ -187,11 +188,17 @@
     </ul>
     </div>
 
+    <div v-for="todo in sortedProperties" :key="todo._id">
+      <Todo v-bind="{ todo }"/>
+    </div>
+
+    <!-- Move Todos into their own dedicated component -->
     <div class="list" v-for="todo, idx in sortedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
           <li class="label idx">{{ idx + 1 }}</li> idx: {{ todo._id.slice(-3) }}, 
           
+          <!-- Todo Title -->
           <li class="label title" v-if="isEditingTodo">
             <input type="text" v-model="todo.title" @blur="updateTodo(todo)">
           </li>
