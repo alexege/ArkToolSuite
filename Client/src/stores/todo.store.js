@@ -27,8 +27,6 @@ export const useTodoStore = defineStore('todos', {
       try {
         await axios.get(`${API_URL}/todo/allTodos`)
         .then((res) => {
-          console.log("Todos:", this.todos)
-          console.log("Fetching todos:", res.data)
           this.todos = res.data
         })
       } catch (error) {

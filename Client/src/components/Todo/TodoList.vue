@@ -197,7 +197,7 @@
     <div class="list" v-for="todo, idx in sortedProperties" :key="todo._id">
       <div class="item" v-if="todo">
         <ul class="todo-items">
-          <li class="label idx">{{ idx + 1 }}</li> {{ todo._id }}
+          <li class="label idx">{{ idx + 1 }}</li> {{ todo._id.slice(-3) }}
           <li class="label title" :class="{ completed: todo.completed }">{{ todo.title }}</li>
           <li class="label category">{{ todo.category }}</li>
           <li class="label created-at">{{ new Date(todo.createdAt).toLocaleString() }}</li>

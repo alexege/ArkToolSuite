@@ -3,7 +3,7 @@
   import { useTodoStore } from '../../stores/todo.store'
   import { useCommentStore } from '../../stores/comment.store'
   import { storeToRefs } from 'pinia'
-  import { ref } from "vue";
+  import { ref, onMounted } from "vue";
 
   const todoStore = useTodoStore()
     
@@ -13,6 +13,13 @@
     
   fetchUsers()
   fetchTodos()
+
+  const activeUser = ref()
+  onMounted(() => {
+    activeUser.value = useUserStore().allUsers[0]._id
+    console.log("activeUser is: ", activeUser.value)
+    todoItem.value.author = activeUser.value
+  })
 
   const categories = [
     "Breeding",
@@ -40,7 +47,7 @@
       category: todoItem.value.category,
       priority: todoItem.value.priority,
       completed: todoItem.value.completed,
-      author: todoItem.value.author || null,
+      author: activeUser.value ? activeUser.value : todoItem.value.author || null,
       comments: []
     }
     
@@ -71,7 +78,7 @@
       </div>
       <div class="author">
         <select name="" id="" v-model="todoItem.author" class="author-input">
-          <option :value="user._id" v-for="user in allUsers" :key="user.id">{{ user.username }}</option>
+          <option v-for="user in allUsers" :value="user._id" :key="user.id">{{ user.username }}</option>
         </select>
       </div>
       <div class="actions">

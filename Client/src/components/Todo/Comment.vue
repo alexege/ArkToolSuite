@@ -55,7 +55,7 @@
       </div>
     </div>
         
-        <div class="add-comment">
+        <div class="add-comment" v-if="depth < 4">
           <textarea cols="30" rows="10" placeholder="Add a comment" v-model="newComment.body"></textarea>
           <button @click="addAComment(comment._id, todoId)">Add</button>
         </div>

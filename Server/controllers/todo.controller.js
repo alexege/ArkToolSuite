@@ -6,9 +6,9 @@ const Comment = db.comment;
 // Retrieve all Todos from the database.
 exports.findAllTodos = async (req, res) => {
 
-  Todo.find({}).lean()
+  Todo.find({})
   // .populate("comments")
-  // .populate("author")           https://stackoverflow.com/questions/73308388/mongoose-how-to-populate-field-from-recursive-schema
+  .populate("author")           //https://stackoverflow.com/questions/73308388/mongoose-how-to-populate-field-from-recursive-schema
   
   //First layer populates the first instance of: <RecursiveComment>
   .populate({
